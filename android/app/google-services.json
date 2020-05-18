@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1050325654502",
+    "firebase_url": "https://cosmo-pubg.firebaseio.com",
+    "project_id": "cosmo-pubg",
+    "storage_bucket": "cosmo-pubg.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1050325654502:android:9f529d6d39cda093c1d427",
+        "android_client_info": {
+          "package_name": "com.udhay.pubg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1050325654502-oe95pqkq8ig6895gmv191jshv614nb79.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.udhay.pubg",
+            "certificate_hash": "95b99a5d4373759af485e9f11d15b346e35d2d9a"
+          }
+        },
+        {
+          "client_id": "1050325654502-dbeiif45npo5lf2g217os5umb3jupgjn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBvmyR8j7Wdm9eFCz93o-eIDOyRjDi0HY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1050325654502-dbeiif45npo5lf2g217os5umb3jupgjn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
