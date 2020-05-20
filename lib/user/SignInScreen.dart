@@ -55,48 +55,47 @@ class _SignInScreenState extends State<SignInScreen> {
                   InputDecoration(border: InputBorder.none, hintText: "E-Mail"),
               controller: _passwordController,
             ),
-            RaisedButton(
-              child: Text("Ok"),
-              onPressed: () async {
-                _auth
-                    .fetchSignInMethodsForEmail(email: _emailController.text)
-                    .then((value) {
-                  if (value.length == 0) {
-                    _auth
-                        .createUserWithEmailAndPassword(
-                            email: _emailController.text,
-                            password: _passwordController.text)
-                        .then((value) {
-                      if (value.user == null) {
-                        SnackBar(
-                          content: Text("Error signing up"),
-                        );
-                      } else {
-                        SnackBar(
-                          content: Text("Welcome ${value.user.displayName}"),
-                        );
-                      }
-                    });
-                  } else {
-                    _auth
-                        .signInWithEmailAndPassword(
-                            email: _emailController.text,
-                            password: _passwordController.text)
-                        .then((value) {
-                      if (value.user == null) {
-                        SnackBar(
-                          content: Text("Error signing in"),
-                        );
-                      } else {
-                        SnackBar(
-                          content: Text("Welcome ${value.user.displayName}"),
-                        );
-                      }
-                    });
+            Builder(builder: (context) {
+              return RaisedButton(
+                child: Text("Ok"),
+                onPressed: () async {
+                  _auth
+                      .fetchSignInMethodsForEmail(email: _emailController.text)
+                      .then((value) {
+                    if (value.length == 0) {
+                      _auth
+                          .createUserWithEmailAndPassword(
+                          email: _emailController.text,
+                          password: _passwordController.text)
+                          .then((value) {
+                        if (value.user == null) {
+                        print("Error signing up");
+                        } else {
+                          print("Welcome ${value.user.displayName}");
+                        }
+                      });
+                    } else {
+                      _auth
+                          .signInWithEmailAndPassword(
+                          email: _emailController.text,
+                          password: _passwordController.text)
+                          .then((value) {
+                        if (value.user == null) {
+                          print("Error signing in");
+                        } else {
+                          print("Welcome ${value.user.displayName}");
+                        }
+                      });
+                    }
+                  });
+                  FirebaseUser _user = await _auth.currentUser();
+                  if (_user.displayName == null || _user.phoneNumber == null) {
+                    Navigator.of(context).pushNamed('/detail');
                   }
-                });
-              },
-            ),
+                },
+              );
+            }),
+
             RaisedButton(
               child: Text("Sign in"),
               onPressed: () async {

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pubg/SplashScreen.dart';
+import 'package:pubg/user/PersonalDetailScreen.dart';
 import 'package:pubg/user/SignInScreen.dart';
 
 void main() {
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => SplashScreen(),
         '/sign': (context) => SignInScreen(),
         '/home': (context) => MyHomePage(),
+        '/detail': (context) => EnterDetailsScreen(),
       },
     );
   }
