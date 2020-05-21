@@ -1,15 +1,35 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pubg/SplashScreen.dart';
+import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:pubg/bloc/authentication_bloc/authentication_event.dart';
+import 'package:pubg/bloc/bloc_delegate.dart';
+import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/user/PersonalDetailScreen.dart';
 import 'package:pubg/user/SignInScreen.dart';
 
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  final UserRepository userRepository = UserRepository();
+  BlocSupervisor.delegate = SimpleBlocDelegate();
+
+  runApp(
+    BlocProvider(
+      create: (context) => AuthenticationBloc(userRepository)..add(AppStarted()),
+      child: MyApp(userRepository: userRepository),
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  final UserRepository _userRepository;
+
+  MyApp({Key key, @required UserRepository userRepository})
+      : assert(userRepository != null),
+        _userRepository = userRepository,
+        super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
