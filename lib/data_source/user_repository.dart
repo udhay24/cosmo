@@ -27,8 +27,8 @@ class UserRepository {
   }
 
   Future<FirebaseUser> signUpWithEmail(
-      String email,
-      String password
+      {String email,
+      String password}
       ) {
     return _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password).then((value) => value.user);
   }

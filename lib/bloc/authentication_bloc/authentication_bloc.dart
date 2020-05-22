@@ -6,9 +6,9 @@ import 'package:pubg/data_source/user_repository.dart';
 
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
 
-  final UserRepository _userRepository;
+  final UserRepository userRepository;
 
-  AuthenticationBloc(this._userRepository);
+  AuthenticationBloc({this.userRepository});
 
   @override
   AuthenticationState get initialState => Uninitialized();
@@ -27,9 +27,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   Stream<AuthenticationState> _mapAppStartedToState() async* {
-    final isSignedIn = await _userRepository.isSignedIn();
+    final isSignedIn = await userRepository.isSignedIn();
     if (isSignedIn) {
-      final name = await _userRepository.getUser();
+      final name = await userRepository.getUser();
       yield Authenticated(name);
     } else {
       yield UnAuthenticated();
@@ -37,11 +37,11 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   Stream<AuthenticationState> _mapLoggedInToState() async* {
-    yield Authenticated(await _userRepository.getUser());
+    yield Authenticated(await userRepository.getUser());
   }
 
   Stream<AuthenticationState> _mapLoggedOutToState() async* {
     yield UnAuthenticated();
-    _userRepository.signOut();
+    userRepository.signOut();
   }
 }
