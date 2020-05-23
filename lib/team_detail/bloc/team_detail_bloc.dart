@@ -6,7 +6,7 @@ import 'package:pubg/data_source/firestore_repository.dart';
 import 'package:pubg/data_source/model/team_detail.dart';
 import 'package:pubg/util/validators.dart';
 
-import './bloc.dart';
+import 'bloc.dart';
 
 class TeamDetailBloc extends Bloc<TeamDetailEvent, TeamDetailState> {
   final FireStoreRepository fireStoreRepository;

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:pubg/data_source/model/team_detail.dart';
-import 'package:pubg/team_detail/bloc.dart';
+import 'package:pubg/team_detail/bloc/bloc.dart';
 
 abstract class TeamDetailEvent extends Equatable {
   const TeamDetailEvent();
