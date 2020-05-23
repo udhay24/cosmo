@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_event.dart';
 import 'package:pubg/data_source/user_repository.dart';
-import 'package:pubg/login/bloc/login_dart.dart';
-import 'package:pubg/login/bloc/login_event.dart';
+import 'package:pubg/login/bloc/bloc.dart';
 import 'package:pubg/login/ui/create_account_button.dart';
 
 import 'google_login_button.dart';
