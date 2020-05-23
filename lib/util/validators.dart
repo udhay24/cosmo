@@ -6,11 +6,37 @@ class Validators {
     r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$',
   );
 
-  static isValidEmail(String email) {
+  static final RegExp _phoneNumberRegExp = RegExp(
+    r'^(?:[+0]9)?[0-9]{10}$'
+  );
+
+  static bool isValidEmail(String email) {
     return _emailRegExp.hasMatch(email);
   }
 
-  static isValidPassword(String password) {
+  static bool isValidPassword(String password) {
     return _passwordRegExp.hasMatch(password);
+  }
+
+  static bool isValidName(String name) {
+    if ((name != null) && (name.isNotEmpty) && (name.length > 4)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static bool isValidPhoneNumber(String phoneNumber) {
+    return _phoneNumberRegExp.hasMatch(phoneNumber);
+  }
+
+  static bool isMembersListValid(List<String> members) {
+    var isMembersValid = members.map((e) => isValidName(e)).every((
+        element) => element);
+    if (members.length == 5) {
+      return true && isMembersValid;
+    } else {
+      return false;
+    }
   }
 }

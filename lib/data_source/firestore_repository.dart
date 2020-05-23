@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:pubg/data_source/model/user_detail.dart';
+import 'package:pubg/data_source/model/team_detail.dart';
 
 class FireStoreRepository {
   final Firestore firestore = Firestore(app: FirebaseApp.instance);
@@ -11,7 +11,7 @@ class FireStoreRepository {
   final Future<FirebaseUser> _firebaseUser =
       FirebaseAuth.instance.currentUser();
 
-  Future<UserDetail> fetchTeamDetails() async {
+  Future<TeamDetail> fetchTeamDetails() async {
     String userId = (await _firebaseUser).uid;
     return firestore
         .collection("team_details")
@@ -20,7 +20,7 @@ class FireStoreRepository {
         .first
         .then((value) {
       var event = value.data;
-      return UserDetail(
+      return TeamDetail(
           pubgName: event['pubg_name'],
           teamName: event['team_name'],
           phoneNumber: event['phone_number'],
@@ -28,12 +28,25 @@ class FireStoreRepository {
     });
   }
 
-  Future<void> updateTeamDetails(UserDetail teamDetail) async {
+  Future<void> updateTeamDetails(TeamDetail teamDetail) async {
     String userId = (await _firebaseUser).uid;
     return firestore
         .collection("team_details")
         .document(userId)
         .updateData(<String, dynamic>{
+      'pubg_name': teamDetail.pubgName,
+      'team_name': teamDetail.teamName,
+      'phone_number': teamDetail.phoneNumber,
+      'team_member': teamDetail.teamMembers,
+    });
+  }
+
+  Future<void> createTeamDetails(TeamDetail teamDetail) async {
+    String userId = (await _firebaseUser).uid;
+    return firestore
+        .collection("team_details")
+        .document(userId)
+    .setData(<String, dynamic> {
       'pubg_name': teamDetail.pubgName,
       'team_name': teamDetail.teamName,
       'phone_number': teamDetail.phoneNumber,
