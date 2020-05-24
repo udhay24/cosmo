@@ -7,7 +7,7 @@ class Validators {
   );
 
   static final RegExp _phoneNumberRegExp = RegExp(
-    r'^(?:[+0]9)?[0-9]{10}$'
+    r'^[0-9]{10}$'
   );
 
   static bool isValidEmail(String email) {
@@ -33,10 +33,6 @@ class Validators {
   static bool isMembersListValid(List<String> members) {
     var isMembersValid = members.map((e) => isValidName(e)).every((
         element) => element);
-    if (members.length == 5) {
-      return true && isMembersValid;
-    } else {
-      return false;
-    }
+    return isMembersValid;
   }
 }

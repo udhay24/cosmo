@@ -1,49 +1,29 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:pubg/data_source/model/team_detail.dart';
-import 'package:pubg/team_detail/bloc/bloc.dart';
 
 abstract class TeamDetailEvent extends Equatable {
   const TeamDetailEvent();
 }
 
-class PubgNameChanged extends TeamDetailEvent {
-  final String pubgName;
+class TeamMemberDetailChanged extends TeamDetailEvent {
+  final TeamDetailModel teamDetailModel;
 
-  PubgNameChanged({this.pubgName});
+  TeamMemberDetailChanged({@required this.teamDetailModel});
 
   @override
-  List<Object> get props => [pubgName];
+  List<Object> get props => [teamDetailModel];
 }
 
-class PhoneNumberChanged extends TeamDetailEvent {
-  final String phoneNumber;
-
-  PhoneNumberChanged({this.phoneNumber});
+class TeamDetailScreenInitialized extends TeamDetailEvent {
+  TeamDetailScreenInitialized();
 
   @override
-  List<Object> get props => [phoneNumber];
-}
-
-class TeamNameChanged extends TeamDetailEvent {
-  final String teamName;
-
-  TeamNameChanged({this.teamName});
-
-  @override
-  List<Object> get props => [teamName];
-}
-
-class MembersChanged extends TeamDetailEvent {
-  final List<String> members;
-
-  MembersChanged({this.members});
-
-  @override
-  List<Object> get props => [members];
+  List<Object> get props => [];
 }
 
 class TeamDetailSubmitPressed extends TeamDetailEvent {
-  final TeamDetail teamDetail;
+  final TeamDetailModel teamDetail;
 
   TeamDetailSubmitPressed({this.teamDetail});
 

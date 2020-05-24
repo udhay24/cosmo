@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
-import 'package:pubg/bloc/authentication_bloc/authentication_event.dart';
 import 'package:pubg/data_source/model/team_detail.dart';
 import 'package:pubg/team_detail/bloc/bloc.dart';
 import 'package:pubg/team_detail/ui/form_submit_button.dart';
@@ -13,29 +11,40 @@ class TeamDetailForm extends StatefulWidget {
 class _TeamDetailFormState extends State<TeamDetailForm> {
   final TextEditingController _pubgNameController = TextEditingController();
   final TextEditingController _teamNameController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final List<TextEditingController> _membersNameController = [];
 
   TeamDetailBloc _teamDetailBloc;
 
   bool get isPopulated =>
-      _pubgNameController.text.isNotEmpty && _teamNameController.text.isNotEmpty;
-
-  bool isRegisterButtonEnabled(TeamDetailState state) {
-    return isPopulated && !state.isSubmitting;
-  }
+      _pubgNameController.text.isNotEmpty &&
+      _teamNameController.text.isNotEmpty;
 
   @override
   void initState() {
     super.initState();
     _teamDetailBloc = BlocProvider.of<TeamDetailBloc>(context);
-    _pubgNameController.addListener(_onPubgNameChanged);
-    _teamNameController.addListener(_onTeamNameChanged);
+    _pubgNameController.addListener(_onFormUpdated);
+    _teamNameController.addListener(_onFormUpdated);
+    _phoneNumberController.addListener(_onFormUpdated);
+
+    _teamDetailBloc.add(TeamDetailScreenInitialized());
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<TeamDetailBloc, TeamDetailState>(
       listener: (context, state) {
-        if (state.isSubmitting) {
+        if (state is PreFilled) {
+          _teamNameController.text = state.teamDetailModel.teamName;
+          _pubgNameController.text = state.teamDetailModel.pubgName;
+          _phoneNumberController.text = state.teamDetailModel.phoneNumber;
+//          state.teamDetailModel.teamMembers.map((e) {
+//
+//          });
+        }
+
+        if (state is TeamDetailSubmitting) {
           Scaffold.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
@@ -50,11 +59,10 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
               ),
             );
         }
-        if (state.isSuccess) {
-          BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
-//          Navigator.of(context).pop();
+        if (state is TeamDetailSubmittedSuccess) {
+          Navigator.of(context).pop();
         }
-        if (state.isFailure) {
+        if (state is TeamDetailSubmittedFailure) {
           Scaffold.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
@@ -73,41 +81,71 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
       },
       child: BlocBuilder<TeamDetailBloc, TeamDetailState>(
         builder: (context, state) {
-          return Padding(
-            padding: EdgeInsets.all(20),
-            child: Form(
-              child: ListView(
-                children: <Widget>[
-                  TextFormField(
-                    controller: _pubgNameController,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.games),
-                      labelText: 'PUBG',
+          return SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Form(
+                child: Column(
+                  children: <Widget>[
+                    TextFormField(
+                      controller: _pubgNameController,
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.games),
+                        labelText: 'PUBG',
+                      ),
+                      autocorrect: false,
+                      autovalidate: true,
                     ),
-                    autocorrect: false,
-                    autovalidate: true,
-                    validator: (_) {
-                      return !state.isPubgNameValid ? 'Invalid Pubg name' : null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _teamNameController,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.people),
-                      labelText: 'Team',
+                    TextFormField(
+                      controller: _phoneNumberController,
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.phone),
+                        labelText: 'Phone Number',
+                      ),
+                      autocorrect: false,
+                      autovalidate: true,
+                      keyboardType: TextInputType.phone,
                     ),
-                    autocorrect: false,
-                    autovalidate: true,
-                    validator: (_) {
-                      return !state.isTeamNameValid ? 'Invalid Team name' : null;
-                    },
-                  ),
-                  TeamSubmitButton(
-                    onPressed: isRegisterButtonEnabled(state) || true
-                        ? _onFormSubmitted
-                        : null,
-                  ),
-                ],
+                    TextFormField(
+                      controller: _teamNameController,
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.people),
+                        labelText: 'Team',
+                      ),
+                      autocorrect: false,
+                      autovalidate: true,
+                    ),
+                    ListView.builder(
+                      itemBuilder: (context, index) {
+                        _membersNameController.add(TextEditingController()
+                          ..addListener(_onFormUpdated));
+                        return TextFormField(
+                          controller: _membersNameController[index],
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.person),
+                            labelText: 'member $index',
+                          ),
+                          autocorrect: false,
+                          autovalidate: true,
+                          keyboardType: TextInputType.text,
+                        );
+                      },
+                      itemCount: 4,
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                    ),
+                    Builder(builder: (context) {
+                      if (state is SubmitFormVisible) {
+                        return TeamSubmitButton(onPressed: _onFormSubmitted);
+                      } else {
+                        return TeamSubmitButton(
+                          onPressed: null,
+                        );
+                      }
+                    })
+                  ],
+                ),
               ),
             ),
           );
@@ -123,27 +161,25 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
     super.dispose();
   }
 
-  void _onPubgNameChanged() {
-    _teamDetailBloc.add(
-      PubgNameChanged(pubgName: _pubgNameController.text),
-    );
-  }
-
-  void _onTeamNameChanged() {
-    _teamDetailBloc.add(
-      TeamNameChanged(teamName: _teamNameController.text),
-    );
+  void _onFormUpdated() {
+    _teamDetailBloc.add(TeamMemberDetailChanged(
+        teamDetailModel: TeamDetailModel(
+            pubgName: _pubgNameController.text,
+            phoneNumber: "${_phoneNumberController.text}",
+            teamName: _teamNameController.text,
+            teamMembers: _membersNameController.map((e) => e.text)
+              .where((element) => element.isNotEmpty).toList())));
   }
 
   void _onFormSubmitted() {
     _teamDetailBloc.add(
       TeamDetailSubmitPressed(
-        teamDetail: TeamDetail(
-        pubgName: _pubgNameController.text,
-          teamName: _teamNameController.text,
-          phoneNumber: "+917010065028",
-          teamMembers: ['udhay', 'my name is', 'gone the', 'what am i doing', 'udhay241998']
-        ),
+        teamDetail: TeamDetailModel(
+            pubgName: _pubgNameController.text,
+            teamName: _teamNameController.text,
+            phoneNumber: "${_phoneNumberController.text}",
+            teamMembers: _membersNameController.map((e) => e.text)
+              .where((element) => element.isNotEmpty).toList()),
       ),
     );
   }

@@ -1,120 +1,47 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:pubg/data_source/model/team_detail.dart';
 
 @immutable
-class TeamDetailState extends Equatable {
-  final bool isPubgNameValid;
-  final bool isTeamNameValid;
-  final bool isPhoneNumberValid;
-  final bool isTeamMembersValid;
-  final bool isSubmitting;
-  final bool isSuccess;
-  final bool isFailure;
+abstract class TeamDetailState extends Equatable {
+  const TeamDetailState();
+}
 
-  const TeamDetailState({
-    @required this.isPubgNameValid,
-    @required this.isPhoneNumberValid,
-    @required this.isTeamNameValid,
-    @required this.isTeamMembersValid,
-    @required this.isSubmitting,
-    @required this.isSuccess,
-    @required this.isFailure,
-  });
-
+class TeamDetailEmpty extends TeamDetailState {
   @override
-  List<Object> get props =>
-      [isTeamMembersValid, isTeamNameValid, isPhoneNumberValid, isPubgNameValid, isSubmitting, isFailure, isSuccess];
+  List<Object> get props => [];
+}
 
-  factory TeamDetailState.empty() {
-    return TeamDetailState(
-        isPubgNameValid: true,
-        isTeamNameValid: true,
-        isPhoneNumberValid: true,
-        isTeamMembersValid: true,
-        isSubmitting: false,
-        isSuccess: false,
-        isFailure: false);
-  }
-
-  factory TeamDetailState.loading() {
-    return TeamDetailState(
-        isPubgNameValid: true,
-        isTeamNameValid: true,
-        isPhoneNumberValid: true,
-        isTeamMembersValid: true,
-        isSubmitting: true,
-        isSuccess: false,
-        isFailure: false);
-  }
-
-  factory TeamDetailState.success() {
-    return TeamDetailState(
-        isPubgNameValid: true,
-        isTeamNameValid: true,
-        isPhoneNumberValid: true,
-        isTeamMembersValid: true,
-        isSubmitting: false,
-        isSuccess: true,
-        isFailure: false);
-  }
-
-  factory TeamDetailState.failure() {
-    return TeamDetailState(
-        isPubgNameValid: true,
-        isTeamNameValid: true,
-        isPhoneNumberValid: true,
-        isTeamMembersValid: true,        isSubmitting: false,
-        isSuccess: false,
-        isFailure: true);
-  }
-
-  TeamDetailState update({
-    bool isPubgNameValid,
-    bool isTeamNameValid,
-    bool isPhoneNumberValid,
-    bool isTeamMembersValid,
-  }) {
-    return copyWith(
-      isPubgNameValid: true,
-      isTeamNameValid: true,
-      isPhoneNumberValid: true,
-      isTeamMembersValid: true,
-      isSubmitting: false,
-      isSuccess: false,
-      isFailure: false,
-    );
-  }
-
-  TeamDetailState copyWith({
-    bool isPubgNameValid,
-    bool isTeamNameValid,
-    bool isPhoneNumberValid,
-    bool isTeamMembersValid,
-    isSubmitting: false,
-    isSuccess: false,
-    isFailure: true
-  }) {
-    return TeamDetailState(
-      isPubgNameValid: isPubgNameValid ?? this.isPubgNameValid,
-      isTeamNameValid: isTeamNameValid ?? this.isTeamNameValid,
-      isPhoneNumberValid: isPhoneNumberValid ?? this.isPhoneNumberValid,
-      isTeamMembersValid: isTeamMembersValid ?? this.isTeamMembersValid,
-      isSubmitting: isSubmitting ?? this.isSubmitting,
-      isSuccess: isSuccess ?? this.isSuccess,
-      isFailure: isFailure ?? this.isFailure,
-    );
-  }
-
+class TeamDetailSubmitting extends TeamDetailState {
   @override
-  String toString() {
-    return '''RegisterState {
-       isPubgNameValid: $isPubgNameValid,
-      isTeamNameValid: $isTeamNameValid,
-      isPhoneNumberValid: $isPhoneNumberValid,
-      isTeamMembersValid: $isTeamMembersValid,
-      isSubmitting: $isSubmitting,
-      isSuccess: $isSuccess,
-      isFailure: $isFailure,
-    }''';
-  }
+  List<Object> get props => [];
+}
+
+class TeamDetailSubmittedSuccess extends TeamDetailState {
+  @override
+  List<Object> get props => [];
+}
+
+class TeamDetailSubmittedFailure extends TeamDetailState {
+  @override
+  List<Object> get props => [];
+}
+
+class SubmitFormVisible extends TeamDetailState {
+  @override
+  List<Object> get props => [];
+}
+
+class SubmitFormInVisible extends TeamDetailState {
+  @override
+  List<Object> get props => [];
+}
+
+class PreFilled extends TeamDetailState {
+
+  final TeamDetailModel teamDetailModel;
+
+  PreFilled({@required this.teamDetailModel});
+  @override
+  List<Object> get props => [];
 }

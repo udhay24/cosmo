@@ -13,7 +13,7 @@ class FireStoreRepository {
   final Future<FirebaseUser> _firebaseUser =
       FirebaseAuth.instance.currentUser();
 
-  Future<TeamDetail> fetchTeamDetails() async {
+  Future<TeamDetailModel> fetchTeamDetails() async {
     String userId = (await _firebaseUser).uid;
     return firestore
         .collection("team_details")
@@ -22,15 +22,15 @@ class FireStoreRepository {
         .first
         .then((value) {
       var event = value.data;
-      return TeamDetail(
+      return TeamDetailModel(
           pubgName: event['pubg_name'],
           teamName: event['team_name'],
           phoneNumber: event['phone_number'],
-          teamMembers: event['team_member']);
+          teamMembers: List<String>.from(event['team_member']));
     });
   }
 
-  Future<void> updateTeamDetails(TeamDetail teamDetail) async {
+  Future<void> updateTeamDetails(TeamDetailModel teamDetail) async {
     String userId = (await _firebaseUser).uid;
     return firestore
         .collection("team_details")
@@ -43,7 +43,7 @@ class FireStoreRepository {
     });
   }
 
-  Future<void> createTeamDetails(TeamDetail teamDetail) async {
+  Future<void> createTeamDetails(TeamDetailModel teamDetail) async {
     String userId = (await _firebaseUser).uid;
     return firestore
         .collection("team_details")

@@ -16,53 +16,48 @@ class TeamDetailBloc extends Bloc<TeamDetailEvent, TeamDetailState> {
         this.fireStoreRepository = fireStoreRepository;
 
   @override
-  TeamDetailState get initialState => TeamDetailState.empty();
+  TeamDetailState get initialState => TeamDetailEmpty();
 
   @override
   Stream<TeamDetailState> mapEventToState(
     TeamDetailEvent event,
   ) async* {
-    if (event is PubgNameChanged) {
-      yield* _mapPubgNameChangedToState(event.pubgName);
-    } else if (event is TeamNameChanged) {
-      yield* _mapTeamNameChangedToState(event.teamName);
-    } else if (event is PhoneNumberChanged) {
-      yield* _mapPhoneNumberChangedToState(event.phoneNumber);
-    } else if (event is MembersChanged) {
-      yield* _mapMemberListChangedToState(event.members);
+    if (event is TeamDetailScreenInitialized) {
+      yield* _mapScreenInitializedToState();
+    } else if (event is TeamMemberDetailChanged) {
+      yield* _mapDetailChangedToState(event.teamDetailModel);
     } else if (event is TeamDetailSubmitPressed) {
       yield* _mapTeamSubmittedChangedToState(event.teamDetail);
     }
   }
 
-  Stream<TeamDetailState> _mapPubgNameChangedToState(String pubgName) async* {
-    yield state.update(isPubgNameValid: Validators.isValidName(pubgName));
-  }
-
-  Stream<TeamDetailState> _mapTeamNameChangedToState(String teamName) async* {
-    yield state.update(isTeamNameValid: Validators.isValidName(teamName));
-  }
-
-  Stream<TeamDetailState> _mapPhoneNumberChangedToState(
-      String phoneNumber) async* {
-    yield state.update(
-        isPhoneNumberValid: Validators.isValidPhoneNumber(phoneNumber));
-  }
-
-  Stream<TeamDetailState> _mapMemberListChangedToState(
-      List<String> members) async* {
-    yield state.update(
-        isTeamMembersValid: Validators.isMembersListValid(members));
+  Stream<TeamDetailState> _mapDetailChangedToState(TeamDetailModel model) async* {
+    if(model.areFieldsValid()) {
+      yield SubmitFormVisible();
+    } else {
+      yield SubmitFormInVisible();
+    }
   }
 
   Stream<TeamDetailState> _mapTeamSubmittedChangedToState(
-      TeamDetail teamDetail) async* {
-    yield TeamDetailState.loading();
+      TeamDetailModel teamDetail) async* {
+    yield TeamDetailSubmitting();
     try {
       await fireStoreRepository.createTeamDetails(teamDetail);
-      yield TeamDetailState.success();
+      yield TeamDetailSubmittedSuccess();
     } catch(_) {
-      yield TeamDetailState.failure();
+      yield TeamDetailSubmittedFailure();
     }
+  }
+
+  Stream<TeamDetailState> _mapScreenInitializedToState() async* {
+    yield await fireStoreRepository.containsTeamDetails().then((value) async {
+      if (value) {
+        var detail = await fireStoreRepository.fetchTeamDetails();
+        return PreFilled(teamDetailModel: detail);
+      } else {
+        return TeamDetailEmpty();
+      }
+    });
   }
 }

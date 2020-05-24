@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pubg/slot_registration/bloc/bloc.dart';
 import 'package:pubg/slot_registration/bloc/slot_selection_bloc.dart';
-import 'package:pubg/team_detail/ui/slot_selection_dialog.dart';
+import 'package:pubg/slot_registration/ui/slot_selection_dialog.dart';
 import 'package:pubg/team_detail/ui/team_detail_screen.dart';
 import 'package:pubg/util/available_slot.dart';
 
