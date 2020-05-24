@@ -51,8 +51,8 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
             );
         }
         if (state.isSuccess) {
-//          BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
-          Navigator.of(context).pop();
+          BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
+//          Navigator.of(context).pop();
         }
         if (state.isFailure) {
           Scaffold.of(context)
@@ -103,7 +103,7 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
                     },
                   ),
                   TeamSubmitButton(
-                    onPressed: isRegisterButtonEnabled(state)
+                    onPressed: isRegisterButtonEnabled(state) || true
                         ? _onFormSubmitted
                         : null,
                   ),

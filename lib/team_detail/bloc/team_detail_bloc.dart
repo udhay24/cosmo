@@ -59,7 +59,7 @@ class TeamDetailBloc extends Bloc<TeamDetailEvent, TeamDetailState> {
       TeamDetail teamDetail) async* {
     yield TeamDetailState.loading();
     try {
-      fireStoreRepository.createTeamDetails(teamDetail);
+      await fireStoreRepository.createTeamDetails(teamDetail);
       yield TeamDetailState.success();
     } catch(_) {
       yield TeamDetailState.failure();

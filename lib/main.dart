@@ -46,7 +46,7 @@ class App extends StatelessWidget {
             return LoginScreen(userRepository: _userRepository);
           }
           if (state is Authenticated) {
-            return TeamDetailScreen();
+            return HomeScreen();
           }
           return Container();
         },
