@@ -19,7 +19,7 @@ class Validators {
   }
 
   static bool isValidName(String name) {
-    if ((name != null) && (name.isNotEmpty) && (name.length > 4)) {
+    if ((name != null) && (name.isNotEmpty) && (name.length >= 2)) {
       return true;
     } else {
       return false;
@@ -33,6 +33,6 @@ class Validators {
   static bool isMembersListValid(List<String> members) {
     var isMembersValid = members.map((e) => isValidName(e)).every((
         element) => element);
-    return isMembersValid;
+    return isMembersValid && (members.length >= 1);
   }
 }

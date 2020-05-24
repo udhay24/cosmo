@@ -12,13 +12,11 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
   final TextEditingController _pubgNameController = TextEditingController();
   final TextEditingController _teamNameController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
-  final List<TextEditingController> _membersNameController = [];
+  final List<TextEditingController> _membersNameController =
+      List.generate(4, (index) => TextEditingController());
 
   TeamDetailBloc _teamDetailBloc;
-
-  bool get isPopulated =>
-      _pubgNameController.text.isNotEmpty &&
-      _teamNameController.text.isNotEmpty;
+  List<String> _membersList = List.generate(4, (index) => "");
 
   @override
   void initState() {
@@ -27,7 +25,9 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
     _pubgNameController.addListener(_onFormUpdated);
     _teamNameController.addListener(_onFormUpdated);
     _phoneNumberController.addListener(_onFormUpdated);
-
+    _membersNameController.forEach((element) {
+      element.addListener(_onFormUpdated);
+    });
     _teamDetailBloc.add(TeamDetailScreenInitialized());
   }
 
@@ -39,9 +39,16 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
           _teamNameController.text = state.teamDetailModel.teamName;
           _pubgNameController.text = state.teamDetailModel.pubgName;
           _phoneNumberController.text = state.teamDetailModel.phoneNumber;
-//          state.teamDetailModel.teamMembers.map((e) {
-//
-//          });
+          _membersList = List.generate(4, (index) {
+            if (index < state.teamDetailModel.teamMembers.length) {
+              return state.teamDetailModel.teamMembers[index];
+            } else {
+              return "";
+            }
+          });
+          _membersNameController.asMap().forEach((key, value) {
+            value.text = _membersList[key];
+          });
         }
 
         if (state is TeamDetailSubmitting) {
@@ -117,8 +124,6 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
                     ),
                     ListView.builder(
                       itemBuilder: (context, index) {
-                        _membersNameController.add(TextEditingController()
-                          ..addListener(_onFormUpdated));
                         return TextFormField(
                           controller: _membersNameController[index],
                           decoration: InputDecoration(
@@ -158,6 +163,8 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
   void dispose() {
     _pubgNameController.dispose();
     _teamNameController.dispose();
+    _phoneNumberController.dispose();
+    _membersNameController.map((e) => e.dispose());
     super.dispose();
   }
 
@@ -167,8 +174,10 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
             pubgName: _pubgNameController.text,
             phoneNumber: "${_phoneNumberController.text}",
             teamName: _teamNameController.text,
-            teamMembers: _membersNameController.map((e) => e.text)
-              .where((element) => element.isNotEmpty).toList())));
+            teamMembers: _membersNameController
+                .map((e) => e.text)
+                .where((element) => element.isNotEmpty)
+                .toList())));
   }
 
   void _onFormSubmitted() {
@@ -178,8 +187,10 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
             pubgName: _pubgNameController.text,
             teamName: _teamNameController.text,
             phoneNumber: "${_phoneNumberController.text}",
-            teamMembers: _membersNameController.map((e) => e.text)
-              .where((element) => element.isNotEmpty).toList()),
+            teamMembers: _membersNameController
+                .map((e) => e.text)
+                .where((element) => element.isNotEmpty)
+                .toList()),
       ),
     );
   }
