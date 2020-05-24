@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:math';
+import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,7 +11,7 @@ class FireStoreRepository {
   final Firestore firestore = Firestore(app: FirebaseApp.instance);
 
   final Future<FirebaseUser> _firebaseUser =
-  FirebaseAuth.instance.currentUser();
+      FirebaseAuth.instance.currentUser();
 
   Future<TeamDetail> fetchTeamDetails() async {
     String userId = (await _firebaseUser).uid;
@@ -61,16 +61,15 @@ class FireStoreRepository {
     return firestore
         .collection("team_details")
         .document(userId)
-        .snapshots()
-        .first
+        .get()
         .then((value) {
       var event = value.data;
-      if (event == null) {
-        return false;
-      } else {
+      if (event != null) {
         return true;
+      } else {
+        return false;
       }
-    }, onError: () {
+    }, onError: (_) {
       return false;
     });
   }
@@ -78,25 +77,26 @@ class FireStoreRepository {
   Future<List<int>> getAvailableSlots(String selectedTimeSlot) async {
     String dateFormat = DateFormat('dd_MM_yyyy').format(DateTime.now());
 
-    List<int> selectedSlots = await firestore.collection(
-        "$selectedTimeSlot/$dateFormat/selected_slots")
+    List<int> selectedSlots = await firestore
+        .collection("$selectedTimeSlot/$dateFormat/selected_slots")
         .getDocuments()
         .then((value) {
-      return value.documents.map((e) => int.parse(e.data['selected_slot']))
-          .toList();
+      return value.documents.map((e) {
+        return e.data['selected_slot'] as int;
+      }).toList();
     });
 
-    return selectedSlots;
+    List<int> totalSlots = List<int>.generate(20, (index) => index + 1);
+    List<int> availableSlots = totalSlots..removeWhere((element) => selectedSlots.contains(element));
+    return availableSlots;
   }
 
   Future<void> selectSlot(int slot, String selectedTimeSlot) async {
     String dateFormat = DateFormat('dd_MM_yyyy').format(DateTime.now());
     var user = await _firebaseUser;
 
-    firestore.collection("$selectedTimeSlot/$dateFormat/selected_slots")
-    .add(<String, dynamic> {
-      'selected_slot': slot,
-      'user_id': user.uid
-    });
+    firestore
+        .document("$selectedTimeSlot/$dateFormat/selected_slots/${user.uid}")
+        .setData(<String, dynamic>{'selected_slot': slot, 'user_id': user.uid});
   }
 }

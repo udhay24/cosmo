@@ -43,7 +43,7 @@ class SlotSelectionBloc extends Bloc<SlotSelectionEvent, SlotSelectionState> {
           .selectSlot(event.selectedSlot, event.selectedTiming)
           .then((value) {
         return SelectedSlotSuccess();
-      }, onError: () {
+      }, onError: (_) {
         return SelectedSlotFailure();
       });
     } catch (_) {

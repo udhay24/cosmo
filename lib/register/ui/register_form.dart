@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:pubg/bloc/authentication_bloc/authentication_event.dart';
+import 'package:pubg/bloc/authentication_bloc/authentication_state.dart';
 import 'package:pubg/register/bloc/register_bloc.dart';
 import 'package:pubg/register/bloc/register_event.dart';
 import 'package:pubg/register/bloc/register_state.dart';
@@ -51,11 +54,10 @@ class _RegisterFormState extends State<RegisterForm> {
             );
         }
         if (state.isSuccess) {
-          Navigator.push(
-            context,
-              MaterialPageRoute(builder: (context) => TeamDetailScreen()),
+          BlocProvider.of<AuthenticationBloc>(context).add(
+            LoggedIn()
           );
-//          Navigator.of(context).pop();
+          Navigator.of(context).pop();
         }
         if (state.isFailure) {
           Scaffold.of(context)

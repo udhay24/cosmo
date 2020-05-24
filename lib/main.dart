@@ -5,6 +5,7 @@ import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_state.dart';
 import 'package:pubg/data_source/repository_di.dart';
 import 'package:pubg/data_source/user_repository.dart';
+import 'package:pubg/slot_registration/ui/slot_selection_screen.dart';
 import 'package:pubg/team_detail/ui/team_detail_screen.dart';
 
 import 'SplashScreen.dart';
@@ -46,7 +47,7 @@ class App extends StatelessWidget {
             return LoginScreen(userRepository: _userRepository);
           }
           if (state is Authenticated) {
-            return HomeScreen();
+            return SlotSelectionScreen();
           }
           return Container();
         },
