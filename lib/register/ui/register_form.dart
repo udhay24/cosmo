@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_event.dart';
-import 'package:pubg/bloc/authentication_bloc/authentication_state.dart';
 import 'package:pubg/register/bloc/register_bloc.dart';
 import 'package:pubg/register/bloc/register_event.dart';
 import 'package:pubg/register/bloc/register_state.dart';
 import 'package:pubg/register/ui/register_button.dart';
-import 'package:pubg/team_detail/ui/team_detail_screen.dart';
 
 class RegisterForm extends StatefulWidget {
   State<RegisterForm> createState() => _RegisterFormState();
@@ -54,9 +53,7 @@ class _RegisterFormState extends State<RegisterForm> {
             );
         }
         if (state.isSuccess) {
-          BlocProvider.of<AuthenticationBloc>(context).add(
-            LoggedIn()
-          );
+          BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
           Navigator.of(context).pop();
         }
         if (state.isFailure) {
@@ -78,45 +75,78 @@ class _RegisterFormState extends State<RegisterForm> {
       },
       child: BlocBuilder<RegisterBloc, RegisterState>(
         builder: (context, state) {
-          return Padding(
-            padding: EdgeInsets.all(20),
-            child: Form(
-              child: ListView(
-                children: <Widget>[
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.email),
-                      labelText: 'Email',
+          return  Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Form(
+                    child: ListView(
+                      children: <Widget>[
+                        TextFormField(
+                          controller: _emailController,
+                          style: GoogleFonts.poppins(color: Colors.white),
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.email,
+                              color: Colors.white,
+                            ),
+                            labelText: 'Email',
+                            fillColor: Colors.white,
+                            labelStyle: GoogleFonts.abel(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                            errorStyle: GoogleFonts.abel(color: Colors.white),
+                            border: new UnderlineInputBorder(
+                              borderRadius: new BorderRadius.circular(4.0),
+                              borderSide: new BorderSide(),
+                            ),
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          autocorrect: false,
+                          autovalidate: true,
+                          validator: (_) {
+                            return !state.isEmailValid ? 'Invalid Email' : null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _passwordController,
+                          style: GoogleFonts.poppins(color: Colors.white),
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.lock, color: Colors.white),
+                            labelText: 'Password',
+                            fillColor: Colors.white,
+                            labelStyle: GoogleFonts.abel(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                            errorStyle: GoogleFonts.abel(color: Colors.white),
+                          ),
+                          obscureText: true,
+                          autocorrect: false,
+                          autovalidate: true,
+                          validator: (_) {
+                            return !state.isPasswordValid
+                                ? 'Invalid Password'
+                                : null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        RegisterButton(
+                          onPressed: isRegisterButtonEnabled(state)
+                              ? _onFormSubmitted
+                              : null,
+                        ),
+                      ],
+                      shrinkWrap: true,
                     ),
-                    keyboardType: TextInputType.emailAddress,
-                    autocorrect: false,
-                    autovalidate: true,
-                    validator: (_) {
-                      return !state.isEmailValid ? 'Invalid Email' : null;
-                    },
                   ),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.lock),
-                      labelText: 'Password',
-                    ),
-                    obscureText: true,
-                    autocorrect: false,
-                    autovalidate: true,
-                    validator: (_) {
-                      return !state.isPasswordValid ? 'Invalid Password' : null;
-                    },
-                  ),
-                  RegisterButton(
-                    onPressed: isRegisterButtonEnabled(state)
-                        ? _onFormSubmitted
-                        : null,
-                  ),
-                ],
-              ),
-            ),
+                ),
+              ],
           );
         },
       ),

@@ -15,12 +15,31 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Register')),
-      body: Center(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        elevation: 0,
+          title: Text(
+            'Register',
+            style: TextStyle(color: Colors.white),
+          ),
+        backgroundColor: Colors.transparent,
+      ),
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+          image: AssetImage(
+              "images/pubg_background_registration_screen.jpg"),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(Colors.red, BlendMode.darken),
+        )),
         child: BlocProvider<RegisterBloc>(
-          create: (context) => RegisterBloc(userRepository: _userRepository),
-          child: RegisterForm(),
+            create: (context) => RegisterBloc(userRepository: _userRepository),
+            child: RegisterForm(),
         ),
+        alignment: Alignment.center,
       ),
     );
   }
