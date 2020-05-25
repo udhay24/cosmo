@@ -8,7 +8,7 @@ class GoogleLoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return RaisedButton.icon(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
+        borderRadius: BorderRadius.circular(5.0),
       ),
       icon: Icon(FontAwesomeIcons.google, color: Colors.white),
       onPressed: () {
@@ -17,7 +17,7 @@ class GoogleLoginButton extends StatelessWidget {
         );
       },
       label: Text('Sign in with Google', style: TextStyle(color: Colors.white)),
-      color: Colors.redAccent,
+      color: Colors.transparent,
     );
   }
 }

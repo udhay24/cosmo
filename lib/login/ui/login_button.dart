@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginButton extends StatelessWidget {
   final VoidCallback _onPressed;
@@ -11,10 +12,17 @@ class LoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return RaisedButton(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
+        borderRadius: BorderRadius.circular(5.0),
+        side: BorderSide(color: Colors.white, width: 1)
       ),
+      disabledTextColor: Colors.red,
+      textColor: Colors.white,
       onPressed: _onPressed,
-      child: Text('Login'),
+      color: Colors.transparent,
+      child: Text(
+        'LOGIN NOW',
+        style: GoogleFonts.openSansCondensed(fontWeight: FontWeight.bold),
+      ),
     );
   }
 }

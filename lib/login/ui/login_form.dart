@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_event.dart';
 import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/login/bloc/bloc.dart';
 import 'package:pubg/login/ui/create_account_button.dart';
+import 'package:pubg/util/themes.dart';
 
 import 'google_login_button.dart';
 import 'login_button.dart';
@@ -81,58 +83,143 @@ class _LoginFormState extends State<LoginForm> {
       },
       child: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
-          return Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Form(
-              child: ListView(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Image.asset('assets/flutter_logo.png', height: 200),
-                  ),
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.email),
-                      labelText: 'Email',
+          return SizedBox.expand(
+            child: Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.all(40.0),
+                    child: Form(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              SizedBox(
+                                width: 40,
+                                height: 5,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                      color: Themes.COLOR_PRIMARY),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Text(
+                                "Cosmo",
+                                style: GoogleFonts.openSans(
+                                    color: Colors.white,
+                                    letterSpacing: 1.3,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 24),
+                              )
+                            ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 20, horizontal: 12),
+                            child: Text(
+                              "Login",
+                              style: GoogleFonts.openSansCondensed(
+                                  fontSize: 36,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 40),
+                            child: const SizedBox(
+                              width: 60,
+                              height: 5,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          TextFormField(
+                            controller: _emailController,
+                            style: GoogleFonts.poppins(color: Colors.white),
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.email,
+                                color: Colors.white,
+                              ),
+                              labelText: 'Email',
+                              fillColor: Colors.white,
+                              labelStyle: GoogleFonts.abel(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                              errorStyle: GoogleFonts.abel(color: Colors.white),
+                              border: new UnderlineInputBorder(
+                                borderRadius: new BorderRadius.circular(4.0),
+                                borderSide: new BorderSide(),
+                              ),
+                            ),
+                            keyboardType: TextInputType.emailAddress,
+                            autovalidate: true,
+                            autocorrect: false,
+                            cursorColor: Colors.white,
+                            validator: (_) {
+                              return !state.isEmailValid
+                                  ? 'Invalid Email'
+                                  : null;
+                            },
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            controller: _passwordController,
+                            style: GoogleFonts.poppins(color: Colors.white),
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.lock, color: Colors.white),
+                              labelText: 'Password',
+                              fillColor: Colors.white,
+                              labelStyle: GoogleFonts.abel(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                              errorStyle: GoogleFonts.abel(color: Colors.white),
+                            ),
+                            obscureText: true,
+                            autovalidate: true,
+                            autocorrect: false,
+                            validator: (_) {
+                              return !state.isPasswordValid
+                                  ? 'Invalid Password'
+                                  : null;
+                            },
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: <Widget>[
+                                LoginButton(
+                                  onPressed: isLoginButtonEnabled(state)
+                                      ? _onFormSubmitted
+                                      : null,
+                                ),
+                                GoogleLoginButton(),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    keyboardType: TextInputType.emailAddress,
-                    autovalidate: true,
-                    autocorrect: false,
-                    validator: (_) {
-                      return !state.isEmailValid ? 'Invalid Email' : null;
-                    },
                   ),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.lock),
-                      labelText: 'Password',
-                    ),
-                    obscureText: true,
-                    autovalidate: true,
-                    autocorrect: false,
-                    validator: (_) {
-                      return !state.isPasswordValid ? 'Invalid Password' : null;
-                    },
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        LoginButton(
-                          onPressed: isLoginButtonEnabled(state)
-                              ? _onFormSubmitted
-                              : null,
-                        ),
-                        GoogleLoginButton(),
-                        CreateAccountButton(userRepository: _userRepository),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                Positioned(
+                  bottom: 40,
+                  left: 30,
+                  child: CreateAccountButton(userRepository: _userRepository),
+                ),
+              ],
             ),
           );
         },

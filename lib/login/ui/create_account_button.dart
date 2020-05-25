@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/register/ui/register_screen.dart';
 
@@ -12,17 +13,19 @@ class CreateAccountButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
-      child: Text(
-        'Create an Account',
-      ),
-      onPressed: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) {
-            return RegisterScreen(userRepository: _userRepository);
-          }),
-        );
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return RegisterScreen(userRepository: _userRepository);
+        }));
       },
+      child: Text(
+        'SIGN UP NOW',
+        style: GoogleFonts.openSansCondensed(
+          color: Colors.white,
+          fontWeight: FontWeight.bold
+        ),
+      ),
     );
   }
 }

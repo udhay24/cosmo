@@ -11,8 +11,7 @@ import 'package:pubg/team_detail/ui/team_detail_screen.dart';
 import 'SplashScreen.dart';
 import 'bloc/authentication_bloc/authentication_event.dart';
 import 'bloc/bloc_delegate.dart';
-import 'home_screen.dart';
-import 'login/ui/SignInScreen.dart';
+import 'login/ui/login_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
