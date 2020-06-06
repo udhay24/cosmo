@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:pubg/data_source/user_repository.dart';
+import 'package:pubg/data_source/login_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../util/validators.dart';
@@ -10,10 +10,10 @@ import 'login_state.dart';
 
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  UserRepository _userRepository;
+  LoginRepository _userRepository;
 
   LoginBloc({
-    @required UserRepository userRepository,
+    @required LoginRepository userRepository,
   })  : assert(userRepository != null),
         _userRepository = userRepository;
 

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_event.dart';
-import 'package:pubg/data_source/user_repository.dart';
+import 'package:pubg/data_source/login_repository.dart';
 import 'package:pubg/login/bloc/bloc.dart';
 import 'package:pubg/login/ui/create_account_button.dart';
 import 'package:pubg/util/themes.dart';
@@ -12,9 +12,9 @@ import 'google_login_button.dart';
 import 'login_button.dart';
 
 class LoginForm extends StatefulWidget {
-  final UserRepository _userRepository;
+  final LoginRepository _userRepository;
 
-  LoginForm({Key key, @required UserRepository userRepository})
+  LoginForm({Key key, @required LoginRepository userRepository})
       : assert(userRepository != null),
         _userRepository = userRepository,
         super(key: key);
@@ -28,7 +28,7 @@ class _LoginFormState extends State<LoginForm> {
 
   LoginBloc _loginBloc;
 
-  UserRepository get _userRepository => widget._userRepository;
+  LoginRepository get _userRepository => widget._userRepository;
 
   bool get isPopulated =>
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;

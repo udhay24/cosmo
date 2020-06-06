@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pubg/data_source/user_repository.dart';
+import 'package:pubg/data_source/login_repository.dart';
 import 'package:pubg/register/bloc/register_bloc.dart';
 import 'package:pubg/register/ui/register_form.dart';
 
 class RegisterScreen extends StatelessWidget {
-  final UserRepository _userRepository;
+  final LoginRepository _userRepository;
 
-  RegisterScreen({Key key, @required UserRepository userRepository})
+  RegisterScreen({Key key, @required LoginRepository userRepository})
       : assert(userRepository != null),
         _userRepository = userRepository,
         super(key: key);

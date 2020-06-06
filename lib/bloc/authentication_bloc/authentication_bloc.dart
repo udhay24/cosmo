@@ -2,11 +2,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_event.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_state.dart';
-import 'package:pubg/data_source/user_repository.dart';
+import 'package:pubg/data_source/login_repository.dart';
 
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
 
-  final UserRepository userRepository;
+  final LoginRepository userRepository;
 
   AuthenticationBloc({this.userRepository});
 

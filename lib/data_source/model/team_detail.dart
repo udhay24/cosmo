@@ -1,5 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:pubg/util/validators.dart';
 
 class TeamDetailModel extends Equatable {
@@ -51,5 +52,30 @@ class TeamDetailModel extends Equatable {
     team_name: $teamName,
     team_members: ${teamMembers.join(",")}
   }''';
+  }
+}
+
+class Team {
+  String teamName;
+  String teamCode;
+  List<DocumentReference> teamMembers;
+  String teamId;
+
+  Team({this.teamName, this.teamCode, this.teamMembers, this.teamId});
+
+  Team.fromJson(Map<String, dynamic> json) {
+    teamName = json['team_name'];
+    teamCode = json['team_code'];
+    teamMembers = json['team_members'].cast<String>();
+    teamId = json['team_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['team_name'] = this.teamName;
+    data['team_code'] = this.teamCode;
+    data['team_members'] = this.teamMembers;
+    data['team_id'] = this.teamId;
+    return data;
   }
 }

@@ -1,5 +1,5 @@
 import 'package:pubg/data_source/firestore_repository.dart';
-import 'package:pubg/data_source/user_repository.dart';
+import 'package:pubg/data_source/login_repository.dart';
 
 class RepositoryInjector {
   static final RepositoryInjector _repositoryInjector = RepositoryInjector._internal();
@@ -10,6 +10,6 @@ class RepositoryInjector {
     return _repositoryInjector;
   }
 
-  static final UserRepository userRepository = UserRepository();
+  static final LoginRepository userRepository = LoginRepository();
   static final FireStoreRepository fireStoreRepository = FireStoreRepository();
 }

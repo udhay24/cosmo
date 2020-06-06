@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:pubg/data_source/user_repository.dart';
+import 'package:pubg/data_source/login_repository.dart';
 import 'package:pubg/util/validators.dart';
 import 'package:pubg/register/bloc/register_event.dart';
 import 'package:pubg/register/bloc/register_state.dart';
 import 'package:rxdart/rxdart.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
-  final UserRepository _userRepository;
+  final LoginRepository _userRepository;
 
-  RegisterBloc({@required UserRepository userRepository})
+  RegisterBloc({@required LoginRepository userRepository})
       : assert(userRepository != null),
         _userRepository = userRepository;
 

@@ -1,51 +1,79 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:pubg/data_source/model/user_detail.dart';
+
+import 'model/team_detail.dart';
 
 class UserRepository {
-  final FirebaseAuth _firebaseAuth;
-  final GoogleSignIn _googleSignIn;
+  var _fireStore = Firestore.instance;
+  var _firebaseUser = FirebaseAuth.instance.currentUser();
 
-  UserRepository({FirebaseAuth firebaseAuth, GoogleSignIn googleSignin})
-      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-        _googleSignIn = googleSignin ?? GoogleSignIn();
+  Future<UserDetail> getUserDetail() async {
+    var user = await _firebaseUser;
+    var userInfo = _fireStore.collection('users').document(user.uid).get();
 
-  Future<FirebaseUser> signInWithGoogle() async {
-    final GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication signInAuthentication = await googleSignInAccount.authentication;
-
-    final AuthCredential authCredential = GoogleAuthProvider.getCredential(idToken: signInAuthentication.idToken, accessToken: signInAuthentication.accessToken);
-    await _firebaseAuth.signInWithCredential(authCredential);
-    return _firebaseAuth.currentUser();
+    return UserDetail.fromJson((await userInfo).data);
   }
 
-  Future<FirebaseUser> signInWithEmail(
-      String email,
-      String password
-      ) {
-    return  _firebaseAuth.signInWithEmailAndPassword(email: email, password: password).then((value) => value.user);
+  Future<bool> isUserProfileComplete() async {
+    try {
+      var result = await getUserDetail();
+      if ((result != null) && (result.userUuid != null) &&
+          (result.joinedTeam != null) && (result.phoneNumber != null) &&
+          (result.userName != null)) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      print("isUserProfileComplete error: $error");
+      return false;
+    }
   }
 
-  Future<FirebaseUser> signUpWithEmail(
-      {String email,
-      String password}
-      ) {
-    return _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password).then((value) => value.user);
+  updateUserDetail(UserDetail user) async {
+    var firebaseUser = await _firebaseUser;
+   _fireStore.collection('users').document(firebaseUser.uid).
+    setData(user.toJson());
   }
 
-  Future<void> signOut() {
-    return Future.wait([
-      _googleSignIn.signOut(),
-      _firebaseAuth.signOut()
-    ]);
+  createTeam(Team team) async {
+    _fireStore.collection("teams")
+        .document()
+        .setData(team.toJson());
   }
 
-  Future<bool> isSignedIn() async {
-    final currentUser = await _firebaseAuth.currentUser();
-    return currentUser != null;
+  addCurrentUserToTeam(String teamID, String teamCode) async {
+    var user = await _firebaseUser;
+    String teamDocumentID = (await _findTeamDocumentID(teamID, teamCode));
+    var existingMembers = (await _getTeamDetails(teamDocumentID)).teamMembers;
+    var updatedMembers = existingMembers..add(
+      _fireStore.collection('users').document(user.uid)
+    );
+    _fireStore.collection("teams")
+        .document(teamDocumentID)
+    .updateData({'team_members': updatedMembers});
   }
 
-  Future<String> getUser() async {
-    return (await _firebaseAuth.currentUser()).email;
+  Future<Team> _getTeamDetails(String teamDocumentID) async {
+    var teamDetails = await _fireStore.collection("teams").document(teamDocumentID).get();
+    return Team.fromJson(teamDetails.data);
+  }
+
+
+  Future<String> _findTeamDocumentID(String teamID, String teamCode) async {
+    var teamDetails = await _fireStore.collection("teams")
+        .where("team_id", isEqualTo: teamID)
+        .where("team_code", isEqualTo: teamCode)
+        .getDocuments();
+    return teamDetails.documents[0].documentID;
+  }
+
+  Future<Team> _findTeam(String teamID, String teamCode) async {
+    var teamDetails = await _fireStore.collection("teams")
+    .where("team_id", isEqualTo: teamID)
+    .where("team_code", isEqualTo: teamCode)
+    .getDocuments();
+    return Team.fromJson(teamDetails.documents[0].data);
   }
 }

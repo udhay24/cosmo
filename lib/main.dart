@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_state.dart';
 import 'package:pubg/data_source/repository_di.dart';
-import 'package:pubg/data_source/user_repository.dart';
+import 'package:pubg/data_source/login_repository.dart';
 import 'package:pubg/slot_registration/ui/slot_selection_screen.dart';
 import 'package:pubg/team_detail/ui/team_detail_screen.dart';
 
@@ -16,7 +16,7 @@ import 'login/ui/login_screen.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   BlocSupervisor.delegate = SimpleBlocDelegate();
-  final UserRepository userRepository = RepositoryInjector.userRepository;
+  final LoginRepository userRepository = RepositoryInjector.userRepository;
   runApp(
     BlocProvider(
       create: (context) =>
@@ -27,9 +27,9 @@ void main() {
 }
 
 class App extends StatelessWidget {
-  final UserRepository _userRepository;
+  final LoginRepository _userRepository;
 
-  App({Key key, @required UserRepository userRepository})
+  App({Key key, @required LoginRepository userRepository})
       : assert(userRepository != null),
         _userRepository = userRepository,
         super(key: key);

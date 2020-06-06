@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pubg/data_source/user_repository.dart';
+import 'package:pubg/data_source/login_repository.dart';
 import 'package:pubg/register/ui/register_screen.dart';
 
 class CreateAccountButton extends StatelessWidget {
-  final UserRepository _userRepository;
+  final LoginRepository _userRepository;
 
-  CreateAccountButton({Key key, @required UserRepository userRepository})
+  CreateAccountButton({Key key, @required LoginRepository userRepository})
       : assert(userRepository != null),
         _userRepository = userRepository,
         super(key: key);
