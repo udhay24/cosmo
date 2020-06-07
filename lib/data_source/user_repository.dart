@@ -8,6 +8,7 @@ class UserRepository {
   var _fireStore = Firestore.instance;
   var _firebaseUser = FirebaseAuth.instance.currentUser();
 
+  /// get user detail from firestore 'user' collection
   Future<UserDetail> getUserDetail() async {
     var user = await _firebaseUser;
     var userInfo = _fireStore.collection('users').document(user.uid).get();
@@ -15,6 +16,7 @@ class UserRepository {
     return UserDetail.fromJson((await userInfo).data);
   }
 
+  /// checks if the user profile is complete or any detail is missing
   Future<bool> isUserProfileComplete() async {
     try {
       var result = await getUserDetail();
@@ -31,12 +33,14 @@ class UserRepository {
     }
   }
 
+  ///update the user detail
   updateUserDetail(UserDetail user) async {
     var firebaseUser = await _firebaseUser;
    _fireStore.collection('users').document(firebaseUser.uid).
     setData(user.toJson());
   }
 
+  ///create a new team
   createTeam(Team team) async {
     _fireStore.collection("teams")
         .document()
@@ -53,6 +57,11 @@ class UserRepository {
     _fireStore.collection("teams")
         .document(teamDocumentID)
     .updateData({'team_members': updatedMembers});
+
+    //update the user profile to reflect the change
+    var userDetail = await getUserDetail();
+    userDetail.joinedTeam = _fireStore.collection("teams").document(teamDocumentID);
+    updateUserDetail(userDetail);
   }
 
   Future<Team> _getTeamDetails(String teamDocumentID) async {
@@ -69,7 +78,7 @@ class UserRepository {
     return teamDetails.documents[0].documentID;
   }
 
-  Future<Team> _findTeam(String teamID, String teamCode) async {
+  Future<Team> findTeam(String teamID, String teamCode) async {
     var teamDetails = await _fireStore.collection("teams")
     .where("team_id", isEqualTo: teamID)
     .where("team_code", isEqualTo: teamCode)

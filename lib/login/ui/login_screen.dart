@@ -6,12 +6,6 @@ import 'package:pubg/login/bloc/login_dart.dart';
 import 'login_form.dart';
 
 class LoginScreen extends StatelessWidget {
-  final LoginRepository _userRepository;
-
-  LoginScreen({Key key, @required LoginRepository userRepository})
-      : assert(userRepository != null),
-        _userRepository = userRepository,
-        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +21,7 @@ class LoginScreen extends StatelessWidget {
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(Colors.red, BlendMode.darken),
             )),
-        child: BlocProvider<LoginBloc>(
-          create: (context) => LoginBloc(userRepository: _userRepository),
-          child: LoginForm(userRepository: _userRepository),
-        ),
+        child:  LoginForm(),
         alignment: Alignment.center,
       ),
     );

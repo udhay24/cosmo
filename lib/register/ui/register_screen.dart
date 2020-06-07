@@ -1,16 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pubg/data_source/login_repository.dart';
-import 'package:pubg/register/bloc/register_bloc.dart';
 import 'package:pubg/register/ui/register_form.dart';
 
 class RegisterScreen extends StatelessWidget {
-  final LoginRepository _userRepository;
-
-  RegisterScreen({Key key, @required LoginRepository userRepository})
-      : assert(userRepository != null),
-        _userRepository = userRepository,
-        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +26,7 @@ class RegisterScreen extends StatelessWidget {
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(Colors.red, BlendMode.darken),
         )),
-        child: BlocProvider<RegisterBloc>(
-            create: (context) => RegisterBloc(userRepository: _userRepository),
-            child: RegisterForm(),
-        ),
+        child:RegisterForm(),
         alignment: Alignment.center,
       ),
     );

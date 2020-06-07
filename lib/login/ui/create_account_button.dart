@@ -1,30 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pubg/data_source/login_repository.dart';
-import 'package:pubg/register/ui/register_screen.dart';
+import 'package:pubg/bloc/navigation/bloc.dart';
 
 class CreateAccountButton extends StatelessWidget {
-  final LoginRepository _userRepository;
-
-  CreateAccountButton({Key key, @required LoginRepository userRepository})
-      : assert(userRepository != null),
-        _userRepository = userRepository,
-        super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return RegisterScreen(userRepository: _userRepository);
-        }));
+        BlocProvider.of<NavigationBloc>(context)
+            .add(RegistrationNavigateEvent());
       },
       child: Text(
         'SIGN UP NOW',
         style: GoogleFonts.openSansCondensed(
-          color: Colors.white,
-          fontWeight: FontWeight.bold
-        ),
+            color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );
   }

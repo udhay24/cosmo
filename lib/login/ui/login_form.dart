@@ -12,12 +12,6 @@ import 'google_login_button.dart';
 import 'login_button.dart';
 
 class LoginForm extends StatefulWidget {
-  final LoginRepository _userRepository;
-
-  LoginForm({Key key, @required LoginRepository userRepository})
-      : assert(userRepository != null),
-        _userRepository = userRepository,
-        super(key: key);
 
   State<LoginForm> createState() => _LoginFormState();
 }
@@ -27,8 +21,6 @@ class _LoginFormState extends State<LoginForm> {
   final TextEditingController _passwordController = TextEditingController();
 
   LoginBloc _loginBloc;
-
-  LoginRepository get _userRepository => widget._userRepository;
 
   bool get isPopulated =>
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
@@ -217,7 +209,7 @@ class _LoginFormState extends State<LoginForm> {
                 Positioned(
                   bottom: 40,
                   left: 30,
-                  child: CreateAccountButton(userRepository: _userRepository),
+                  child: CreateAccountButton(),
                 ),
               ],
             ),

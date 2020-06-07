@@ -10,9 +10,9 @@ import 'package:rxdart/rxdart.dart';
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   final LoginRepository _userRepository;
 
-  RegisterBloc({@required LoginRepository userRepository})
-      : assert(userRepository != null),
-        _userRepository = userRepository;
+  RegisterBloc({@required LoginRepository loginRepository})
+      : assert(loginRepository != null),
+        _userRepository = loginRepository;
 
   @override
   RegisterState get initialState => RegisterState.empty();

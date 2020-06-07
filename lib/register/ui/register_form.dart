@@ -54,7 +54,6 @@ class _RegisterFormState extends State<RegisterForm> {
         }
         if (state.isSuccess) {
           BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
-          Navigator.of(context).pop();
         }
         if (state.isFailure) {
           Scaffold.of(context)
