@@ -24,9 +24,9 @@ class SplashScreen extends StatelessWidget {
             }
             return Container();
           } else if (snapshot.hasError) {
-            return Text("Error");
+            return Text("Error  splash screen");
           } else {
-            return Text("Loading...");
+            return Text("Loading splash screen...");
           }
         }),
       ),

@@ -21,8 +21,8 @@ class NavigationBloc extends Bloc<NavigationEvent, dynamic> {
       navigatorKey.currentState.pop();
     }
     else if (event is HomeScreenNavigateEvent) {
-      navigatorKey.currentState.pushNamed(
-          ScreenRoutes.HOME_SCREEN_ROUTE);
+      navigatorKey.currentState.pushNamedAndRemoveUntil(
+          ScreenRoutes.HOME_SCREEN_ROUTE, (predicate) => true);
     }
     else if (event is LoginNavigateEvent) {
       navigatorKey.currentState.pushNamedAndRemoveUntil(
@@ -31,6 +31,10 @@ class NavigationBloc extends Bloc<NavigationEvent, dynamic> {
     else if (event is RegistrationNavigateEvent) {
       navigatorKey.currentState.pushNamed(
           ScreenRoutes.REGISTER_SCREEN_ROUTE);
+    } else if (event is UserProfileNavigateEvent) {
+      navigatorKey.currentState.pushNamed(
+        ScreenRoutes.USER_PROFILE_SCREEN_ROUTE
+      );
     }
   }
 }

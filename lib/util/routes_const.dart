@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pubg/SplashScreen.dart';
+import 'package:pubg/data_source/event_repository.dart';
 import 'package:pubg/data_source/login_repository.dart';
+import 'package:pubg/data_source/user_repository.dart';
+import 'package:pubg/home_screen/bloc/bloc.dart';
 import 'package:pubg/home_screen/bloc/home_screen_bloc.dart';
 import 'package:pubg/home_screen/ui/home_screen.dart';
 import 'package:pubg/login/bloc/bloc.dart';
 import 'package:pubg/login/ui/login_screen.dart';
 import 'package:pubg/register/bloc/bloc.dart';
 import 'package:pubg/register/ui/register_screen.dart';
+import 'package:pubg/user_detail/bloc/bloc.dart';
+import 'package:pubg/user_detail/ui/profile_update_screen.dart';
 
 class ScreenRoutes {
-  static const String SPLASH_SCREEN_ROUTE = "/splash";
+  static const String SPLASH_SCREEN_ROUTE = "/";
   static const String LOGIN_SCREEN_ROUTE = "/login";
   static const String REGISTER_SCREEN_ROUTE = "/register";
   static const String USER_PROFILE_SCREEN_ROUTE = "/user_profile";
@@ -44,11 +49,22 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case ScreenRoutes.HOME_SCREEN_ROUTE:
       return MaterialPageRoute(
         builder: (context) => BlocProvider(
-          create: (context) => HomeScreenBloc(),
+          create: (context) => HomeScreenBloc(
+              userRepository: RepositoryProvider.of<UserRepository>(context),
+              eventRepository: EventRepository()),
           child: HomeScreen(),
         ),
       );
 
+    case ScreenRoutes.USER_PROFILE_SCREEN_ROUTE:
+      return MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) => UserProfileBloc(
+            userRepository: RepositoryProvider.of<UserRepository>(context),
+          )..add(ProfileScreenInitialized()),
+          child: UserProfileScreen(),
+        ),
+      );
 
     default:
       return MaterialPageRoute(

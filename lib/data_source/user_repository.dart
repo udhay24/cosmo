@@ -11,9 +11,9 @@ class UserRepository {
   /// get user detail from firestore 'user' collection
   Future<UserDetail> getUserDetail() async {
     var user = await _firebaseUser;
-    var userInfo = _fireStore.collection('users').document(user.uid).get();
+    var userInfo = await _fireStore.collection('users').document(user.uid).get();
 
-    return UserDetail.fromJson((await userInfo).data);
+    return UserDetail.fromJson(userInfo.data);
   }
 
   /// checks if the user profile is complete or any detail is missing
@@ -36,6 +36,8 @@ class UserRepository {
   ///update the user detail
   updateUserDetail(UserDetail user) async {
     var firebaseUser = await _firebaseUser;
+    user.userUuid = firebaseUser.uid;
+    user.joinedTeam = _fireStore.collection("teams").document("o6atAfArYFEQCPKGlTUQ");
    _fireStore.collection('users').document(firebaseUser.uid).
     setData(user.toJson());
   }

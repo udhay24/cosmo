@@ -6,6 +6,7 @@ import 'package:pubg/bloc/authentication_bloc/authentication_state.dart';
 import 'package:pubg/bloc/navigation/bloc.dart';
 import 'package:pubg/data_source/login_repository.dart';
 import 'package:pubg/data_source/repository_di.dart';
+import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/util/routes_const.dart';
 
 import 'bloc/authentication_bloc/authentication_event.dart';
@@ -19,8 +20,15 @@ void main() {
   final GlobalKey<NavigatorState> _navigationKey = GlobalKey();
 
   runApp(
-    RepositoryProvider<LoginRepository>(
-      create: (context) => loginRepository,
+    MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<LoginRepository>(
+          create: (context) => loginRepository,
+        ),
+        RepositoryProvider<UserRepository>(
+          create: (context) => UserRepository(),
+        ),
+      ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider<AuthenticationBloc>(
