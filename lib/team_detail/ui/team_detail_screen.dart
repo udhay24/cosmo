@@ -13,10 +13,7 @@ class TeamDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Team Detail')),
       body: Center(
-        child: BlocProvider<TeamDetailBloc>(
-          create: (context) => TeamDetailBloc(fireStoreRepository: RepositoryInjector.fireStoreRepository),
-          child: TeamDetailForm(),
-        ),
+        child: TeamDetailForm(),
       ),
     );
   }

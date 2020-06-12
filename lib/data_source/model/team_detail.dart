@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -60,14 +62,16 @@ class Team {
   String teamCode;
   List<DocumentReference> teamMembers;
   String teamId;
+  DocumentReference teamOwner;
 
-  Team({this.teamName, this.teamCode, this.teamMembers, this.teamId});
+  Team({this.teamName, this.teamCode, this.teamMembers, this.teamId, this.teamOwner});
 
   Team.fromJson(Map<String, dynamic> json) {
     teamName = json['team_name'];
     teamCode = json['team_code'];
     teamMembers = json['team_members'].cast<DocumentReference>().toList() ?? List();
     teamId = json['team_id'];
+    teamOwner = json['team_manager'];
   }
 
   Map<String, dynamic> toJson() {
@@ -76,6 +80,7 @@ class Team {
     data['team_code'] = this.teamCode;
     data['team_members'] = this.teamMembers;
     data['team_id'] = this.teamId;
+    data['team_manager'] = this.teamOwner;
     return data;
   }
 }

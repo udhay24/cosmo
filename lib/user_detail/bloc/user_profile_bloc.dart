@@ -48,11 +48,13 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       CreateTeamPressed event) async* {
     yield CreatingTeam();
     try {
+      var currentUser = await _userRepository.getCurrentUserReference();
       var _teamRef = await _userRepository.createTeam(Team(
           teamName: event.teamName,
           teamCode: event.teamCode,
           teamId: event.teamID,
-          teamMembers: []));
+          teamMembers: [],
+      teamOwner: currentUser));
       yield CreateTeamSuccess(teamReference: _teamRef);
     } catch (e) {
       print(e);

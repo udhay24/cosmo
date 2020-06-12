@@ -29,17 +29,22 @@ class HomeScreenNavigateEvent extends NavigationEvent {
   List<Object> get props => [];
 }
 
-class SlotSelectionNavigationEvent extends NavigationEvent {
-  @override
-  List<Object> get props => [];
-}
-
 class CreateTeamNavigationEvent extends NavigationEvent {
   @override
   List<Object> get props => [];
 }
 
 class JoinTeamNavigationEvent extends NavigationEvent {
+  @override
+  List<Object> get props => [];
+}
+
+class TeamDetailNavigationEvent extends NavigationEvent {
+  @override
+  List<Object> get props => [];
+}
+
+class SlotSelectionNavigationEvent extends NavigationEvent {
   @override
   List<Object> get props => [];
 }

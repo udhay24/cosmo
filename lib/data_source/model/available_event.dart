@@ -1,18 +1,21 @@
 class AvailableEvent {
-  String slotName;
-  String slotDescription;
+  String eventName;
+  String eventDescription;
+  String eventID;
 
-  AvailableEvent({this.slotName, this.slotDescription});
+  AvailableEvent({this.eventName, this.eventDescription});
 
   AvailableEvent.fromJson(Map<String, dynamic> json) {
-    slotName = json['event_name'];
-    slotDescription = json['event_description'];
+    eventName = json['event_name'];
+    eventDescription = json['event_description'];
+    eventID = json['event_id'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['event_name'] = this.slotName;
-    data['event_description'] = this.slotDescription;
+    data['event_name'] = this.eventName;
+    data['event_description'] = this.eventDescription;
+    data['event_id'] = this.eventID;
     return data;
   }
 }

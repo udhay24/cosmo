@@ -19,22 +19,23 @@ class NavigationBloc extends Bloc<NavigationEvent, dynamic> {
   Stream<dynamic> mapEventToState(NavigationEvent event) async* {
     if (event is NavigatorActionPop) {
       navigatorKey.currentState.pop();
-    }
-    else if (event is HomeScreenNavigateEvent) {
+    } else if (event is HomeScreenNavigateEvent) {
       navigatorKey.currentState.pushNamedAndRemoveUntil(
           ScreenRoutes.HOME_SCREEN_ROUTE, (predicate) => true);
-    }
-    else if (event is LoginNavigateEvent) {
+    } else if (event is LoginNavigateEvent) {
       navigatorKey.currentState.pushNamedAndRemoveUntil(
           ScreenRoutes.LOGIN_SCREEN_ROUTE, (predicate) => false);
-    }
-    else if (event is RegistrationNavigateEvent) {
-      navigatorKey.currentState.pushNamed(
-          ScreenRoutes.REGISTER_SCREEN_ROUTE);
+    } else if (event is RegistrationNavigateEvent) {
+      navigatorKey.currentState.pushNamed(ScreenRoutes.REGISTER_SCREEN_ROUTE);
     } else if (event is UserProfileNavigateEvent) {
-      navigatorKey.currentState.pushNamed(
-        ScreenRoutes.USER_PROFILE_SCREEN_ROUTE
-      );
+      navigatorKey.currentState
+          .pushNamed(ScreenRoutes.USER_PROFILE_SCREEN_ROUTE);
+    } else if (event is SlotSelectionNavigationEvent) {
+      navigatorKey.currentState
+          .pushNamed(ScreenRoutes.SLOT_SELECTION_SCREEN_ROUTE);
+    } else if (event is TeamDetailNavigationEvent) {
+      navigatorKey.currentState
+          .pushNamed(ScreenRoutes.TEAM_DETAIL_SCREEN_ROUTE);
     }
   }
 }

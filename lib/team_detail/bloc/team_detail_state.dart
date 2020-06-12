@@ -12,17 +12,17 @@ class TeamDetailEmpty extends TeamDetailState {
   List<Object> get props => [];
 }
 
-class TeamDetailSubmitting extends TeamDetailState {
+class TeamDetailUpdating extends TeamDetailState {
   @override
   List<Object> get props => [];
 }
 
-class TeamDetailSubmittedSuccess extends TeamDetailState {
+class TeamDetailChangeSuccess extends TeamDetailState {
   @override
   List<Object> get props => [];
 }
 
-class TeamDetailSubmittedFailure extends TeamDetailState {
+class TeamDetailChangeFailure extends TeamDetailState {
   @override
   List<Object> get props => [];
 }
@@ -38,10 +38,10 @@ class SubmitFormInVisible extends TeamDetailState {
 }
 
 class PreFilled extends TeamDetailState {
+  final Team team;
 
-  final TeamDetailModel teamDetailModel;
+  PreFilled({@required this.team});
 
-  PreFilled({@required this.teamDetailModel});
   @override
-  List<Object> get props => [];
+  List<Object> get props => [team];
 }

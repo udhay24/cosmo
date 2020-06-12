@@ -26,24 +26,26 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
     HomeScreenEvent event,
   ) async* {
     if (event is EventSelected) {
-      _mapEventSelectedToState(event);
+      yield* _mapEventSelectedToState(event);
     } else if (event is HomeScreenStarted){
       yield* _mapInitialEventState(event);
     }
   }
 
-  Stream<HomeScreenState> _mapEventSelectedToState(EventSelected event) {}
+  Stream<HomeScreenState> _mapEventSelectedToState(EventSelected event) async* {
+    if ((!await _userRepository.isUserProfileComplete())) {
+    //check if the user details are available before loading events
+       yield MissingUserDetails();
+    } else {
+
+    }
+  }
 
   Stream<HomeScreenState> _mapInitialEventState(HomeScreenEvent event) async* {
     try {
-      if ((!await _userRepository.isUserProfileComplete())) {
-        //check if the user details are available before loading events
-        yield MissingUserDetails();
-      } else {
         yield AvailableEventsLoading();
         var availableEvents = await _eventRepository.getAvailableEvent();
         yield AvailableEventsSuccess(availableEvents: availableEvents);
-      }
     } catch(error) {
       print("available_events_fetch_failed: $error");
       yield AvailableEventsFailure();
