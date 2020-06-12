@@ -37,19 +37,19 @@ class UserRepository {
   updateUserDetail(UserDetail user) async {
     var firebaseUser = await _firebaseUser;
     user.userUuid = firebaseUser.uid;
-    user.joinedTeam = _fireStore.collection("teams").document("o6atAfArYFEQCPKGlTUQ");
    _fireStore.collection('users').document(firebaseUser.uid).
     setData(user.toJson());
   }
 
-  ///create a new team
-  createTeam(Team team) async {
-    _fireStore.collection("teams")
-        .document()
-        .setData(team.toJson());
+  ///create a new team and returns the reference
+  Future<DocumentReference> createTeam(Team team) async {
+    var _reference = _fireStore.collection("teams")
+        .document();
+    _reference.setData(team.toJson());
+    return _reference;
   }
 
-  addCurrentUserToTeam(String teamID, String teamCode) async {
+  addCurrentUserToTeamWithCode(String teamID, String teamCode) async {
     var user = await _firebaseUser;
     String teamDocumentID = (await _findTeamDocumentID(teamID, teamCode));
     var existingMembers = (await _getTeamDetails(teamDocumentID)).teamMembers;
@@ -59,6 +59,23 @@ class UserRepository {
     _fireStore.collection("teams")
         .document(teamDocumentID)
     .updateData({'team_members': updatedMembers});
+
+    //update the user profile to reflect the change
+    var userDetail = await getUserDetail();
+    userDetail.joinedTeam = _fireStore.collection("teams").document(teamDocumentID);
+    updateUserDetail(userDetail);
+  }
+
+  addCurrentUserToTeamWithRef(DocumentReference teamReference) async {
+    var user = await _firebaseUser;
+    String teamDocumentID = teamReference.documentID;
+    var existingMembers = (await _getTeamDetails(teamDocumentID)).teamMembers;
+    var updatedMembers = existingMembers..add(
+        _fireStore.collection('users').document(user.uid)
+    );
+    _fireStore.collection("teams")
+        .document(teamDocumentID)
+        .updateData({'team_members': updatedMembers});
 
     //update the user profile to reflect the change
     var userDetail = await getUserDetail();
@@ -86,5 +103,13 @@ class UserRepository {
     .where("team_code", isEqualTo: teamCode)
     .getDocuments();
     return Team.fromJson(teamDetails.documents[0].data);
+  }
+
+  Future<String> fetchTeamReference(String teamID, String teamCode) async {
+    var teamDetails = await _fireStore.collection("teams")
+        .where("team_id", isEqualTo: teamID)
+        .where("team_code", isEqualTo: teamCode)
+        .getDocuments();
+    return teamDetails.documents[0].documentID;
   }
 }

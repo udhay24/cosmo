@@ -13,13 +13,24 @@ class ProfileScreenInitialized extends UserProfileEvent {
 }
 
 class CreateTeamPressed extends UserProfileEvent {
+  final String teamName;
+  final String teamID;
+  final String teamCode;
+
+  CreateTeamPressed({@required this.teamName, @required this.teamID, @required this.teamCode});
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [teamName, teamCode, teamID];
 }
 
 class JoinTeamPressed extends UserProfileEvent {
+  final String teamCode;
+  final String teamID;
+
+  JoinTeamPressed({@required this.teamID, this.teamCode});
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [teamCode, teamID];
 }
 
 class SaveProfilePressed extends UserProfileEvent {

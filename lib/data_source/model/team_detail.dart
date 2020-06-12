@@ -66,7 +66,7 @@ class Team {
   Team.fromJson(Map<String, dynamic> json) {
     teamName = json['team_name'];
     teamCode = json['team_code'];
-    teamMembers = json['team_members'].cast<String>();
+    teamMembers = json['team_members'].cast<DocumentReference>().toList() ?? List();
     teamId = json['team_id'];
   }
 

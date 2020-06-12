@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:pubg/data_source/model/team_detail.dart';
 import 'package:pubg/data_source/user_repository.dart';
 
 import './bloc.dart';
@@ -42,15 +44,43 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     }
   }
 
-  Stream<UserProfileState> _mapTeamCreatedEvent(CreateTeamPressed event) {}
+  Stream<UserProfileState> _mapTeamCreatedEvent(
+      CreateTeamPressed event) async* {
+    yield CreatingTeam();
+    try {
+      var _teamRef = await _userRepository.createTeam(Team(
+          teamName: event.teamName,
+          teamCode: event.teamCode,
+          teamId: event.teamID,
+          teamMembers: []));
+      yield CreateTeamSuccess(teamReference: _teamRef);
+    } catch (e) {
+      print(e);
+      yield CreateTeamFailure();
+    }
+  }
 
-  Stream<UserProfileState> _mapJoinTeamEvent(JoinTeamPressed event) {}
+  Stream<UserProfileState> _mapJoinTeamEvent(JoinTeamPressed event) async* {
+    yield FindTeamSearching();
+    try {
+      var teamReference = await _userRepository.fetchTeamReference(
+          event.teamID, event.teamCode);
+      yield FindTeamSuccess(
+          teamReference:
+              Firestore.instance.collection("teams").document(teamReference));
+    } catch (e) {
+      print(e);
+      yield FindTeamFailure();
+    }
+  }
 
-  Stream<UserProfileState> _mapSaveProfileEvent(SaveProfilePressed event) async* {
+  Stream<UserProfileState> _mapSaveProfileEvent(
+      SaveProfilePressed event) async* {
     try {
       _userRepository.updateUserDetail(event.userDetail);
+      _userRepository.addCurrentUserToTeamWithRef(event.userDetail.joinedTeam);
       yield UserProfileUpdateSuccess();
-    } catch(e) {
+    } catch (e) {
       yield UserProfileUpdateFailure();
     }
   }
