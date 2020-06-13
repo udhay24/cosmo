@@ -5,7 +5,7 @@ import 'package:pubg/user_detail/bloc/user_profile_bloc.dart';
 
 class JoinTeamForm extends StatelessWidget {
   final TextEditingController _teamIdController =
-      TextEditingController(text: "cosmo_24");
+      TextEditingController(text: "12345");
   final TextEditingController _teamCodeController =
       TextEditingController(text: "12345");
 

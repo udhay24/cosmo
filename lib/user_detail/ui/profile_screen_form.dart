@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pubg/bloc/navigation/bloc.dart';
 import 'package:pubg/data_source/model/user_detail.dart';
 import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/user_detail/bloc/bloc.dart';
@@ -31,6 +32,15 @@ class _UserProfileFormState extends State<UserProfileForm> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _userNameController.dispose();
+    _phoneNumberController.dispose();
+    _teamReference.dispose();
+    _selectedTeamName.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<UserProfileBloc, UserProfileState>(
         listener: (context, state) {
@@ -41,7 +51,11 @@ class _UserProfileFormState extends State<UserProfileForm> {
       } else if (state is FindTeamSuccess) {
         _teamReference.value = state.teamReference;
       } else if (state is UserProfileUpdateSuccess) {
-        Navigator.of(context).pop();
+        BlocProvider.of<NavigationBloc>(context).add(HomeScreenNavigateEvent());
+      } else if (state is UserProfileLoadedState) {
+        _userNameController.text = state.userDetail.userName;
+        _phoneNumberController.text = state.userDetail.phoneNumber.toString();
+        _teamReference.value = state.userDetail.joinedTeam;
       }
     }, builder: (context, state) {
       if (state is UserProfileLoading) {

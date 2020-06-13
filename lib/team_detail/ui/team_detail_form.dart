@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pubg/data_source/model/team_detail.dart';
@@ -15,10 +14,23 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
   final TextEditingController _teamIDController = TextEditingController();
   final TextEditingController _teamCodeController = TextEditingController();
 
-  List<DocumentReference> _userList = List();
-  Team _team;
+  ValueNotifier<Team> _team = ValueNotifier(Team(
+      teamOwner: null,
+      teamName: "",
+      teamId: "",
+      teamCode: "",
+      teamMembers: List()));
 
   TeamDetailBloc _teamDetailBloc;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _teamNameController.dispose();
+    _teamCodeController.dispose();
+    _teamIDController.dispose();
+    _team.dispose();
+  }
 
   @override
   void initState() {
@@ -38,8 +50,7 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
           _teamNameController.text = state.team.teamName;
           _teamIDController.text = state.team.teamId;
           _teamCodeController.text = state.team.teamCode;
-          _userList = state.team.teamMembers;
-          _team = state.team;
+          _team.value = state.team;
         }
 
         if (state is TeamDetailUpdating) {
@@ -85,89 +96,88 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
               child: Form(
                 child: Column(
                   children: <Widget>[
-                  TextFormField(
-                  controller: _teamNameController,
-                  decoration: InputDecoration(
-                    icon: Icon(Icons.games),
-                    labelText: 'Team Name',
-                  ),
-                  autocorrect: false,
-                  autovalidate: true,
+                    TextFormField(
+                      controller: _teamNameController,
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.games),
+                        labelText: 'Team Name',
+                      ),
+                      autocorrect: false,
+                      autovalidate: true,
+                    ),
+                    TextFormField(
+                      controller: _teamIDController,
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.person),
+                        labelText: 'Team ID',
+                      ),
+                      autocorrect: false,
+                      autovalidate: true,
+                    ),
+                    TextFormField(
+                      controller: _teamCodeController,
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.people),
+                        labelText: 'Team Code',
+                      ),
+                      autocorrect: false,
+                      autovalidate: true,
+                    ),
+                    _buildUserList(context),
+                    Builder(builder: (context) {
+                      if (state is SubmitFormVisible) {
+                        return TeamSubmitButton(onPressed: _onFormSubmitted);
+                      } else {
+                        return TeamSubmitButton(
+                          onPressed: null,
+                        );
+                      }
+                    }),
+                  ],
                 ),
-                TextFormField(
-                  controller: _teamIDController,
-                  decoration: InputDecoration(
-                    icon: Icon(Icons.person),
-                    labelText: 'Team ID',
-                  ),
-                  autocorrect: false,
-                  autovalidate: true,
-                ),
-                TextFormField(
-                  controller: _teamCodeController,
-                  decoration: InputDecoration(
-                    icon: Icon(Icons.people),
-                    labelText: 'Team Code',
-                  ),
-                  autocorrect: false,
-                  autovalidate: true,
-                ),
-                FutureBuilder(builder: (context, AsyncSnapshot<List<String>> snapshot) {
-                  if ((snapshot != null) && (snapshot.hasData)) {
-                    return ListView.builder(
-                      itemBuilder: (context, index) {
-                        return Text(snapshot.data[index]);
-                      },
-                      itemCount: snapshot.data.length,
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                    );
-                  }
-                  else {
-                    return Container();
-                  }
-                },
-                  future: RepositoryProvider.of<UserRepository>(context).getUserNamesFromRef(_userList),
-                )
-                ,
-                Builder(builder: (context) {
-                  if (state is SubmitFormVisible) {
-                    return TeamSubmitButton(onPressed: _onFormSubmitted);
-                  } else {
-                    return TeamSubmitButton(
-                      onPressed: null,
-                    );
-                  }
-                }),
-                ],
               ),
             ),
-          ),);
+          );
         },
       ),
     );
   }
 
-  @override
-  void dispose() {
-    _teamNameController.dispose();
-    _teamIDController.dispose();
-    _teamCodeController.dispose();
-    super.dispose();
+  Widget _buildUserList(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: _team,
+      builder: (context, Team team, _) {
+        return ListView.builder(
+          itemBuilder: (context, index) {
+            return FutureBuilder(
+              builder: (context, AsyncSnapshot<String> snapshot) {
+                if ((snapshot != null) && (snapshot.hasData)) {
+                  return Text(snapshot.data);
+                } else {
+                  return Container();
+                }
+              },
+              future: RepositoryProvider.of<UserRepository>(context)
+                  .getUserNamesFromRef(team.teamMembers[index]),
+            );
+          },
+          itemCount: _team.value.teamMembers.length ?? 0,
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+        );
+      },
+    );
   }
 
   void _onFormUpdated() {
     _teamDetailBloc.add(TeamMemberDetailChanged(
-      team: Team(
-        teamName: _teamNameController.text,
-        teamId: _teamIDController.text,
-        teamCode: _teamCodeController.text,
-        teamMembers: _team.teamMembers ?? List(),
-        teamOwner: _team.teamOwner
-      )
-    )
-    );
+        team: Team(
+            teamName: _teamNameController.text,
+            teamId: _teamIDController.text,
+            teamCode: _teamCodeController.text,
+            teamMembers: _team.value.teamMembers ?? List(),
+            teamOwner: _team.value.teamOwner)));
   }
 
   void _onFormSubmitted() {
@@ -177,10 +187,8 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
               teamName: _teamNameController.text,
               teamId: _teamIDController.text,
               teamCode: _teamCodeController.text,
-              teamMembers: _team.teamMembers,
-              teamOwner: _team.teamOwner
-          )
-      ),
+              teamMembers: _team.value.teamMembers,
+              teamOwner: _team.value.teamOwner)),
     );
   }
 }

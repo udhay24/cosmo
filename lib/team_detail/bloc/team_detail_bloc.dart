@@ -54,7 +54,11 @@ class TeamDetailBloc extends Bloc<TeamDetailEvent, TeamDetailState> {
   Stream<TeamDetailState> _mapScreenInitializedToState() async* {
     try {
       var team = await _userRepository.getCurrentUserTeam();
-      yield PreFilled(team: team);
+      if (team != null) {
+        yield PreFilled(team: team);
+      } else {
+        yield TeamDetailEmpty();
+      }
     } catch (e) {
       yield TeamDetailEmpty();
     }

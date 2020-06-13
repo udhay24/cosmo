@@ -25,7 +25,14 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           actions: <Widget>[
             _buildTeamAction(context),
-            _buildLogoutAction(context)
+            _buildLogoutAction(context),
+            GestureDetector(
+              child: Icon(Icons.add_a_photo),
+              onTap: () {
+                BlocProvider.of<NavigationBloc>(context)
+                    .add(UserProfileNavigateEvent());
+              },
+            )
           ],
         ),
         body: Center(

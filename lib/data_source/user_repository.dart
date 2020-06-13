@@ -55,6 +55,17 @@ class UserRepository {
         .setData(user.toJson());
   }
 
+  removeUserFromTeam() async {
+    var team = await getCurrentUserTeam();
+    var userID = (await _firebaseUser).uid;
+
+    team.teamMembers.removeWhere((element) {
+      return (element.documentID == userID);
+    });
+
+    await updateTeamDetail(team);
+  }
+
   ///create a new team and returns the reference
   Future<DocumentReference> createTeam(Team team) async {
     var _reference = _fireStore.collection("teams").document();
@@ -160,14 +171,9 @@ class UserRepository {
     currentTeam.setData(team.toJson());
   }
 
-  Future<List<String>> getUserNamesFromRef(List<DocumentReference> docs) async {
-    List<String> users = List();
-
-    docs.forEach((element) async {
-      var user = (await element.get()).data;
-      users.add(UserDetail.fromJson(user).userName);
-    });
-    return users;
+  Future<String> getUserNamesFromRef(DocumentReference docs) async {
+    var user = (await docs.get()).data;
+    return UserDetail.fromJson(user).userName;
   }
 
   ///events functions
@@ -184,17 +190,25 @@ class UserRepository {
       }).toList();
     });
 
-    List<int> totalSlots = List<int>.generate(AvailableSlots.TOTAL_SLOTS, (index) => index + 1);
-    List<int> availableSlots = totalSlots..removeWhere((element) => selectedSlots.contains(element));
+    List<int> totalSlots =
+        List<int>.generate(AvailableSlots.TOTAL_SLOTS, (index) => index + 1);
+    List<int> availableSlots = totalSlots
+      ..removeWhere((element) => selectedSlots.contains(element));
     return availableSlots;
   }
 
   Future<DocumentReference> getEventDocFromID(String eventID) async {
-    var event = await _fireStore.collection("available_event").where("event_id", isEqualTo: eventID).getDocuments();
-    return _fireStore.collection("available_event").document(event.documents[0].documentID);
+    var event = await _fireStore
+        .collection("available_event")
+        .where("event_id", isEqualTo: eventID)
+        .getDocuments();
+    return _fireStore
+        .collection("available_event")
+        .document(event.documents[0].documentID);
   }
 
-  Future<AvailableEvent> getEventFromRef(DocumentReference documentReference) async {
+  Future<AvailableEvent> getEventFromRef(
+      DocumentReference documentReference) async {
     var eventData = (await documentReference.get()).data;
     return AvailableEvent.fromJson(eventData);
   }
@@ -207,13 +221,14 @@ class UserRepository {
     var eventRef = await getEventDocFromID(event.eventID);
     var currentTeam = (await getUserDetail()).joinedTeam;
 
-    _fireStore.collection("registrations/$dateFormat/${event.eventID}")
-    .document(currentTeam.documentID)
-    .setData(
-      Registration(selectedEvent: eventRef,
-      team: currentTeam,
-      selectedSlot: slot,
-      date: Timestamp.now()).toJson()
-    );
+    _fireStore
+        .collection("registrations/$dateFormat/${event.eventID}")
+        .document(currentTeam.documentID)
+        .setData(Registration(
+                selectedEvent: eventRef,
+                team: currentTeam,
+                selectedSlot: slot,
+                date: Timestamp.now())
+            .toJson());
   }
 }
