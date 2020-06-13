@@ -5,7 +5,7 @@ import 'package:pubg/bloc/authentication_bloc/authentication_event.dart';
 import 'package:pubg/bloc/navigation/bloc.dart';
 import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/home_screen/bloc/bloc.dart';
-import 'package:pubg/slot_registration/ui/slot_selection_dialog.dart';
+import 'package:pubg/home_screen/ui/slot_selection_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

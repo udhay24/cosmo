@@ -20,8 +20,7 @@ class NavigationBloc extends Bloc<NavigationEvent, dynamic> {
     if (event is NavigatorActionPop) {
       navigatorKey.currentState.pop();
     } else if (event is HomeScreenNavigateEvent) {
-      navigatorKey.currentState.pushNamedAndRemoveUntil(
-          ScreenRoutes.HOME_SCREEN_ROUTE, (predicate) => true);
+      navigatorKey.currentState.pushNamedAndRemoveUntil(ScreenRoutes.HOME_SCREEN_ROUTE, (predicate) => false);
     } else if (event is LoginNavigateEvent) {
       navigatorKey.currentState.pushNamedAndRemoveUntil(
           ScreenRoutes.LOGIN_SCREEN_ROUTE, (predicate) => false);

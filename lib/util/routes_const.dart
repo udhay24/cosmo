@@ -11,14 +11,13 @@ import 'package:pubg/login/bloc/bloc.dart';
 import 'package:pubg/login/ui/login_screen.dart';
 import 'package:pubg/register/bloc/bloc.dart';
 import 'package:pubg/register/ui/register_screen.dart';
-import 'package:pubg/slot_registration/ui/slot_selection_screen.dart';
 import 'package:pubg/team_detail/bloc/bloc.dart';
 import 'package:pubg/team_detail/ui/team_detail_screen.dart';
 import 'package:pubg/user_detail/bloc/bloc.dart';
 import 'package:pubg/user_detail/ui/profile_update_screen.dart';
 
 class ScreenRoutes {
-  static const String SPLASH_SCREEN_ROUTE = "/";
+  static const String SPLASH_SCREEN_ROUTE = "/splash";
   static const String LOGIN_SCREEN_ROUTE = "/login";
   static const String REGISTER_SCREEN_ROUTE = "/register";
   static const String USER_PROFILE_SCREEN_ROUTE = "/user_profile";
@@ -81,18 +80,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           }
       );
 
-//    case ScreenRoutes.SLOT_SELECTION_SCREEN_ROUTE:
-//      return MaterialPageRoute(
-//          builder: (context) {
-//            return SlotSelectionScreen();
-//          }
-//      );
       
-    default:
-      return MaterialPageRoute(
-          builder: (_) => Scaffold(
-                body: Center(
-                    child: Text('No route defined for ${settings.name}')),
-              ));
+//    default:
+//      return MaterialPageRoute(
+//          builder: (_) => Scaffold(
+//                body: Center(
+//                    child: Text('No route defined for ${settings.name}')),
+//              ));
   }
 }
