@@ -24,29 +24,21 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         appBar: AppBar(
           actions: <Widget>[
-            FutureBuilder(
-              builder: (context, value) {
-                if ((value != null) &&
-                    (value.hasData) &&
-                    (value.data == true)) {
-                  return GestureDetector(
-                    child: Icon(Icons.person),
-                    onTap: () {
-                      BlocProvider.of<NavigationBloc>(context)
-                          .add(TeamDetailNavigationEvent());
-                    },
-                  );
-                } else {
-                  return Container();
-                }
-              },
-              future:
-                  RepositoryProvider.of<UserRepository>(context).doesOwnTeam(),
-            )
+            _buildTeamAction(context),
+            _buildLogoutAction(context)
           ],
         ),
         body: Center(
           child: BlocConsumer<HomeScreenBloc, HomeScreenState>(
+            buildWhen: (HomeScreenState previous, HomeScreenState current) {
+              if ((current is AvailableEventsLoading) ||
+                  (current is AvailableEventsFailure) ||
+                  (current is AvailableEventsSuccess)) {
+                return true;
+              } else {
+                return false;
+              }
+            },
             builder: (context, state) {
               if (state is AvailableEventsSuccess) {
                 return Column(
@@ -55,13 +47,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     Center(child: Text("Home Screen")),
                     SizedBox(
                       height: 10,
-                    ),
-                    RaisedButton(
-                      onPressed: () {
-                        BlocProvider.of<AuthenticationBloc>(context)
-                            .add(LoggedOut());
-                      },
-                      child: Text("Log out"),
                     ),
                     ListView.builder(
                         itemCount: state.availableEvents.length,
@@ -76,8 +61,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               ],
                             ),
                             onTap: () {
-                              BlocProvider.of<HomeScreenBloc>(context)
-                                  .add(EventSelected(eventID: state.availableEvents[position].eventID));
+                              BlocProvider.of<HomeScreenBloc>(context).add(
+                                  EventSelected(
+                                      eventID: state
+                                          .availableEvents[position].eventID));
                             },
                           );
                         })
@@ -86,15 +73,15 @@ class _HomeScreenState extends State<HomeScreen> {
               } else if (state is AvailableEventsFailure) {
                 return Text("Home screen "
                     "Fetching Failed");
-              } else {
+              } else if (state is AvailableEventsLoading) {
                 return CircularProgressIndicator();
+              } else {
+                return Container(
+                    child: Text("Unknown state has occurred $state"));
               }
             },
             listener: (context, state) {
               if (state is MissingUserDetails) {
-                BlocProvider.of<HomeScreenBloc>(context)
-                    .add(HomeScreenStarted());
-
                 BlocProvider.of<NavigationBloc>(context)
                     .add(UserProfileNavigateEvent());
               } else if (state is ShowSlotDialog) {
@@ -107,5 +94,33 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
         ));
+  }
+
+  FutureBuilder<bool> _buildTeamAction(BuildContext context) {
+    return FutureBuilder(
+      builder: (context, value) {
+        if ((value != null) && (value.hasData) && (value.data == true)) {
+          return GestureDetector(
+            child: Icon(Icons.person),
+            onTap: () {
+              BlocProvider.of<NavigationBloc>(context)
+                  .add(TeamDetailNavigationEvent());
+            },
+          );
+        } else {
+          return Container();
+        }
+      },
+      future: RepositoryProvider.of<UserRepository>(context).doesOwnTeam(),
+    );
+  }
+
+  GestureDetector _buildLogoutAction(BuildContext context) {
+    return GestureDetector(
+      child: Icon(Icons.exit_to_app),
+      onTap: () {
+        BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
+      },
+    );
   }
 }

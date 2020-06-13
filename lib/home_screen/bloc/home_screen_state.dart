@@ -35,6 +35,10 @@ class AvailableEventsSuccess extends HomeScreenState {
   List<Object> get props => [availableEvents];
 }
 
+class CheckingUserDetails extends HomeScreenState {
+  @override
+  List<Object> get props => [];
+}
 
 class MissingUserDetails extends HomeScreenState {
   @override

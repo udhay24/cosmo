@@ -46,7 +46,9 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
   }
 
   Stream<HomeScreenState> _mapEventSelectedToState(EventSelected event) async* {
-    if ((!await _userRepository.isUserProfileComplete())) {
+    yield CheckingUserDetails();
+    bool isProfileComplete = await _userRepository.isUserProfileComplete();
+    if ((!isProfileComplete)) {
     //check if the user details are available before loading events
        yield MissingUserDetails();
     } else {
