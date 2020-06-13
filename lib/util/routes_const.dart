@@ -81,12 +81,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           }
       );
 
-    case ScreenRoutes.SLOT_SELECTION_SCREEN_ROUTE:
-      return MaterialPageRoute(
-          builder: (context) {
-            return SlotSelectionScreen();
-          }
-      );
+//    case ScreenRoutes.SLOT_SELECTION_SCREEN_ROUTE:
+//      return MaterialPageRoute(
+//          builder: (context) {
+//            return SlotSelectionScreen();
+//          }
+//      );
       
     default:
       return MaterialPageRoute(

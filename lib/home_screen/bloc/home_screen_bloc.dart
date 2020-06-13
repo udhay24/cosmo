@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pubg/data_source/event_repository.dart';
 import 'package:pubg/data_source/user_repository.dart';
@@ -29,6 +30,18 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
       yield* _mapEventSelectedToState(event);
     } else if (event is HomeScreenStarted){
       yield* _mapInitialEventState(event);
+    } else if (event is SlotSelected) {
+      yield* _mapSlotSelectedEvent(event);
+    }
+  }
+
+  Stream<HomeScreenState> _mapSlotSelectedEvent(SlotSelected event) async* {
+    try {
+      var selectedEvent = await _userRepository.getEventFromRef(event.selectedEvent);
+      _userRepository.registerTeamForEvent(selectedEvent, event.selectedSlot);
+      yield EventRegistrationSuccess();
+    } catch (error) {
+      yield EventRegistrationFailure();
     }
   }
 
@@ -37,7 +50,9 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
     //check if the user details are available before loading events
        yield MissingUserDetails();
     } else {
-
+      DocumentReference _eventRef = await _userRepository.getEventDocFromID(event.eventID);
+      List<int> availableSlots = await _userRepository.getAvailableSlots(_eventRef);
+      yield ShowSlotDialog(selectedEvent: _eventRef, availableSlots: availableSlots);
     }
   }
 

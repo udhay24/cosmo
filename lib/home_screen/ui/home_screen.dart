@@ -5,6 +5,7 @@ import 'package:pubg/bloc/authentication_bloc/authentication_event.dart';
 import 'package:pubg/bloc/navigation/bloc.dart';
 import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/home_screen/bloc/bloc.dart';
+import 'package:pubg/slot_registration/ui/slot_selection_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -76,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             onTap: () {
                               BlocProvider.of<HomeScreenBloc>(context)
-                                  .add(EventSelected());
+                                  .add(EventSelected(eventID: state.availableEvents[position].eventID));
                             },
                           );
                         })
@@ -91,8 +92,17 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             listener: (context, state) {
               if (state is MissingUserDetails) {
+                BlocProvider.of<HomeScreenBloc>(context)
+                    .add(HomeScreenStarted());
+
                 BlocProvider.of<NavigationBloc>(context)
                     .add(UserProfileNavigateEvent());
+              } else if (state is ShowSlotDialog) {
+                Scaffold.of(context)
+                    .showBottomSheet((context) => SlotSelectionDialog(
+                          selectedEvent: state.selectedEvent,
+                          availableSlots: state.availableSlots,
+                        ));
               }
             },
           ),

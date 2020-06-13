@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pubg/data_source/model/user_detail.dart';
+import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/user_detail/bloc/bloc.dart';
 import 'package:pubg/user_detail/ui/create_team_form.dart';
 import 'package:pubg/user_detail/ui/join_team_form.dart';
@@ -14,9 +15,20 @@ class UserProfileForm extends StatefulWidget {
 class _UserProfileFormState extends State<UserProfileForm> {
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
-//  final TextEditingController _teamIDController = TextEditingController();
-//  final TextEditingController _teamCodeController = TextEditingController();
   ValueNotifier<DocumentReference> _teamReference = ValueNotifier(null);
+  ValueNotifier<String> _selectedTeamName = ValueNotifier("");
+
+  @override
+  void initState() {
+    _teamReference.addListener(() async {
+      if (_teamReference.value != null) {
+        var team = await RepositoryProvider.of<UserRepository>(context)
+            .getTeamDetails(_teamReference.value.documentID);
+        _selectedTeamName.value = team.teamName;
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +38,10 @@ class _UserProfileFormState extends State<UserProfileForm> {
         _teamReference.value = state.teamReference;
       } else if (state is CreateTeamSuccess) {
         _teamReference.value = state.teamReference;
+      } else if (state is FindTeamSuccess) {
+        _teamReference.value = state.teamReference;
+      } else if (state is UserProfileUpdateSuccess) {
+        Navigator.of(context).pop();
       }
     }, builder: (context, state) {
       if (state is UserProfileLoading) {
@@ -52,17 +68,19 @@ class _UserProfileFormState extends State<UserProfileForm> {
               autocorrect: false,
               autovalidate: true,
             ),
-            ValueListenableBuilder(valueListenable: _teamReference, builder: (context, value, _) {
-              return Text("Selected team ${value ?? "-"}");
-            }),
+            ValueListenableBuilder(
+                valueListenable: _selectedTeamName,
+                builder: (context, value, _) {
+                  return Text("Selected team ${value ?? "-"}");
+                }),
             Row(
               children: [
                 RaisedButton(
-                  child: Text("Join Team"),
+                    child: Text("Join Team"),
                     onPressed: () {
-                  Scaffold.of(context)
-                      .showBottomSheet((context) => JoinTeamForm());
-                }),
+                      Scaffold.of(context)
+                          .showBottomSheet((context) => JoinTeamForm());
+                    }),
                 RaisedButton(
                     child: Text("Create Team"),
                     onPressed: () {

@@ -163,7 +163,7 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
         teamName: _teamNameController.text,
         teamId: _teamIDController.text,
         teamCode: _teamCodeController.text,
-        teamMembers: _team.teamMembers,
+        teamMembers: _team.teamMembers ?? List(),
         teamOwner: _team.teamOwner
       )
     )

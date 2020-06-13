@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
+import 'package:pubg/data_source/model/available_event.dart';
+import 'package:pubg/data_source/model/registration.dart';
 import 'package:pubg/data_source/model/user_detail.dart';
+import 'package:pubg/util/available_slot.dart';
 
 import 'model/team_detail.dart';
 
@@ -11,9 +15,8 @@ class UserRepository {
   /// get user detail from firestore 'user' collection
   Future<UserDetail> getUserDetail() async {
     var user = await _firebaseUser;
-    var userInfo = await _fireStore.collection('users')
-        .document(user.uid)
-        .get();
+    var userInfo =
+        await _fireStore.collection('users').document(user.uid).get();
 
     return UserDetail.fromJson(userInfo.data);
   }
@@ -27,8 +30,10 @@ class UserRepository {
   Future<bool> isUserProfileComplete() async {
     try {
       var result = await getUserDetail();
-      if ((result != null) && (result.userUuid != null) &&
-          (result.joinedTeam != null) && (result.phoneNumber != null) &&
+      if ((result != null) &&
+          (result.userUuid != null) &&
+          (result.joinedTeam != null) &&
+          (result.phoneNumber != null) &&
           (result.userName != null)) {
         return true;
       } else {
@@ -44,14 +49,15 @@ class UserRepository {
   updateUserDetail(UserDetail user) async {
     var firebaseUser = await _firebaseUser;
     user.userUuid = firebaseUser.uid;
-    _fireStore.collection('users').document(firebaseUser.uid).
-    setData(user.toJson());
+    _fireStore
+        .collection('users')
+        .document(firebaseUser.uid)
+        .setData(user.toJson());
   }
 
   ///create a new team and returns the reference
   Future<DocumentReference> createTeam(Team team) async {
-    var _reference = _fireStore.collection("teams")
-        .document();
+    var _reference = _fireStore.collection("teams").document();
     _reference.setData(team.toJson());
     return _reference;
   }
@@ -59,14 +65,15 @@ class UserRepository {
   addCurrentUserToTeamWithCode(String teamID, String teamCode) async {
     var user = await _firebaseUser;
     String teamDocumentID = (await _findTeamDocumentID(teamID, teamCode));
-    var existingMembers = (await _getTeamDetails(teamDocumentID)).teamMembers;
-    var updatedMembers = existingMembers
-      ..add(
-          _fireStore.collection('users').document(user.uid)
-      );
-    _fireStore.collection("teams")
+    var existingMembers = (await getTeamDetails(teamDocumentID)).teamMembers;
+    if (!existingMembers
+        .contains(_fireStore.collection('users').document(user.uid))) {
+      existingMembers..add(_fireStore.collection('users').document(user.uid));
+    }
+    _fireStore
+        .collection("teams")
         .document(teamDocumentID)
-        .updateData({'team_members': updatedMembers});
+        .updateData({'team_members': existingMembers});
 
     //update the user profile to reflect the change
     var userDetail = await getUserDetail();
@@ -78,14 +85,15 @@ class UserRepository {
   addCurrentUserToTeamWithRef(DocumentReference teamReference) async {
     var user = await _firebaseUser;
     String teamDocumentID = teamReference.documentID;
-    var existingMembers = (await _getTeamDetails(teamDocumentID)).teamMembers;
-    var updatedMembers = existingMembers
-      ..add(
-          _fireStore.collection('users').document(user.uid)
-      );
-    _fireStore.collection("teams")
+    var existingMembers = (await getTeamDetails(teamDocumentID)).teamMembers;
+    if (!existingMembers
+        .contains(_fireStore.collection('users').document(user.uid))) {
+      existingMembers..add(_fireStore.collection('users').document(user.uid));
+    }
+    _fireStore
+        .collection("teams")
         .document(teamDocumentID)
-        .updateData({'team_members': updatedMembers});
+        .updateData({'team_members': existingMembers});
 
     //update the user profile to reflect the change
     var userDetail = await getUserDetail();
@@ -94,15 +102,15 @@ class UserRepository {
     updateUserDetail(userDetail);
   }
 
-  Future<Team> _getTeamDetails(String teamDocumentID) async {
-    var teamDetails = await _fireStore.collection("teams").document(
-        teamDocumentID).get();
+  Future<Team> getTeamDetails(String teamDocumentID) async {
+    var teamDetails =
+        await _fireStore.collection("teams").document(teamDocumentID).get();
     return Team.fromJson(teamDetails.data);
   }
 
-
   Future<String> _findTeamDocumentID(String teamID, String teamCode) async {
-    var teamDetails = await _fireStore.collection("teams")
+    var teamDetails = await _fireStore
+        .collection("teams")
         .where("team_id", isEqualTo: teamID)
         .where("team_code", isEqualTo: teamCode)
         .getDocuments();
@@ -110,7 +118,8 @@ class UserRepository {
   }
 
   Future<Team> findTeam(String teamID, String teamCode) async {
-    var teamDetails = await _fireStore.collection("teams")
+    var teamDetails = await _fireStore
+        .collection("teams")
         .where("team_id", isEqualTo: teamID)
         .where("team_code", isEqualTo: teamCode)
         .getDocuments();
@@ -118,7 +127,8 @@ class UserRepository {
   }
 
   Future<String> fetchTeamReference(String teamID, String teamCode) async {
-    var teamDetails = await _fireStore.collection("teams")
+    var teamDetails = await _fireStore
+        .collection("teams")
         .where("team_id", isEqualTo: teamID)
         .where("team_code", isEqualTo: teamCode)
         .getDocuments();
@@ -129,7 +139,7 @@ class UserRepository {
     try {
       var authUser = await _firebaseUser;
       var userDetail = await getUserDetail();
-      var joinedTeam = await _getTeamDetails(userDetail.joinedTeam.documentID);
+      var joinedTeam = await getTeamDetails(userDetail.joinedTeam.documentID);
       if (joinedTeam.teamOwner.documentID == authUser.uid) {
         return true;
       } else {
@@ -142,7 +152,7 @@ class UserRepository {
 
   Future<Team> getCurrentUserTeam() async {
     var user = await getUserDetail();
-    return _getTeamDetails(user.joinedTeam.documentID);
+    return getTeamDetails(user.joinedTeam.documentID);
   }
 
   updateTeamDetail(Team team) async {
@@ -158,5 +168,52 @@ class UserRepository {
       users.add(UserDetail.fromJson(user).userName);
     });
     return users;
+  }
+
+  ///events functions
+  Future<List<int>> getAvailableSlots(DocumentReference reference) async {
+    var event = await getEventFromRef(reference);
+    String dateFormat = DateFormat('dd-MM-yyyy').format(DateTime.now());
+
+    List<int> selectedSlots = await _fireStore
+        .collection("registrations/$dateFormat/${event.eventID}")
+        .getDocuments()
+        .then((value) {
+      return value.documents.map((e) {
+        return e.data['selected_slot'] as int;
+      }).toList();
+    });
+
+    List<int> totalSlots = List<int>.generate(AvailableSlots.TOTAL_SLOTS, (index) => index + 1);
+    List<int> availableSlots = totalSlots..removeWhere((element) => selectedSlots.contains(element));
+    return availableSlots;
+  }
+
+  Future<DocumentReference> getEventDocFromID(String eventID) async {
+    var event = await _fireStore.collection("available_event").where("event_id", isEqualTo: eventID).getDocuments();
+    return _fireStore.collection("available_event").document(event.documents[0].documentID);
+  }
+
+  Future<AvailableEvent> getEventFromRef(DocumentReference documentReference) async {
+    var eventData = (await documentReference.get()).data;
+    return AvailableEvent.fromJson(eventData);
+  }
+
+  //registers current team to the event
+  registerTeamForEvent(AvailableEvent event, int slot) async {
+    String dateFormat = DateFormat('dd-MM-yyyy').format(DateTime.now());
+    var user = await _firebaseUser;
+
+    var eventRef = await getEventDocFromID(event.eventID);
+    var currentTeam = (await getUserDetail()).joinedTeam;
+
+    _fireStore.collection("registrations/$dateFormat/${event.eventID}")
+    .document(currentTeam.documentID)
+    .setData(
+      Registration(selectedEvent: eventRef,
+      team: currentTeam,
+      selectedSlot: slot,
+      date: Timestamp.now()).toJson()
+    );
   }
 }

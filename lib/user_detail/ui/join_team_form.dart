@@ -41,11 +41,11 @@ class JoinTeamForm extends StatelessWidget {
       if (state is FindTeamSuccess) {
         Scaffold.of(context)
             .showSnackBar(SnackBar(content: Text("Team Found")));
+        Navigator.of(context).pop();
+
       } else if (state is FindTeamFailure) {
         Scaffold.of(context)
             .showSnackBar(SnackBar(content: Text("Team Not Found")));
-      } else if (state is UserProfileUpdateSuccess) {
-        Navigator.of(context).pop();
       }
     });
   }
