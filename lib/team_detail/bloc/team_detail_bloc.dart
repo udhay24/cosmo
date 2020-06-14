@@ -33,7 +33,9 @@ class TeamDetailBloc extends Bloc<TeamDetailEvent, TeamDetailState> {
   Stream<TeamDetailState> _mapDetailChangedToState(
       TeamMemberDetailChanged event) async* {
     if (Validators.isValidName(event.team.teamName) &&
-        Validators.isValidName(event.team.teamCode)) {
+        Validators.isValidName(event.team.teamCode) &&
+        (event.team.teamMembers.length > 0)
+    ) {
       yield SubmitFormVisible();
     } else {
       yield SubmitFormInVisible();

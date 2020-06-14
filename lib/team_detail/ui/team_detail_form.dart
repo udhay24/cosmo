@@ -23,6 +23,8 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
 
   TeamDetailBloc _teamDetailBloc;
 
+  GlobalKey<FormState> _globalKey = GlobalKey();
+
   @override
   void dispose() {
     super.dispose();
@@ -39,6 +41,7 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
     _teamNameController.addListener(_onFormUpdated);
     _teamIDController.addListener(_onFormUpdated);
     _teamCodeController.addListener(_onFormUpdated);
+    _team.addListener(() {_onFormUpdated();});
     _teamDetailBloc.add(TeamDetailScreenInitialized());
   }
 
@@ -94,36 +97,49 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
             child: Padding(
               padding: EdgeInsets.all(20),
               child: Form(
+                key: _globalKey,
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     TextFormField(
                       controller: _teamNameController,
                       decoration: InputDecoration(
-                        icon: Icon(Icons.games),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide()),
                         labelText: 'Team Name',
                       ),
                       autocorrect: false,
                       autovalidate: true,
                     ),
+                    SizedBox(height: 15,),
                     TextFormField(
                       controller: _teamIDController,
                       decoration: InputDecoration(
-                        icon: Icon(Icons.person),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide()),
                         labelText: 'Team ID',
                       ),
                       autocorrect: false,
                       autovalidate: true,
                     ),
+                    SizedBox(height: 15,),
                     TextFormField(
                       controller: _teamCodeController,
                       decoration: InputDecoration(
-                        icon: Icon(Icons.people),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide()),
                         labelText: 'Team Code',
                       ),
                       autocorrect: false,
                       autovalidate: true,
                     ),
+                    SizedBox(height: 25,),
                     _buildUserList(context),
+                    SizedBox(height: 15,),
+
                     Builder(builder: (context) {
                       if (state is SubmitFormVisible) {
                         return TeamSubmitButton(onPressed: _onFormSubmitted);
@@ -148,17 +164,29 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
       valueListenable: _team,
       builder: (context, Team team, _) {
         return ListView.builder(
-          itemBuilder: (context, index) {
+          itemBuilder: (context, position) {
             return FutureBuilder(
               builder: (context, AsyncSnapshot<String> snapshot) {
                 if ((snapshot != null) && (snapshot.hasData)) {
-                  return Text(snapshot.data);
+                  return Container(
+                    height: 30,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(snapshot.data),
+                        IconButton(icon: Icon(Icons.clear), onPressed: (){
+                          _team.value.teamMembers.removeAt(position);
+                          _team.notifyListeners();
+                        })
+                      ],
+                    ),
+                  );
                 } else {
                   return Container();
                 }
               },
               future: RepositoryProvider.of<UserRepository>(context)
-                  .getUserNamesFromRef(team.teamMembers[index]),
+                  .getUserNamesFromRef(team.teamMembers[position]),
             );
           },
           itemCount: _team.value.teamMembers.length ?? 0,

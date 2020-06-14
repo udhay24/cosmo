@@ -7,6 +7,7 @@ import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/user_detail/bloc/bloc.dart';
 import 'package:pubg/user_detail/ui/create_team_form.dart';
 import 'package:pubg/user_detail/ui/join_team_form.dart';
+import 'package:pubg/util/validators.dart';
 
 class UserProfileForm extends StatefulWidget {
   @override
@@ -18,6 +19,8 @@ class _UserProfileFormState extends State<UserProfileForm> {
   final TextEditingController _phoneNumberController = TextEditingController();
   ValueNotifier<DocumentReference> _teamReference = ValueNotifier(null);
   ValueNotifier<String> _selectedTeamName = ValueNotifier("");
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -59,65 +62,164 @@ class _UserProfileFormState extends State<UserProfileForm> {
       }
     }, builder: (context, state) {
       if (state is UserProfileLoading) {
-        return Text("user profile Loading");
+        return Center(child: CircularProgressIndicator());
       } else {
-        return Column(
-          children: [
-            TextFormField(
-              controller: _userNameController,
-              decoration: InputDecoration(
-                icon: Icon(Icons.games),
-                labelText: 'User Name',
+        return Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
+          Form(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _userNameController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide()),
+                      labelText: 'User Name',
+                    ),
+                    maxLength: 24,
+                    autocorrect: false,
+                    autovalidate: true,
+                    validator: (value) {
+                      if (!Validators.isValidName(value)) {
+                        return 'Invalid name';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  TextFormField(
+                    controller: _phoneNumberController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide()),
+                      labelText: 'Phone Number',
+                    ),
+                    keyboardType: TextInputType.numberWithOptions(),
+                    autocorrect: false,
+                    maxLength: 10,
+                    autovalidate: true,
+                    validator: (value) {
+                      if (!Validators.isValidPhoneNumber(value)) {
+                        return 'Invalid Number';
+                      }
+                      return null;
+                    },
+                  ),
+                  ValueListenableBuilder(
+                      valueListenable: _selectedTeamName,
+                      builder: (context, String value, _) {
+                        if (value != null && (value.isNotEmpty)) {
+                          return Column(
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Text("Selected team"),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text("$value")
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: [
+                                  RaisedButton(
+                                      child: Text("Change Team"),
+                                      onPressed: () {
+                                        Scaffold.of(context).showBottomSheet(
+                                            (context) => JoinTeamForm(),
+                                        backgroundColor: Colors.white,
+                                          elevation: 4
+                                        );
+                                      },
+                                  ),
+                                  RaisedButton(
+                                      child: Text("Create Team"),
+                                      onPressed: () {
+                                        Scaffold.of(context).showBottomSheet(
+                                            (context) => CreateTeamForm(),
+                                            backgroundColor: Colors.white,
+                                            elevation: 4);
+                                      })
+                                ],
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Column(
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Text("Selected team"),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text("Team not selected")
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  RaisedButton(
+                                      child: Text("Join Team"),
+                                      onPressed: () {
+                                        Scaffold.of(context).showBottomSheet(
+                                            (context) => JoinTeamForm());
+                                      }),
+                                  RaisedButton(
+                                      child: Text("Create Team"),
+                                      onPressed: () {
+                                        Scaffold.of(context).showBottomSheet(
+                                            (context) => CreateTeamForm());
+                                      })
+                                ],
+                              ),
+                            ],
+                          );
+                        }
+                      })
+                ],
               ),
-              autocorrect: false,
-              autovalidate: true,
             ),
-            TextFormField(
-              controller: _phoneNumberController,
-              decoration: InputDecoration(
-                icon: Icon(Icons.games),
-                labelText: 'Phone Number',
-              ),
-              keyboardType: TextInputType.numberWithOptions(),
-              autocorrect: false,
-              autovalidate: true,
-            ),
-            ValueListenableBuilder(
-                valueListenable: _selectedTeamName,
-                builder: (context, value, _) {
-                  return Text("Selected team ${value ?? "-"}");
-                }),
-            Row(
-              children: [
-                RaisedButton(
-                    child: Text("Join Team"),
-                    onPressed: () {
-                      Scaffold.of(context)
-                          .showBottomSheet((context) => JoinTeamForm());
-                    }),
-                RaisedButton(
-                    child: Text("Create Team"),
-                    onPressed: () {
-                      Scaffold.of(context)
-                          .showBottomSheet((context) => CreateTeamForm());
-                    })
-              ],
-            ),
-            RaisedButton(
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: RaisedButton(
               onPressed: () {
-                BlocProvider.of<UserProfileBloc>(context).add(
-                    SaveProfilePressed(
-                        userDetail: UserDetail(
-                            userName: _userNameController.value.text,
-                            phoneNumber: int.parse(
-                                _phoneNumberController.value.text.trim()),
-                            userUuid: "",
-                            joinedTeam: _teamReference.value)));
+                if (_formKey.currentState.validate() &&
+                    _selectedTeamName.value.isNotEmpty) {
+                  BlocProvider.of<UserProfileBloc>(context).add(
+                      SaveProfilePressed(
+                          userDetail: UserDetail(
+                              userName: _userNameController.value.text,
+                              phoneNumber: int.parse(
+                                  _phoneNumberController.value.text.trim()),
+                              userUuid: "",
+                              joinedTeam: _teamReference.value)));
+                } else {
+                  Scaffold.of(context)
+                      .showSnackBar(SnackBar(content: Text('Invalid data')));
+                }
               },
-              child: Text("Submit"),
-            )
-          ],
-        );
+              child: Text("Update profile"),
+            ),
+          ),
+        ]);
       }
     });
   }

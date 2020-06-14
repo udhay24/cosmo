@@ -223,10 +223,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
               } else if (value == "manage_team") {
                 BlocProvider.of<NavigationBloc>(context)
-                    .add(UserProfileNavigateEvent());
+                    .add(TeamDetailNavigationEvent());
               } else if (value == "view_team") {
                 BlocProvider.of<NavigationBloc>(context)
-                    .add(TeamDetailNavigationEvent());
+                    .add(UserProfileNavigateEvent());
               }
             },
           );
