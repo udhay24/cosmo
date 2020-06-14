@@ -37,6 +37,11 @@ class UserProfileUpdateSuccess extends UserProfileState {
   List<Object> get props => [];
 }
 
+class UserProfileUpdating extends UserProfileState {
+  @override
+  List<Object> get props => [];
+}
+
 class UserProfileUpdateFailure extends UserProfileState {
   @override
   List<Object> get props => [];

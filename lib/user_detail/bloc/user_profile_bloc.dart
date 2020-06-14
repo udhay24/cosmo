@@ -78,6 +78,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
 
   Stream<UserProfileState> _mapSaveProfileEvent(
       SaveProfilePressed event) async* {
+    yield UserProfileUpdating();
     try {
       await _userRepository.removeUserFromTeam();
       await _userRepository.updateUserDetail(event.userDetail);

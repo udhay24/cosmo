@@ -51,14 +51,28 @@ class _UserProfileFormState extends State<UserProfileForm> {
         _teamReference.value = state.teamReference;
       } else if (state is CreateTeamSuccess) {
         _teamReference.value = state.teamReference;
-      } else if (state is FindTeamSuccess) {
-        _teamReference.value = state.teamReference;
       } else if (state is UserProfileUpdateSuccess) {
         BlocProvider.of<NavigationBloc>(context).add(HomeScreenNavigateEvent());
       } else if (state is UserProfileLoadedState) {
         _userNameController.text = state.userDetail.userName;
         _phoneNumberController.text = state.userDetail.phoneNumber.toString();
         _teamReference.value = state.userDetail.joinedTeam;
+      } else if (state is UserProfileUpdating) {
+        Scaffold.of(context).showSnackBar(SnackBar(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text("Updating Profile"),
+                SizedBox(
+                  width: 10,
+                ),
+                CircularProgressIndicator(
+                  strokeWidth: 2,
+                )
+              ],
+            ),
+            behavior: SnackBarBehavior.floating,
+            elevation: 10));
       }
     }, builder: (context, state) {
       if (state is UserProfileLoading) {
@@ -133,14 +147,13 @@ class _UserProfileFormState extends State<UserProfileForm> {
                               Row(
                                 children: [
                                   RaisedButton(
-                                      child: Text("Change Team"),
-                                      onPressed: () {
-                                        Scaffold.of(context).showBottomSheet(
-                                            (context) => JoinTeamForm(),
-                                        backgroundColor: Colors.white,
-                                          elevation: 4
-                                        );
-                                      },
+                                    child: Text("Change Team"),
+                                    onPressed: () {
+                                      Scaffold.of(context).showBottomSheet(
+                                          (context) => JoinTeamForm(),
+                                          backgroundColor: Colors.white,
+                                          elevation: 4);
+                                    },
                                   ),
                                   RaisedButton(
                                       child: Text("Create Team"),
