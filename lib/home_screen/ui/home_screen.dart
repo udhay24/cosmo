@@ -109,10 +109,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   .add(UserProfileNavigateEvent());
             } else if (state is ShowSlotDialog) {
               Scaffold.of(context)
-                  .showBottomSheet((context) => SlotSelectionDialog(
-                        selectedEvent: state.selectedEvent,
+                  .showBottomSheet(
+                      (context) => SlotSelectionDialog(
+                        eventRef: state.selectedEvent,
                         availableSlots: state.availableSlots,
-                      ));
+                      ),
+              elevation: 0,);
             }
           },
         ));

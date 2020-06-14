@@ -55,6 +55,9 @@ class App extends StatelessWidget {
           navigatorKey: BlocProvider.of<NavigationBloc>(context).navigatorKey,
           onGenerateRoute: generateRoute,
           initialRoute: ScreenRoutes.SPLASH_SCREEN_ROUTE,
+          theme: ThemeData.light().copyWith(
+              canvasColor: Color.fromARGB(60, 240, 239, 239),
+          ),
         );
       },
       listener: (context, state) {
