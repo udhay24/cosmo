@@ -16,6 +16,7 @@ class JoinTeamForm extends StatelessWidget {
         builder: (context, state) {
       return Wrap(children: <Widget>[
         Container(
+          color: Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(

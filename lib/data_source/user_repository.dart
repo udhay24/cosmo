@@ -56,14 +56,18 @@ class UserRepository {
   }
 
   removeUserFromTeam() async {
-    var team = await getCurrentUserTeam();
-    var userID = (await _firebaseUser).uid;
+    try {
+      var team = await getCurrentUserTeam();
+      var userID = (await _firebaseUser).uid;
 
-    team.teamMembers.removeWhere((element) {
-      return (element.documentID == userID);
-    });
+      team.teamMembers.removeWhere((element) {
+        return (element.documentID == userID);
+      });
 
-    await updateTeamDetail(team);
+      await updateTeamDetail(team);
+    } catch (_) {
+      print("error removing user from team");
+    }
   }
 
   ///create a new team and returns the reference
@@ -163,7 +167,11 @@ class UserRepository {
 
   Future<Team> getCurrentUserTeam() async {
     var user = await getUserDetail();
-    return getTeamDetails(user.joinedTeam.documentID);
+    if (user.joinedTeam.documentID == null) {
+      return null;
+    } else {
+      return getTeamDetails(user.joinedTeam.documentID);
+    }
   }
 
   updateTeamDetail(Team team) async {

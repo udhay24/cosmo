@@ -27,76 +27,79 @@ class _CreateTeamFormState extends State<CreateTeamForm> {
   Widget build(BuildContext context) {
     return BlocConsumer<UserProfileBloc, UserProfileState>(
       builder: (context, state) {
-        return Form(
-          key: _globalKey,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Wrap(children: <Widget>[
-              TextFormField(
-                controller: _teamNameController,
-                decoration: InputDecoration(labelText: "Team Name"),
+        return Container(
+          color: Colors.white,
+          child: Form(
+            key: _globalKey,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Wrap(children: <Widget>[
+                TextFormField(
+                  controller: _teamNameController,
+                  decoration: InputDecoration(labelText: "Team Name"),
 //              decoration: InputDecoration(
 //                border: OutlineInputBorder(
 //                    borderRadius: BorderRadius.circular(8),
 //                    borderSide: BorderSide()),
 //                labelText: 'Team Name',
 //              ),
-              autovalidate: true,
-                validator: (value) {
-                  if (!Validators.isValidName(value)) {
-                    return "Invalid team name";
-                  } else {
-                    return null;
-                  }
-                },
-              ),
-              SizedBox(height: 15,),
-              TextFormField(
-                controller: _teamIDController,
                 autovalidate: true,
-                decoration: InputDecoration(labelText: "Team ID"),
-                validator: (value) {
-                  if (!Validators.isValidName(value)) {
-                    return "Invalid Team ID";
-                  } else {
-                    return null;
-                  }
-                },
-              ),
-              SizedBox(height: 15,),
-              TextFormField(
-                controller: _teamCodeController,
-                autovalidate: true,
-                decoration: InputDecoration(labelText: "Team Code"),
-                validator: (value) {
-                  if (!Validators.isValidName(value)) {
-                    return "Invalid Team Code";
-                  } else {
-                    return null;
-                  }
-                },
-              ),
-              SizedBox(height: 25,),
-              Center(
-                child: RaisedButton(
-                  onPressed: () {
-                    if (_globalKey.currentState.validate()) {
-                      BlocProvider.of<UserProfileBloc>(context).add(
-                          CreateTeamPressed(
-                              teamName: _teamNameController.text,
-                              teamID: _teamIDController.text,
-                              teamCode: _teamCodeController.text));
+                  validator: (value) {
+                    if (!Validators.isValidName(value)) {
+                      return "Invalid team name";
                     } else {
-                      Scaffold.of(context)
-                          .showSnackBar(SnackBar(content: Text("Enter valid details"),
-                          behavior: SnackBarBehavior.floating,
-                          elevation: 10));
+                      return null;
                     }
                   },
-                  child: Text("Create Team"),
                 ),
-              )
-            ]),
+                SizedBox(height: 15,),
+                TextFormField(
+                  controller: _teamIDController,
+                  autovalidate: true,
+                  decoration: InputDecoration(labelText: "Team ID"),
+                  validator: (value) {
+                    if (!Validators.isValidName(value)) {
+                      return "Invalid Team ID";
+                    } else {
+                      return null;
+                    }
+                  },
+                ),
+                SizedBox(height: 15,),
+                TextFormField(
+                  controller: _teamCodeController,
+                  autovalidate: true,
+                  decoration: InputDecoration(labelText: "Team Code"),
+                  validator: (value) {
+                    if (!Validators.isValidName(value)) {
+                      return "Invalid Team Code";
+                    } else {
+                      return null;
+                    }
+                  },
+                ),
+                SizedBox(height: 25,),
+                Center(
+                  child: RaisedButton(
+                    onPressed: () {
+                      if (_globalKey.currentState.validate()) {
+                        BlocProvider.of<UserProfileBloc>(context).add(
+                            CreateTeamPressed(
+                                teamName: _teamNameController.text,
+                                teamID: _teamIDController.text,
+                                teamCode: _teamCodeController.text));
+                      } else {
+                        Scaffold.of(context)
+                            .showSnackBar(SnackBar(content: Text("Enter valid details"),
+                            behavior: SnackBarBehavior.floating,
+                            elevation: 10));
+                      }
+                    },
+                    child: Text("Create Team"),
+                  ),
+                )
+              ]),
+            ),
           ),
         );
       },
