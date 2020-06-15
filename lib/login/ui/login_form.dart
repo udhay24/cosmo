@@ -21,6 +21,7 @@ class _LoginFormState extends State<LoginForm> {
   LoginBloc _loginBloc;
 
   GlobalKey<FormState> _globalKey = GlobalKey();
+  var passwordVisible = false;
 
   bool get isPopulated =>
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
@@ -178,8 +179,21 @@ class _LoginFormState extends State<LoginForm> {
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                               errorStyle: GoogleFonts.abel(color: Colors.white),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  passwordVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    passwordVisible = !passwordVisible;
+                                  });
+                                },
+                              ),
                             ),
-                            obscureText: true,
+                            obscureText: passwordVisible,
                             autovalidate: true,
                             autocorrect: false,
                             validator: (_) {

@@ -18,6 +18,8 @@ class _RegisterFormState extends State<RegisterForm> {
 
   RegisterBloc _registerBloc;
 
+  var passwordVisible = true;
+
   bool get isPopulated =>
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
 
@@ -74,78 +76,89 @@ class _RegisterFormState extends State<RegisterForm> {
       },
       child: BlocBuilder<RegisterBloc, RegisterState>(
         builder: (context, state) {
-          return  Stack(
-              alignment: Alignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Form(
-                    child: ListView(
-                      children: <Widget>[
-                        TextFormField(
-                          controller: _emailController,
-                          style: GoogleFonts.poppins(color: Colors.white),
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(
-                              Icons.email,
+          return Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: Form(
+                  child: ListView(
+                    children: <Widget>[
+                      TextFormField(
+                        controller: _emailController,
+                        style: GoogleFonts.poppins(color: Colors.white),
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.email,
+                            color: Colors.white,
+                          ),
+                          labelText: 'Email',
+                          fillColor: Colors.white,
+                          labelStyle: GoogleFonts.abel(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                          errorStyle: GoogleFonts.abel(color: Colors.white),
+                          border: new UnderlineInputBorder(
+                            borderRadius: new BorderRadius.circular(4.0),
+                            borderSide: new BorderSide(),
+                          ),
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                        autocorrect: false,
+                        autovalidate: true,
+                        validator: (_) {
+                          return !state.isEmailValid ? 'Invalid Email' : null;
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextFormField(
+                        controller: _passwordController,
+                        style: GoogleFonts.poppins(color: Colors.white),
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              passwordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
                               color: Colors.white,
                             ),
-                            labelText: 'Email',
-                            fillColor: Colors.white,
-                            labelStyle: GoogleFonts.abel(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                            errorStyle: GoogleFonts.abel(color: Colors.white),
-                            border: new UnderlineInputBorder(
-                              borderRadius: new BorderRadius.circular(4.0),
-                              borderSide: new BorderSide(),
-                            ),
+                            onPressed: () {
+                              setState(() {
+                                passwordVisible = !passwordVisible;
+                              });
+                            },
                           ),
-                          keyboardType: TextInputType.emailAddress,
-                          autocorrect: false,
-                          autovalidate: true,
-                          validator: (_) {
-                            return !state.isEmailValid ? 'Invalid Email' : null;
-                          },
+                          prefixIcon: Icon(Icons.lock, color: Colors.white),
+                          labelText: 'Password',
+                          fillColor: Colors.white,
+                          labelStyle: GoogleFonts.abel(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                          errorStyle: GoogleFonts.abel(color: Colors.white),
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          controller: _passwordController,
-                          style: GoogleFonts.poppins(color: Colors.white),
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.lock, color: Colors.white),
-                            labelText: 'Password',
-                            fillColor: Colors.white,
-                            labelStyle: GoogleFonts.abel(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                            errorStyle: GoogleFonts.abel(color: Colors.white),
-                          ),
-                          obscureText: true,
-                          autocorrect: false,
-                          autovalidate: true,
-                          validator: (_) {
-                            return !state.isPasswordValid
-                                ? 'Invalid Password'
-                                : null;
-                          },
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        RegisterButton(
-                          onPressed: isRegisterButtonEnabled(state)
-                              ? _onFormSubmitted
-                              : null,
-                        ),
-                      ],
-                      shrinkWrap: true,
-                    ),
+                        obscureText: passwordVisible,
+                        autocorrect: false,
+                        autovalidate: true,
+                        validator: (_) {
+                          return !state.isPasswordValid
+                              ? 'Invalid Password'
+                              : null;
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      RegisterButton(
+                        onPressed: isRegisterButtonEnabled(state)
+                            ? _onFormSubmitted
+                            : null,
+                      ),
+                    ],
+                    shrinkWrap: true,
                   ),
                 ),
-              ],
+              ),
+            ],
           );
         },
       ),
