@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_event.dart';
-import 'package:pubg/data_source/login_repository.dart';
 import 'package:pubg/login/bloc/bloc.dart';
 import 'package:pubg/login/ui/create_account_button.dart';
 import 'package:pubg/util/themes.dart';
@@ -12,7 +11,6 @@ import 'google_login_button.dart';
 import 'login_button.dart';
 
 class LoginForm extends StatefulWidget {
-
   State<LoginForm> createState() => _LoginFormState();
 }
 
@@ -21,6 +19,8 @@ class _LoginFormState extends State<LoginForm> {
   final TextEditingController _passwordController = TextEditingController();
 
   LoginBloc _loginBloc;
+
+  GlobalKey<FormState> _globalKey = GlobalKey();
 
   bool get isPopulated =>
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
@@ -83,6 +83,7 @@ class _LoginFormState extends State<LoginForm> {
                   child: Padding(
                     padding: EdgeInsets.all(40.0),
                     child: Form(
+                      key: _globalKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[

@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 @immutable
-class LoginState {
+class LoginState extends Equatable {
   final bool isEmailValid;
   final bool isPasswordValid;
   final bool isSubmitting;
@@ -85,4 +86,7 @@ class LoginState {
       isFailure: $isFailure,
     }''';
   }
+
+  @override
+  List<Object> get props => [isEmailValid, isFailure, isPasswordValid, isSubmitting, isSuccess, isFormValid];
 }

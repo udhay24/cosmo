@@ -205,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
             popupMenuItem = PopupMenuItem<String>(
                 child: const Text('Manage Team'), value: 'manage_team');
           } else {
-            popupMenuItem = PopupMenuItem(
+            popupMenuItem = PopupMenuItem<String>(
               child: Text("View Team"),
               value: "view_team",
             );
