@@ -13,6 +13,7 @@ import 'package:pubg/register/bloc/bloc.dart';
 import 'package:pubg/register/ui/register_screen.dart';
 import 'package:pubg/team_detail/bloc/bloc.dart';
 import 'package:pubg/team_detail/ui/team_detail_screen.dart';
+import 'package:pubg/team_detail/ui/team_detail_view_screen.dart';
 import 'package:pubg/user_detail/bloc/bloc.dart';
 import 'package:pubg/user_detail/ui/profile_update_screen.dart';
 
@@ -26,6 +27,7 @@ class ScreenRoutes {
   static const String HOME_SCREEN_ROUTE = "/home_Screen";
   static const String TEAM_DETAIL_SCREEN_ROUTE = "/team_detail";
   static const String SLOT_SELECTION_SCREEN_ROUTE = "/slot_selection";
+  static const String TEAM_DETAIL_VIEW_SCREEN_ROUTE = "team_detail/view";
 }
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -80,7 +82,18 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           }
       );
 
-      
+    case ScreenRoutes.TEAM_DETAIL_VIEW_SCREEN_ROUTE:
+      return MaterialPageRoute(
+          builder: (context) {
+            return BlocProvider<TeamDetailBloc>(
+                create: (context) => TeamDetailBloc(userRepository: RepositoryProvider.of<UserRepository>(context))
+                ..add(TeamDetailScreenInitialized()),
+                child: TeamDetailViewScreen()
+            );
+          }
+      );
+
+
 //    default:
 //      return MaterialPageRoute(
 //          builder: (_) => Scaffold(

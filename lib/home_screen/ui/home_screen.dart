@@ -226,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     .add(TeamDetailNavigationEvent());
               } else if (value == "view_team") {
                 BlocProvider.of<NavigationBloc>(context)
-                    .add(UserProfileNavigateEvent());
+                    .add(TeamDetailViewNavigationEvent());
               }
             },
           );

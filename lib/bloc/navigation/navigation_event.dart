@@ -44,6 +44,11 @@ class TeamDetailNavigationEvent extends NavigationEvent {
   List<Object> get props => [];
 }
 
+class TeamDetailViewNavigationEvent extends NavigationEvent {
+  @override
+  List<Object> get props => [];
+}
+
 class SlotSelectionNavigationEvent extends NavigationEvent {
   @override
   List<Object> get props => [];
