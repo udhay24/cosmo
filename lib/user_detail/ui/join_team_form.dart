@@ -70,6 +70,11 @@ class JoinTeamForm extends StatelessWidget {
             ),
             behavior: SnackBarBehavior.floating,
             elevation: 10));
+      } else if (state is CannotJoinTeam) {
+        Scaffold.of(context)
+            .showSnackBar(SnackBar(content: Text("This team has reached maximum members limit"),
+          behavior: SnackBarBehavior.floating,
+          elevation: 10,));
       }
     });
   }

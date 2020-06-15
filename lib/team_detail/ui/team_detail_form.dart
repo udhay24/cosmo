@@ -64,7 +64,7 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
                 content: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Registering...'),
+                    Text('Updating...'),
                     CircularProgressIndicator(),
                   ],
                 ),
@@ -82,7 +82,7 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
                 content: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Registration Failure'),
+                    Text('update Failure. try again'),
                     Icon(Icons.error),
                   ],
                 ),

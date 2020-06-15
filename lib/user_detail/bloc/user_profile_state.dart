@@ -52,6 +52,11 @@ class FindTeamSearching extends UserProfileState {
   List<Object> get props => [];
 }
 
+class CannotJoinTeam extends UserProfileState {
+  @override
+  List<Object> get props => [];
+}
+
 class FindTeamSuccess extends UserProfileState {
   final DocumentReference teamReference;
 

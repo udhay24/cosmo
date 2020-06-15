@@ -54,7 +54,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
           teamCode: event.teamCode,
           teamId: event.teamID,
           teamMembers: [],
-      teamOwner: currentUser));
+          teamOwner: currentUser));
       yield CreateTeamSuccess(teamReference: _teamRef);
     } catch (e) {
       print(e);
@@ -67,9 +67,14 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     try {
       var teamReference = await _userRepository.fetchTeamReference(
           event.teamID, event.teamCode);
-      yield FindTeamSuccess(
-          teamReference:
-              Firestore.instance.collection("teams").document(teamReference));
+      var team = await _userRepository.getTeamDetails(teamReference);
+      if (team.teamMembers.length > 3) {
+        yield CannotJoinTeam();
+      } else {
+        yield FindTeamSuccess(
+            teamReference:
+                Firestore.instance.collection("teams").document(teamReference));
+      }
     } catch (e) {
       print(e);
       yield FindTeamFailure();
@@ -82,7 +87,8 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     try {
       await _userRepository.removeUserFromTeam();
       await _userRepository.updateUserDetail(event.userDetail);
-      await _userRepository.addCurrentUserToTeamWithRef(event.userDetail.joinedTeam);
+      await _userRepository
+          .addCurrentUserToTeamWithRef(event.userDetail.joinedTeam);
       yield UserProfileUpdateSuccess();
     } catch (e) {
       yield UserProfileUpdateFailure();
