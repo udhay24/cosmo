@@ -216,6 +216,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 popupMenuItem,
                 PopupMenuItem<String>(
                     child: const Text("Log out"), value: "log_out"),
+                PopupMenuItem<String>(
+                  child: const Text("About us"), value: "about",
+                )
               ];
             },
             onSelected: (value) {
@@ -227,6 +230,9 @@ class _HomeScreenState extends State<HomeScreen> {
               } else if (value == "view_team") {
                 BlocProvider.of<NavigationBloc>(context)
                     .add(TeamDetailViewNavigationEvent());
+              } else if (value == "about") {
+                BlocProvider.of<NavigationBloc>(context)
+                    .add(AboutScreenNavigationEvent());
               }
             },
           );

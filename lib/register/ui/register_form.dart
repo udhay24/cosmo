@@ -15,6 +15,7 @@ class RegisterForm extends StatefulWidget {
 class _RegisterFormState extends State<RegisterForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  var doesPasswordsMatch = false;
 
   RegisterBloc _registerBloc;
 
@@ -24,7 +25,7 @@ class _RegisterFormState extends State<RegisterForm> {
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
 
   bool isRegisterButtonEnabled(RegisterState state) {
-    return state.isFormValid && isPopulated && !state.isSubmitting;
+    return state.isFormValid && isPopulated && !state.isSubmitting && !doesPasswordsMatch;
   }
 
   @override
@@ -148,6 +149,44 @@ class _RegisterFormState extends State<RegisterForm> {
                       SizedBox(
                         height: 10,
                       ),
+                      TextFormField(
+                        style: GoogleFonts.poppins(color: Colors.white),
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              passwordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                passwordVisible = !passwordVisible;
+                              });
+                            },
+                          ),
+                          prefixIcon: Icon(Icons.lock, color: Colors.white),
+                          labelText: 'Re-enter Password',
+                          fillColor: Colors.white,
+                          labelStyle: GoogleFonts.abel(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                          errorStyle: GoogleFonts.abel(color: Colors.white),
+                        ),
+                        obscureText: passwordVisible,
+                        autocorrect: false,
+                        autovalidate: true,
+                        onChanged: (value) {
+                            _onPasswordChanged();
+                            if(value == _passwordController.text) {
+                              doesPasswordsMatch = true;
+                            }
+                        },
+                        validator: (value) {
+                          return value != _passwordController.text
+                              ? "Passwords don't match"
+                              : null;
+                        },
+                      ),
                       RegisterButton(
                         onPressed: isRegisterButtonEnabled(state)
                             ? _onFormSubmitted
@@ -155,6 +194,7 @@ class _RegisterFormState extends State<RegisterForm> {
                       ),
                     ],
                     shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
                   ),
                 ),
               ),

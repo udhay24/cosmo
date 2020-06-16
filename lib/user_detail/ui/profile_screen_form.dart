@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pubg/bloc/navigation/bloc.dart';
 import 'package:pubg/data_source/model/user_detail.dart';
 import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/user_detail/bloc/bloc.dart';
@@ -49,10 +48,17 @@ class _UserProfileFormState extends State<UserProfileForm> {
         listener: (context, state) {
       if (state is FindTeamSuccess) {
         _teamReference.value = state.teamReference;
+        if (_formKey.currentState.validate() &&
+            _selectedTeamName.value.isNotEmpty) {
+          _updateProfile();
+        }
       } else if (state is CreateTeamSuccess) {
         _teamReference.value = state.teamReference;
       } else if (state is UserProfileUpdateSuccess) {
-        BlocProvider.of<NavigationBloc>(context).add(HomeScreenNavigateEvent());
+        Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text("Profile Updated"),
+            behavior: SnackBarBehavior.fixed,
+            elevation: 10));
       } else if (state is UserProfileLoadedState) {
         _userNameController.text = state.userDetail.userName;
         _phoneNumberController.text = state.userDetail.phoneNumber.toString();
@@ -216,14 +222,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
               onPressed: () {
                 if (_formKey.currentState.validate() &&
                     _selectedTeamName.value.isNotEmpty) {
-                  BlocProvider.of<UserProfileBloc>(context).add(
-                      SaveProfilePressed(
-                          userDetail: UserDetail(
-                              userName: _userNameController.value.text,
-                              phoneNumber: int.parse(
-                                  _phoneNumberController.value.text.trim()),
-                              userUuid: "",
-                              joinedTeam: _teamReference.value)));
+                  _updateProfile();
                 } else {
                   Scaffold.of(context)
                       .showSnackBar(SnackBar(content: Text('Invalid data')));
@@ -235,5 +234,14 @@ class _UserProfileFormState extends State<UserProfileForm> {
         ]);
       }
     });
+  }
+
+  _updateProfile() {
+    BlocProvider.of<UserProfileBloc>(context).add(SaveProfilePressed(
+        userDetail: UserDetail(
+            userName: _userNameController.value.text,
+            phoneNumber: int.parse(_phoneNumberController.value.text.trim()),
+            userUuid: "",
+            joinedTeam: _teamReference.value)));
   }
 }

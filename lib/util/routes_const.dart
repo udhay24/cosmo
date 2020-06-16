@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pubg/SplashScreen.dart';
+import 'package:pubg/about/ui/about_screen.dart';
 import 'package:pubg/data_source/event_repository.dart';
 import 'package:pubg/data_source/login_repository.dart';
 import 'package:pubg/data_source/user_repository.dart';
@@ -28,6 +29,7 @@ class ScreenRoutes {
   static const String TEAM_DETAIL_SCREEN_ROUTE = "/team_detail";
   static const String SLOT_SELECTION_SCREEN_ROUTE = "/slot_selection";
   static const String TEAM_DETAIL_VIEW_SCREEN_ROUTE = "team_detail/view";
+  static const String ABOUT_SCREEN_ROUTE = "/about";
 }
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -73,32 +75,32 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       );
 
     case ScreenRoutes.TEAM_DETAIL_SCREEN_ROUTE:
-      return MaterialPageRoute(
-          builder: (context) {
-            return BlocProvider<TeamDetailBloc>(
-                create: (context) => TeamDetailBloc(userRepository: RepositoryProvider.of<UserRepository>(context)),
-                child: TeamDetailScreen()
-            );
-          }
-      );
+      return MaterialPageRoute(builder: (context) {
+        return BlocProvider<TeamDetailBloc>(
+            create: (context) => TeamDetailBloc(
+                userRepository: RepositoryProvider.of<UserRepository>(context)),
+            child: TeamDetailScreen());
+      });
 
     case ScreenRoutes.TEAM_DETAIL_VIEW_SCREEN_ROUTE:
+      return MaterialPageRoute(builder: (context) {
+        return BlocProvider<TeamDetailBloc>(
+            create: (context) => TeamDetailBloc(
+                userRepository: RepositoryProvider.of<UserRepository>(context))
+              ..add(TeamDetailScreenInitialized()),
+            child: TeamDetailViewScreen());
+      });
+
+    case ScreenRoutes.ABOUT_SCREEN_ROUTE:
+      return MaterialPageRoute(builder: (context) {
+        return AboutScreen();
+      });
+
+    default:
       return MaterialPageRoute(
-          builder: (context) {
-            return BlocProvider<TeamDetailBloc>(
-                create: (context) => TeamDetailBloc(userRepository: RepositoryProvider.of<UserRepository>(context))
-                ..add(TeamDetailScreenInitialized()),
-                child: TeamDetailViewScreen()
-            );
-          }
-      );
-
-
-//    default:
-//      return MaterialPageRoute(
-//          builder: (_) => Scaffold(
-//                body: Center(
-//                    child: Text('No route defined for ${settings.name}')),
-//              ));
+          builder: (_) => Scaffold(
+                body: Center(
+                    child: Text('No route defined for ${settings.name}')),
+              ));
   }
 }

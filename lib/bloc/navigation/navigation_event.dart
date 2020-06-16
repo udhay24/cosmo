@@ -53,3 +53,8 @@ class SlotSelectionNavigationEvent extends NavigationEvent {
   @override
   List<Object> get props => [];
 }
+
+class AboutScreenNavigationEvent extends NavigationEvent {
+  @override
+  List<Object> get props => [];
+}
