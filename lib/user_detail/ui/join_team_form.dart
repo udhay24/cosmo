@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pubg/user_detail/bloc/bloc.dart';
 import 'package:pubg/user_detail/bloc/user_profile_bloc.dart';
+import 'package:pubg/util/validators.dart';
 
 class JoinTeamForm extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
@@ -17,7 +18,9 @@ class _JoinTeamFormState extends State<JoinTeamForm> {
   final TextEditingController _teamIDController = TextEditingController();
   final TextEditingController _teamCodeController = TextEditingController();
 
-  final GlobalKey<FormState> _globalKey = GlobalKey();
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
+  bool _submitEnabled = false;
 
   @override
   void dispose() {
@@ -34,36 +37,55 @@ class _JoinTeamFormState extends State<JoinTeamForm> {
         return Padding(
           padding: MediaQuery.of(context).viewInsets,
           child: Form(
-            key: _globalKey,
+            key: _formKey,
+            onChanged: () => setState(
+                () => _submitEnabled = _formKey.currentState.validate()),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   TextFormField(
-                    controller: _teamIDController,
-                    decoration: InputDecoration.collapsed(hintText: "Team Id"),
-                  ),
+                      controller: _teamIDController,
+                      decoration: InputDecoration.collapsed(
+                          hintText: "Team Id",
+                          hintStyle: TextStyle(color: Colors.black54)),
+                      validator: (value) {
+                        if (Validators.isValidName(value)) {
+                          return null;
+                        } else {
+                          return "Invalid ID";
+                        }
+                      }),
                   SizedBox(
                     height: 8,
                   ),
                   TextFormField(
-                    controller: _teamCodeController,
-                    decoration:
-                        InputDecoration.collapsed(hintText: "Team Code"),
-                  ),
+                      controller: _teamCodeController,
+                      decoration: InputDecoration.collapsed(
+                          hintText: "Team Code",
+                          hintStyle: TextStyle(color: Colors.black54)),
+                      validator: (value) {
+                        if (Validators.isValidName(value)) {
+                          return null;
+                        } else {
+                          return "Invalid Code";
+                        }
+                      }),
                   OutlineButton(
                       child: Text(
-                        "Join",
-                        style: TextStyle(
-                            color: Colors.blue, fontWeight: FontWeight.w600),
+                        "Join",   style: TextStyle(
+                          fontWeight: FontWeight.w600),
                       ),
                       borderSide: BorderSide.none,
-                      onPressed: () {
-                        widget.userProfileBloc.add(JoinTeamPressed(
-                            teamID: _teamIDController.text,
-                            teamCode: _teamCodeController.text));
-                      })
+                      textColor: Colors.blueAccent,
+                      disabledTextColor: Colors.grey,
+                      onPressed: _submitEnabled
+                          ? () => widget.userProfileBloc.add(JoinTeamPressed(
+                              teamID: _teamIDController.text,
+                              teamCode: _teamCodeController.text))
+                          : null)
                 ],
               ),
             ),
