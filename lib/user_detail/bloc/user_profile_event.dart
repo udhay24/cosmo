@@ -33,11 +33,16 @@ class JoinTeamPressed extends UserProfileEvent {
   List<Object> get props => [teamCode, teamID];
 }
 
-class SaveProfilePressed extends UserProfileEvent {
+class UpdateProfile extends UserProfileEvent {
   final UserDetail userDetail;
 
-  SaveProfilePressed({@required this.userDetail});
+  UpdateProfile({@required this.userDetail});
 
+  @override
+  List<Object> get props => [];
+}
+
+class SaveProfilePressed extends UserProfileEvent {
   @override
   List<Object> get props => [];
 }

@@ -26,6 +26,10 @@ class UserProfileFailed extends UserProfileState {
   List<Object> get props => [];
 }
 
+class UserProfileStartUpdate extends UserProfileState {
+  @override
+  List<Object> get props => [];
+}
 
 class UserProfileLoading extends UserProfileState {
   @override

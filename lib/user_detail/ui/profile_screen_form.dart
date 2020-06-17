@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pubg/data_source/model/user_detail.dart';
 import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/user_detail/bloc/bloc.dart';
 import 'package:pubg/user_detail/ui/create_team_form.dart';
-import 'package:pubg/user_detail/ui/join_team_form.dart';
 import 'package:pubg/util/validators.dart';
+
+import 'join_team_form.dart';
 
 class UserProfileForm extends StatefulWidget {
   @override
@@ -54,6 +56,10 @@ class _UserProfileFormState extends State<UserProfileForm> {
         }
       } else if (state is CreateTeamSuccess) {
         _teamReference.value = state.teamReference;
+        if (_formKey.currentState.validate() &&
+            _selectedTeamName.value.isNotEmpty) {
+          _updateProfile();
+        }
       } else if (state is UserProfileUpdateSuccess) {
         Scaffold.of(context).showSnackBar(SnackBar(
             content: Text("Profile Updated"),
@@ -79,6 +85,8 @@ class _UserProfileFormState extends State<UserProfileForm> {
             ),
             behavior: SnackBarBehavior.floating,
             elevation: 10));
+      } else if (state is UserProfileStartUpdate) {
+        _updateProfile();
       }
     }, builder: (context, state) {
       if (state is UserProfileLoading) {
@@ -88,16 +96,19 @@ class _UserProfileFormState extends State<UserProfileForm> {
           Form(
             key: _formKey,
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(24.0),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text("Display name"),
                   TextFormField(
                     controller: _userNameController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide()),
-                      labelText: 'User Name',
+                    decoration: InputDecoration.collapsed(
+                      hintText: "name",
+                      fillColor: Colors.blue,
+                      focusColor: Colors.blue,
+                      border: UnderlineInputBorder(),
                     ),
                     maxLength: 24,
                     autocorrect: false,
@@ -109,16 +120,15 @@ class _UserProfileFormState extends State<UserProfileForm> {
                       return null;
                     },
                   ),
-                  SizedBox(
-                    height: 30,
-                  ),
+                  SizedBox(),
+                  Text("Phone number"),
                   TextFormField(
                     controller: _phoneNumberController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide()),
-                      labelText: 'Phone Number',
+                    decoration: InputDecoration.collapsed(
+                      hintText: "number",
+                      fillColor: Colors.blue,
+                      focusColor: Colors.blue,
+                      border: UnderlineInputBorder(),
                     ),
                     keyboardType: TextInputType.numberWithOptions(),
                     autocorrect: false,
@@ -134,101 +144,10 @@ class _UserProfileFormState extends State<UserProfileForm> {
                   ValueListenableBuilder(
                       valueListenable: _selectedTeamName,
                       builder: (context, String value, _) {
-                        if (value != null && (value.isNotEmpty)) {
-                          return Column(
-                            children: <Widget>[
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text("Selected team"),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text("$value")
-                                ],
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                children: [
-                                  RaisedButton(
-                                    child: Text("Change Team"),
-                                    onPressed: () {
-                                      Scaffold.of(context).showBottomSheet(
-                                          (context) => JoinTeamForm(),
-                                          backgroundColor: Colors.white,
-                                          elevation: 4);
-                                    },
-                                  ),
-                                  RaisedButton(
-                                      child: Text("Create Team"),
-                                      onPressed: () {
-                                        Scaffold.of(context).showBottomSheet(
-                                            (context) => CreateTeamForm(),
-                                            backgroundColor: Colors.white,
-                                            elevation: 4);
-                                      })
-                                ],
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                              ),
-                            ],
-                          );
-                        } else {
-                          return Column(
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Text("Selected team"),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text("Team not selected")
-                                ],
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  RaisedButton(
-                                      child: Text("Join Team"),
-                                      onPressed: () {
-                                        Scaffold.of(context).showBottomSheet(
-                                            (context) => JoinTeamForm());
-                                      }),
-                                  RaisedButton(
-                                      child: Text("Create Team"),
-                                      onPressed: () {
-                                        Scaffold.of(context).showBottomSheet(
-                                            (context) => CreateTeamForm());
-                                      })
-                                ],
-                              ),
-                            ],
-                          );
-                        }
+                        return _buildSelectedTeam(value);
                       })
                 ],
               ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: RaisedButton(
-              onPressed: () {
-                if (_formKey.currentState.validate() &&
-                    _selectedTeamName.value.isNotEmpty) {
-                  _updateProfile();
-                } else {
-                  Scaffold.of(context)
-                      .showSnackBar(SnackBar(content: Text('Invalid data')));
-                }
-              },
-              child: Text("Update profile"),
             ),
           ),
         ]);
@@ -236,12 +155,65 @@ class _UserProfileFormState extends State<UserProfileForm> {
     });
   }
 
+  Widget _buildSelectedTeam(String value) {
+    return ExpansionTile(
+      title: Text("Selected Team"),
+      subtitle: Text(value),
+      leading: Icon(FontAwesomeIcons.gamepad),
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Builder(builder: (context) {
+              var button;
+              if (value != null && (value.isNotEmpty)) {
+                button = "Change Team";
+              } else {
+                button = "Join Team";
+              }
+              return _buildTeamButton(button, () {
+                Scaffold.of(context).showBottomSheet(
+                    (context) => JoinTeamForm(),
+                    backgroundColor: Colors.white,
+                    elevation: 4);
+              });
+            }),
+            _buildTeamButton("Create Team", () {
+              Scaffold.of(context).showBottomSheet(
+                  (context) => CreateTeamForm(),
+                  backgroundColor: Colors.white,
+                  elevation: 4);
+            }),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTeamButton(String value, VoidCallback onTap) {
+    return FlatButton(
+      child: Text(value),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+//      borderSide: new BorderSide(color: Colors.blue),
+
+      onPressed: () {
+        onTap();
+      },
+    );
+  }
+
   _updateProfile() {
-    BlocProvider.of<UserProfileBloc>(context).add(SaveProfilePressed(
-        userDetail: UserDetail(
-            userName: _userNameController.value.text,
-            phoneNumber: int.parse(_phoneNumberController.value.text.trim()),
-            userUuid: "",
-            joinedTeam: _teamReference.value)));
+    if (_formKey.currentState.validate() &&
+        _selectedTeamName.value.isNotEmpty) {
+      BlocProvider.of<UserProfileBloc>(context).add(UpdateProfile(
+          userDetail: UserDetail(
+              userName: _userNameController.value.text,
+              phoneNumber: int.parse(_phoneNumberController.value.text.trim()),
+              userUuid: "",
+              joinedTeam: _teamReference.value)));
+    } else {
+      Scaffold.of(context)
+          .showSnackBar(SnackBar(content: Text('Invalid data')));
+    }
   }
 }

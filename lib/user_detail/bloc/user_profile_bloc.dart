@@ -28,6 +28,8 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       yield* _mapTeamCreatedEvent(event);
     } else if (event is JoinTeamPressed) {
       yield* _mapJoinTeamEvent(event);
+    } else if (event is UpdateProfile) {
+      yield* _mapUpdateProfileEvent(event);
     } else if (event is SaveProfilePressed) {
       yield* _mapSaveProfileEvent(event);
     }
@@ -81,8 +83,8 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     }
   }
 
-  Stream<UserProfileState> _mapSaveProfileEvent(
-      SaveProfilePressed event) async* {
+  Stream<UserProfileState> _mapUpdateProfileEvent(
+      UpdateProfile event) async* {
     yield UserProfileUpdating();
     try {
       await _userRepository.removeUserFromTeam();
@@ -93,5 +95,9 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     } catch (e) {
       yield UserProfileUpdateFailure();
     }
+  }
+
+  Stream<UserProfileState> _mapSaveProfileEvent(SaveProfilePressed event) async* {
+    yield UserProfileStartUpdate();
   }
 }
