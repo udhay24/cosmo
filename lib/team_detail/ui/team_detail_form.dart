@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pubg/data_source/model/team_detail.dart';
@@ -41,7 +42,9 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
     _teamNameController.addListener(_onFormUpdated);
     _teamIDController.addListener(_onFormUpdated);
     _teamCodeController.addListener(_onFormUpdated);
-    _team.addListener(() {_onFormUpdated();});
+    _team.addListener(() {
+      _onFormUpdated();
+    });
     _teamDetailBloc.add(TeamDetailScreenInitialized());
   }
 
@@ -103,6 +106,7 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
                   children: <Widget>[
                     TextFormField(
                       controller: _teamNameController,
+                      readOnly: true,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -112,7 +116,9 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
                       autocorrect: false,
                       autovalidate: true,
                     ),
-                    SizedBox(height: 15,),
+                    SizedBox(
+                      height: 15,
+                    ),
                     TextFormField(
                       controller: _teamIDController,
                       decoration: InputDecoration(
@@ -124,7 +130,9 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
                       autocorrect: false,
                       autovalidate: true,
                     ),
-                    SizedBox(height: 15,),
+                    SizedBox(
+                      height: 15,
+                    ),
                     TextFormField(
                       controller: _teamCodeController,
                       decoration: InputDecoration(
@@ -136,10 +144,13 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
                       autocorrect: false,
                       autovalidate: true,
                     ),
-                    SizedBox(height: 25,),
+                    SizedBox(
+                      height: 25,
+                    ),
                     _buildUserList(context),
-                    SizedBox(height: 15,),
-
+                    SizedBox(
+                      height: 15,
+                    ),
                     Builder(builder: (context) {
                       if (state is SubmitFormVisible) {
                         return TeamSubmitButton(onPressed: _onFormSubmitted);
@@ -174,10 +185,20 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(snapshot.data),
-                        IconButton(icon: Icon(Icons.clear), onPressed: (){
-                          _team.value.teamMembers.removeAt(position);
-                          _team.notifyListeners();
-                        })
+                        IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              List<DocumentReference> updatedMembers =
+                                  List.from(_team.value.teamMembers)
+                                    ..removeAt(position);
+                              _team.value = Team(
+                                  teamName: _team.value.teamName,
+                                  teamCode: _team.value.teamCode,
+                                  teamId: _team.value.teamId,
+                                  teamOwner: _team.value.teamOwner,
+                                  teamMembers:
+                                      updatedMembers.cast<DocumentReference>());
+                            })
                       ],
                     ),
                   );

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pubg/data_source/event_repository.dart';
 import 'package:pubg/data_source/user_repository.dart';
@@ -28,7 +27,7 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
   ) async* {
     if (event is EventSelected) {
       yield* _mapEventSelectedToState(event);
-    } else if (event is HomeScreenStarted){
+    } else if (event is HomeScreenStarted) {
       yield* _mapInitialEventState(event);
     } else if (event is SlotSelected) {
       yield* _mapSlotSelectedEvent(event);
@@ -37,7 +36,8 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
 
   Stream<HomeScreenState> _mapSlotSelectedEvent(SlotSelected event) async* {
     try {
-      var selectedEvent = await _userRepository.getEventFromRef(event.selectedEvent);
+      var selectedEvent = await _userRepository.getEventFromRef(
+          await _userRepository.getEventDocFromID(event.eventId));
       _userRepository.registerTeamForEvent(selectedEvent, event.selectedSlot);
       yield EventRegistrationSuccess();
     } catch (error) {
@@ -49,21 +49,19 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
     yield CheckingUserDetails();
     bool isProfileComplete = await _userRepository.isUserProfileComplete();
     if ((!isProfileComplete)) {
-    //check if the user details are available before loading events
-       yield MissingUserDetails();
+      //check if the user details are available before loading events
+      yield MissingUserDetails();
     } else {
-      DocumentReference _eventRef = await _userRepository.getEventDocFromID(event.eventID);
-      List<int> availableSlots = await _userRepository.getAvailableSlots(_eventRef);
-      yield ShowSlotDialog(selectedEvent: _eventRef, availableSlots: availableSlots);
+      yield ShowSlotDialog(eventID: event.eventID);
     }
   }
 
   Stream<HomeScreenState> _mapInitialEventState(HomeScreenEvent event) async* {
     try {
-        yield AvailableEventsLoading();
-        var availableEvents = await _eventRepository.getAvailableEvent();
-        yield AvailableEventsSuccess(availableEvents: availableEvents);
-    } catch(error) {
+      yield AvailableEventsLoading();
+      var availableEvents = await _eventRepository.getAvailableEvent();
+      yield AvailableEventsSuccess(availableEvents: availableEvents);
+    } catch (error) {
       print("available_events_fetch_failed: $error");
       yield AvailableEventsFailure();
     }

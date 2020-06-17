@@ -21,10 +21,10 @@ class EventSelected extends HomeScreenEvent {
 }
 
 class SlotSelected extends HomeScreenEvent {
-  final DocumentReference selectedEvent;
+  final String eventId;
   final int selectedSlot;
-  SlotSelected({@required this.selectedSlot, @required this.selectedEvent});
+  SlotSelected({@required this.selectedSlot, @required this.eventId});
 
   @override
-  List<Object> get props => [selectedSlot, selectedEvent];
+  List<Object> get props => [selectedSlot, eventId];
 }

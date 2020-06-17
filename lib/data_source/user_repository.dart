@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:pubg/data_source/model/available_event.dart';
 import 'package:pubg/data_source/model/registration.dart';
 import 'package:pubg/data_source/model/user_detail.dart';
+import 'package:pubg/home_screen/model/event_detail.dart';
 import 'package:pubg/util/available_slot.dart';
 
 import 'model/team_detail.dart';
@@ -219,6 +220,14 @@ class UserRepository {
       DocumentReference documentReference) async {
     var eventData = (await documentReference.get()).data;
     return AvailableEvent.fromJson(eventData);
+  }
+
+  Future<EventDetail> getEventDetailFromId(
+      String eventID) async {
+    DocumentReference _eventRef = await getEventDocFromID(eventID);
+    List<int> availableSlots = await getAvailableSlots(_eventRef);
+    AvailableEvent event = await getEventFromRef(_eventRef);
+    return EventDetail(event: event, availableSlots: availableSlots);
   }
 
   //registers current team to the event

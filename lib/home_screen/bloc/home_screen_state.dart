@@ -56,11 +56,10 @@ class EventRegistrationFailure extends HomeScreenState {
 }
 
 class ShowSlotDialog extends HomeScreenState {
-  final DocumentReference selectedEvent;
-  final List<int> availableSlots;
+  final eventID;
 
-  ShowSlotDialog({@required this.selectedEvent, @required this.availableSlots});
+  ShowSlotDialog({@required this.eventID,});
 
   @override
-  List<Object> get props => [selectedEvent, availableSlots];
+  List<Object> get props => [eventID,];
 }

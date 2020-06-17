@@ -1,15 +1,17 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pubg/data_source/model/available_event.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/home_screen/bloc/bloc.dart';
+import 'package:pubg/home_screen/model/event_detail.dart';
 
 class SlotSelectionDialog extends StatefulWidget {
-  final DocumentReference eventRef;
-  final List<int> availableSlots;
+  final String eventId;
+  final HomeScreenBloc homeScreenBloc;
 
-  SlotSelectionDialog({@required this.eventRef, @required this.availableSlots});
+  SlotSelectionDialog({@required this.eventId, @required this.homeScreenBloc});
 
   @override
   _SlotSelectionDialogState createState() => _SlotSelectionDialogState();
@@ -21,103 +23,95 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
   @override
   void initState() {
     super.initState();
-    slotSelected = widget.availableSlots.first;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<HomeScreenBloc, HomeScreenState>(
-        listener: (context, state) {
-          if (state is EventRegistrationSuccess) {
-            Navigator.of(context).pop();
-          }
-        },
-        child: FutureBuilder(
-            future: RepositoryProvider.of<UserRepository>(context)
-                .getEventFromRef(widget.eventRef),
-            builder: (context, AsyncSnapshot<AvailableEvent> value) {
-              if ((value != null) && (value.hasData)) {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    "Slot Selection",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ),
-                                Text("${value.data.eventName}"),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text("Available Slots"),
-                                    SizedBox(
-                                      width: 20,
-                                    ),
-                                    _buildDropdownButton(),
-                                  ],
-                                )
-                              ],
-                            ),
-                          )),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: _buildSelectSlotButton(context),
-                      )
-                    ],
+    return FutureBuilder(
+        future: RepositoryProvider.of<UserRepository>(context)
+            .getEventDetailFromId(widget.eventId),
+        builder: (context, AsyncSnapshot<EventDetail> value) {
+          if ((value != null) && (value.hasData)) {
+            slotSelected = value.data.availableSlots.first;
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(child: _buildEventHeading(value.data)),
+                  Divider(
+                    height: 20,
+                    thickness: 2,
                   ),
-                );
-              } else {
-                return Container();
-              }
-            }));
+                  SizedBox(
+                    height: 20,
+                  ),
+                  _buildSlotOption(),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  _buildSelectSlotButton(context, value.data.event.eventID)
+                ],
+              ),
+            );
+          } else {
+            return Container(
+              height: 100,
+                child: Center(child: CircularProgressIndicator()));
+          }
+        });
   }
 
-  Widget _buildSelectSlotButton(BuildContext context) {
+  Widget _buildSlotOption() {
+    return Row(
+      children: <Widget>[
+        Transform.rotate(angle: 125, child: Icon(FontAwesomeIcons.ticketAlt, color: Colors.grey,),),
+        SizedBox(width: 20,),
+        Text(
+          "Available Slot :    $slotSelected",
+          style: GoogleFonts.abel(fontWeight: FontWeight.w600, fontSize: 15),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEventHeading(EventDetail value) {
+    return ListTile(
+      leading: Icon(FontAwesomeIcons.accusoft),
+      title: Text(value.event.eventName),
+      subtitle: Text(value.event.eventDescription),
+    );
+  }
+
+  Widget _buildSelectSlotButton(BuildContext context, String eventID) {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 50,
-      child: RaisedButton(
-          color: Colors.white,
-          textColor: Colors.blue,
+      child: FlatButton(
+          textColor: Colors.white,
+          color: Colors.blue,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(0),
           ),
-          child: Text("Submit",
-          style: TextStyle(
-            fontWeight: FontWeight.w600
-          ),),
+          child: Text(
+            "Register",
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
           onPressed: () {
-            BlocProvider.of<HomeScreenBloc>(context)
-              ..add(SlotSelected(
-                  selectedSlot: slotSelected, selectedEvent: widget.eventRef));
+            widget.homeScreenBloc
+              ..add(SlotSelected(selectedSlot: slotSelected, eventId: eventID));
           }),
     );
   }
 
-  DropdownButton<String> _buildDropdownButton() {
+  DropdownButton<String> _buildDropdownButton(List<int> availableSlots) {
     return DropdownButton<String>(
       value: '$slotSelected',
       icon: Icon(Icons.arrow_downward),
       dropdownColor: Colors.white,
       iconSize: 24,
-      elevation: 16,
+      elevation: 2,
       style: TextStyle(color: Colors.deepPurple),
       underline: Container(
         height: 2,
@@ -128,7 +122,7 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
           slotSelected = int.parse(newValue);
         });
       },
-      items: widget.availableSlots.map<DropdownMenuItem<String>>((int value) {
+      items: availableSlots.map<DropdownMenuItem<String>>((int value) {
         return DropdownMenuItem<String>(
           value: "$value",
           child: Text("$value"),

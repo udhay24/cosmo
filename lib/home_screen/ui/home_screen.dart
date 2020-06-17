@@ -103,18 +103,21 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }
           },
-          listener: (context, state) {
+          listener: (listenerContext, state) {
             if (state is MissingUserDetails) {
-              BlocProvider.of<NavigationBloc>(context)
+              BlocProvider.of<NavigationBloc>(listenerContext)
                   .add(UserProfileNavigateEvent());
             } else if (state is ShowSlotDialog) {
-              Scaffold.of(context)
-                  .showBottomSheet(
-                      (context) => SlotSelectionDialog(
-                        eventRef: state.selectedEvent,
-                        availableSlots: state.availableSlots,
-                      ),
-              elevation: 0,);
+              showModalBottomSheet(
+                  context: context,
+                  builder: (buildContext) {
+                    return SlotSelectionDialog(
+                      homeScreenBloc: BlocProvider.of<HomeScreenBloc>(context),
+                      eventId: state.eventID,
+                    );
+                  });
+            } else if (state is EventRegistrationSuccess) {
+              Navigator.of(listenerContext).pop();
             }
           },
         ));
@@ -217,7 +220,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 PopupMenuItem<String>(
                     child: const Text("Log out"), value: "log_out"),
                 PopupMenuItem<String>(
-                  child: const Text("About us"), value: "about",
+                  child: const Text("About us"),
+                  value: "about",
                 )
               ];
             },

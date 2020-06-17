@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 
-class Team {
+class Team extends Equatable{
   String teamName;
   String teamCode;
   List<DocumentReference> teamMembers;
@@ -32,4 +33,7 @@ class Team {
     data['team_manager'] = this.teamOwner;
     return data;
   }
+
+  @override
+  List<Object> get props => [teamMembers, teamCode, teamId, teamName, teamOwner];
 }
