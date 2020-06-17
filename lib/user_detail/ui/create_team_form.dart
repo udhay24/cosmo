@@ -4,6 +4,10 @@ import 'package:pubg/user_detail/bloc/bloc.dart';
 import 'package:pubg/util/validators.dart';
 
 class CreateTeamForm extends StatefulWidget {
+  final UserProfileBloc userProfileBloc;
+
+  CreateTeamForm({@required this.userProfileBloc});
+
   @override
   _CreateTeamFormState createState() => _CreateTeamFormState();
 }
@@ -26,14 +30,17 @@ class _CreateTeamFormState extends State<CreateTeamForm> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<UserProfileBloc, UserProfileState>(
+      bloc: widget.userProfileBloc,
       builder: (context, state) {
-        return Container(
-          color: Colors.white,
+        return Padding(
+          padding: MediaQuery.of(context).viewInsets,
           child: Form(
             key: _globalKey,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Wrap(children: <Widget>[
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
                 TextFormField(
                   controller: _teamNameController,
                   decoration: InputDecoration(labelText: "Team Name"),
@@ -43,7 +50,7 @@ class _CreateTeamFormState extends State<CreateTeamForm> {
 //                    borderSide: BorderSide()),
 //                labelText: 'Team Name',
 //              ),
-                autovalidate: true,
+                  autovalidate: true,
                   validator: (value) {
                     if (!Validators.isValidName(value)) {
                       return "Invalid team name";
@@ -52,7 +59,9 @@ class _CreateTeamFormState extends State<CreateTeamForm> {
                     }
                   },
                 ),
-                SizedBox(height: 15,),
+                SizedBox(
+                  height: 15,
+                ),
                 TextFormField(
                   controller: _teamIDController,
                   autovalidate: true,
@@ -65,7 +74,9 @@ class _CreateTeamFormState extends State<CreateTeamForm> {
                     }
                   },
                 ),
-                SizedBox(height: 15,),
+                SizedBox(
+                  height: 15,
+                ),
                 TextFormField(
                   controller: _teamCodeController,
                   autovalidate: true,
@@ -78,7 +89,9 @@ class _CreateTeamFormState extends State<CreateTeamForm> {
                     }
                   },
                 ),
-                SizedBox(height: 25,),
+                SizedBox(
+                  height: 25,
+                ),
                 Center(
                   child: RaisedButton(
                     onPressed: () {
@@ -89,8 +102,8 @@ class _CreateTeamFormState extends State<CreateTeamForm> {
                                 teamID: _teamIDController.text,
                                 teamCode: _teamCodeController.text));
                       } else {
-                        Scaffold.of(context)
-                            .showSnackBar(SnackBar(content: Text("Enter valid details"),
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text("Enter valid details"),
                             behavior: SnackBarBehavior.floating,
                             elevation: 10));
                       }

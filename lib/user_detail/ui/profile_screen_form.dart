@@ -164,7 +164,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Builder(builder: (context) {
+            Builder(builder: (buildContext) {
               var button;
               if (value != null && (value.isNotEmpty)) {
                 button = "Change Team";
@@ -172,17 +172,36 @@ class _UserProfileFormState extends State<UserProfileForm> {
                 button = "Join Team";
               }
               return _buildTeamButton(button, () {
-                Scaffold.of(context).showBottomSheet(
-                    (context) => JoinTeamForm(),
+                showModalBottomSheet(
+                    context: context,
+                    builder: (buildContext) {
+                      return JoinTeamForm(
+                        userProfileBloc:
+                            BlocProvider.of<UserProfileBloc>(context),
+                      );
+                    },
                     backgroundColor: Colors.white,
-                    elevation: 4);
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.horizontal(
+                            left: Radius.circular(10), right: Radius.circular(10))),
+                    elevation: 4,
+                    isScrollControlled: true
+                );
               });
             }),
             _buildTeamButton("Create Team", () {
-              Scaffold.of(context).showBottomSheet(
-                  (context) => CreateTeamForm(),
-                  backgroundColor: Colors.white,
-                  elevation: 4);
+              showModalBottomSheet(
+                context: context,
+                builder: (buildContext) => CreateTeamForm(
+                  userProfileBloc: BlocProvider.of<UserProfileBloc>(context),
+                ),
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.horizontal(
+                        left: Radius.circular(10), right: Radius.circular(10))),
+                elevation: 4,
+                isScrollControlled: true
+              );
             }),
           ],
         ),

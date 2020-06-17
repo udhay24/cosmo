@@ -1,28 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pubg/user_detail/bloc/bloc.dart';
 import 'package:pubg/user_detail/bloc/user_profile_bloc.dart';
 
-class JoinTeamForm extends StatelessWidget {
-  final TextEditingController _teamIdController =
-      TextEditingController();
+class JoinTeamForm extends StatefulWidget {
+
+  final UserProfileBloc userProfileBloc;
+
+  JoinTeamForm({@required this.userProfileBloc});
+
+  @override
+  _JoinTeamFormState createState() => _JoinTeamFormState();
+}
+
+class _JoinTeamFormState extends State<JoinTeamForm> {
+
+  final TextEditingController _teamIDController =
+  TextEditingController();
   final TextEditingController _teamCodeController =
-      TextEditingController();
+  TextEditingController();
+
+  final GlobalKey<FormState> _globalKey = GlobalKey();
+  
+  @override
+  void dispose() {
+    _teamCodeController.dispose();
+    _teamIDController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<UserProfileBloc, UserProfileState>(
+      bloc: widget.userProfileBloc,
         builder: (context, state) {
-      return Wrap(children: <Widget>[
-        Container(
-          color: Colors.white,
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Form(
+          key: _globalKey,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 TextFormField(
-                  controller: _teamIdController,
+                  controller: _teamIDController,
                   decoration: InputDecoration(labelText: "Team ID"),
                 ),
                 SizedBox(height: 8,),
@@ -36,14 +61,14 @@ class JoinTeamForm extends StatelessWidget {
                     onPressed: () {
                       BlocProvider.of<UserProfileBloc>(context).add(
                           JoinTeamPressed(
-                              teamID: _teamIdController.text,
+                              teamID: _teamIDController.text,
                               teamCode: _teamCodeController.text));
                     })
               ],
             ),
           ),
         ),
-      ]);
+      );
     }, listener: (context, state) {
       if (state is FindTeamSuccess) {
         Scaffold.of(context)
