@@ -96,7 +96,7 @@ class _CreateTeamFormState extends State<CreateTeamForm> {
                   child: RaisedButton(
                     onPressed: () {
                       if (_globalKey.currentState.validate()) {
-                        BlocProvider.of<UserProfileBloc>(context).add(
+                        widget.userProfileBloc.add(
                             CreateTeamPressed(
                                 teamName: _teamNameController.text,
                                 teamID: _teamIDController.text,

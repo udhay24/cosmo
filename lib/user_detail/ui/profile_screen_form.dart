@@ -50,6 +50,8 @@ class _UserProfileFormState extends State<UserProfileForm> {
         listener: (context, state) {
       if (state is FindTeamSuccess) {
         _teamReference.value = state.teamReference;
+        Scaffold.of(context).showSnackBar(_buildSnackBar("Team found"));
+        Navigator.of(context).pop();
         if (_formKey.currentState.validate() &&
             _selectedTeamName.value.isNotEmpty) {
           _updateProfile();
@@ -61,32 +63,25 @@ class _UserProfileFormState extends State<UserProfileForm> {
           _updateProfile();
         }
       } else if (state is UserProfileUpdateSuccess) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text("Profile Updated"),
-            behavior: SnackBarBehavior.fixed,
-            elevation: 10));
+        Scaffold.of(context).showSnackBar(_buildSnackBar("Profile Updated"));
       } else if (state is UserProfileLoadedState) {
         _userNameController.text = state.userDetail.userName;
         _phoneNumberController.text = state.userDetail.phoneNumber.toString();
         _teamReference.value = state.userDetail.joinedTeam;
       } else if (state is UserProfileUpdating) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text("Updating Profile"),
-                SizedBox(
-                  width: 10,
-                ),
-                CircularProgressIndicator(
-                  strokeWidth: 2,
-                )
-              ],
-            ),
-            behavior: SnackBarBehavior.floating,
-            elevation: 10));
+        Scaffold.of(context)
+            .showSnackBar(_buildLoadingSnackBar("Updating profile"));
       } else if (state is UserProfileStartUpdate) {
         _updateProfile();
+      } else if (state is FindTeamFailure) {
+        Scaffold.of(context).showSnackBar(_buildSnackBar("Team Not Found"));
+      } else if (state is FindTeamSearching) {
+        Scaffold.of(context)
+            .showSnackBar(_buildLoadingSnackBar("Searching Team"));
+      } else if (state is CannotJoinTeam) {
+        Scaffold.of(context).showSnackBar(
+          _buildSnackBar("This team has reached maximum members limit"),
+        );
       }
     }, builder: (context, state) {
       if (state is UserProfileLoading) {
@@ -155,6 +150,34 @@ class _UserProfileFormState extends State<UserProfileForm> {
     });
   }
 
+  SnackBar _buildSnackBar(String text) {
+    return SnackBar(
+      content: Text(text),
+      elevation: 10,
+    );
+  }
+
+  SnackBar _buildLoadingSnackBar(String text) {
+    return SnackBar(
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(text),
+            SizedBox(
+              width: 10,
+            ),
+            SizedBox(
+              height: 24,
+              width: 24,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+              ),
+            )
+          ],
+        ),
+        elevation: 10);
+  }
+
   Widget _buildSelectedTeam(String value) {
     return ExpansionTile(
       title: Text("Selected Team"),
@@ -183,25 +206,26 @@ class _UserProfileFormState extends State<UserProfileForm> {
                     backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.horizontal(
-                            left: Radius.circular(10), right: Radius.circular(10))),
+                            left: Radius.circular(10),
+                            right: Radius.circular(10))),
                     elevation: 4,
-                    isScrollControlled: true
-                );
+                    isScrollControlled: true);
               });
             }),
             _buildTeamButton("Create Team", () {
               showModalBottomSheet(
-                context: context,
-                builder: (buildContext) => CreateTeamForm(
-                  userProfileBloc: BlocProvider.of<UserProfileBloc>(context),
-                ),
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.horizontal(
-                        left: Radius.circular(10), right: Radius.circular(10))),
-                elevation: 4,
-                isScrollControlled: true
-              );
+                  context: context,
+                  builder: (buildContext) => CreateTeamForm(
+                        userProfileBloc:
+                            BlocProvider.of<UserProfileBloc>(context),
+                      ),
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.horizontal(
+                          left: Radius.circular(10),
+                          right: Radius.circular(10))),
+                  elevation: 4,
+                  isScrollControlled: true);
             }),
           ],
         ),

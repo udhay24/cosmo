@@ -11,7 +11,10 @@ class UserProfileScreen extends StatelessWidget {
         title: Text("Profile"),
         actions: <Widget>[
           FlatButton(
-            child: Text("save"),
+            child: Text(
+              "save",
+              style: TextStyle(fontSize: 16),
+            ),
             textColor: Colors.white,
             onPressed: () {
               BlocProvider.of<UserProfileBloc>(context)
