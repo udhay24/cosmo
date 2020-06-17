@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:pubg/data_source/model/team_detail.dart';
+import 'package:pubg/data_source/model/team_model.dart';
 import 'package:pubg/data_source/user_repository.dart';
 
 import './bloc.dart';

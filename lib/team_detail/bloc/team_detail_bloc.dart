@@ -1,8 +1,12 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:pubg/data_source/model/team_model.dart';
+import 'package:pubg/data_source/model/user_model.dart';
 import 'package:pubg/data_source/user_repository.dart';
+import 'package:pubg/team_detail/model/team_detail.dart';
 import 'package:pubg/util/validators.dart';
 
 import 'bloc.dart';
@@ -34,8 +38,7 @@ class TeamDetailBloc extends Bloc<TeamDetailEvent, TeamDetailState> {
       TeamMemberDetailChanged event) async* {
     if (Validators.isValidName(event.team.teamName) &&
         Validators.isValidName(event.team.teamCode) &&
-        (event.team.teamMembers.length > 0)
-    ) {
+        (event.team.teamMembers.length > 0)) {
       yield SubmitFormVisible();
     } else {
       yield SubmitFormInVisible();
@@ -46,7 +49,19 @@ class TeamDetailBloc extends Bloc<TeamDetailEvent, TeamDetailState> {
       TeamDetailSubmitPressed event) async* {
     yield TeamDetailUpdating();
     try {
-      await _userRepository.updateTeamDetail(event.team);
+      await _userRepository.updateTeamDetail(
+        Team(
+            teamName: event.team.teamName,
+            teamCode: event.team.teamCode,
+            teamId: event.team.teamId,
+            teamMembers: event.team.teamMembers
+                .map((e) async {
+                  return await _userRepository.getUserRefFromUuid(e.userUuid);
+                })
+                .cast<DocumentReference>()
+                .toList(),
+            teamOwner: await _userRepository.getCurrentUserReference()),
+      );
       yield TeamDetailChangeSuccess();
     } catch (_) {
       yield TeamDetailChangeFailure();
@@ -56,8 +71,17 @@ class TeamDetailBloc extends Bloc<TeamDetailEvent, TeamDetailState> {
   Stream<TeamDetailState> _mapScreenInitializedToState() async* {
     try {
       var team = await _userRepository.getCurrentUserTeam();
+      List<User> members = List();
+      for (var member in team.teamMembers) {
+        members.add( await _userRepository.getUserFromRef(member));
+      }
       if (team != null) {
-        yield PreFilled(team: team);
+        yield PreFilled(
+            team: TeamDetail(
+                teamId: team.teamId,
+                teamName: team.teamName,
+                teamCode: team.teamCode,
+                teamMembers: members));
       } else {
         yield TeamDetailEmpty();
       }

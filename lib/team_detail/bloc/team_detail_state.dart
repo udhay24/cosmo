@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:pubg/data_source/model/team_detail.dart';
+import 'package:pubg/data_source/model/team_model.dart';
+import 'package:pubg/team_detail/model/team_detail.dart';
 
 @immutable
 abstract class TeamDetailState extends Equatable {
@@ -38,7 +39,7 @@ class SubmitFormInVisible extends TeamDetailState {
 }
 
 class PreFilled extends TeamDetailState {
-  final Team team;
+  final TeamDetail team;
 
   PreFilled({@required this.team});
 

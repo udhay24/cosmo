@@ -1,16 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class UserDetail {
+class User {
   String userName;
   int phoneNumber;
   DocumentReference joinedTeam;
   String userUuid;
 
-  UserDetail({@required this.userName, @required this.phoneNumber, this.joinedTeam, @required this.userUuid,});
+  User({@required this.userName, @required this.phoneNumber, this.joinedTeam, @required this.userUuid,});
 
-  factory UserDetail.fromJson(Map<String, dynamic> json) {
-    return UserDetail(
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
       userName: json['user_name'],
       phoneNumber: json['phone_number'],
       joinedTeam: json['team'],

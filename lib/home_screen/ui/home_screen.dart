@@ -233,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     .add(TeamDetailNavigationEvent());
               } else if (value == "view_team") {
                 BlocProvider.of<NavigationBloc>(context)
-                    .add(TeamDetailViewNavigationEvent());
+                    .add(TeamDetailNavigationEvent());
               } else if (value == "about") {
                 BlocProvider.of<NavigationBloc>(context)
                     .add(AboutScreenNavigationEvent());

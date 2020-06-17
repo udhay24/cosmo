@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:pubg/data_source/model/user_detail.dart';
+import 'package:pubg/data_source/model/user_model.dart';
 
 abstract class UserProfileState extends Equatable {
   const UserProfileState();
@@ -13,7 +13,7 @@ class InitialUserProfileState extends UserProfileState {
 }
 
 class UserProfileLoadedState extends UserProfileState {
-  final UserDetail userDetail;
+  final User userDetail;
 
   UserProfileLoadedState({@required this.userDetail});
 

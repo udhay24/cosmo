@@ -28,7 +28,6 @@ class ScreenRoutes {
   static const String HOME_SCREEN_ROUTE = "/home_Screen";
   static const String TEAM_DETAIL_SCREEN_ROUTE = "/team_detail";
   static const String SLOT_SELECTION_SCREEN_ROUTE = "/slot_selection";
-  static const String TEAM_DETAIL_VIEW_SCREEN_ROUTE = "team_detail/view";
   static const String ABOUT_SCREEN_ROUTE = "/about";
 }
 
@@ -80,15 +79,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
             create: (context) => TeamDetailBloc(
                 userRepository: RepositoryProvider.of<UserRepository>(context)),
             child: TeamDetailScreen());
-      });
-
-    case ScreenRoutes.TEAM_DETAIL_VIEW_SCREEN_ROUTE:
-      return MaterialPageRoute(builder: (context) {
-        return BlocProvider<TeamDetailBloc>(
-            create: (context) => TeamDetailBloc(
-                userRepository: RepositoryProvider.of<UserRepository>(context))
-              ..add(TeamDetailScreenInitialized()),
-            child: TeamDetailViewScreen());
       });
 
     case ScreenRoutes.ABOUT_SCREEN_ROUTE:

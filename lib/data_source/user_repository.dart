@@ -3,29 +3,34 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:pubg/data_source/model/available_event.dart';
 import 'package:pubg/data_source/model/registration.dart';
-import 'package:pubg/data_source/model/user_detail.dart';
+import 'package:pubg/data_source/model/user_model.dart';
 import 'package:pubg/home_screen/model/event_detail.dart';
 import 'package:pubg/util/available_slot.dart';
 
-import 'model/team_detail.dart';
+import 'model/team_model.dart';
 
 class UserRepository {
   var _fireStore = Firestore.instance;
   var _firebaseUser = FirebaseAuth.instance.currentUser();
 
   /// get user detail from firestore 'user' collection
-  Future<UserDetail> getUserDetail() async {
+  Future<User> getUserDetail() async {
     var user = await _firebaseUser;
     var userInfo =
         await _fireStore.collection('users').document(user.uid).get();
 
-    return UserDetail.fromJson(userInfo.data);
+    return User.fromJson(userInfo.data);
   }
 
   Future<DocumentReference> getCurrentUserReference() async {
     var user = await _firebaseUser;
     return _fireStore.collection("users").document(user.uid);
   }
+
+  Future<DocumentReference> getUserRefFromUuid(String uuid) async {
+    return _fireStore.collection("users").document(uuid);
+  }
+
 
   /// checks if the user profile is complete or any detail is missing
   Future<bool> isUserProfileComplete() async {
@@ -47,7 +52,7 @@ class UserRepository {
   }
 
   ///update the user detail
-  updateUserDetail(UserDetail user) async {
+  updateUserDetail(User user) async {
     var firebaseUser = await _firebaseUser;
     user.userUuid = firebaseUser.uid;
     _fireStore
@@ -180,9 +185,9 @@ class UserRepository {
     currentTeam.setData(team.toJson());
   }
 
-  Future<String> getUserNamesFromRef(DocumentReference docs) async {
+  Future<User> getUserFromRef(DocumentReference docs) async {
     var user = (await docs.get()).data;
-    return UserDetail.fromJson(user).userName;
+    return User.fromJson(user);
   }
 
   ///events functions

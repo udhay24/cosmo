@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:pubg/data_source/model/user_detail.dart';
+import 'package:pubg/data_source/model/user_model.dart';
 import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/user_detail/bloc/bloc.dart';
 import 'package:pubg/user_detail/ui/create_team_form.dart';
@@ -224,7 +224,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
     if (_formKey.currentState.validate() &&
         _selectedTeamName.value.isNotEmpty) {
       BlocProvider.of<UserProfileBloc>(context).add(UpdateProfile(
-          userDetail: UserDetail(
+          userDetail: User(
               userName: _userNameController.value.text,
               phoneNumber: int.parse(_phoneNumberController.value.text.trim()),
               userUuid: "",

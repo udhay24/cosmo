@@ -35,9 +35,6 @@ class NavigationBloc extends Bloc<NavigationEvent, dynamic> {
     } else if (event is TeamDetailNavigationEvent) {
       navigatorKey.currentState
           .pushNamed(ScreenRoutes.TEAM_DETAIL_SCREEN_ROUTE);
-    } else if (event is TeamDetailViewNavigationEvent) {
-      navigatorKey.currentState
-          .pushNamed(ScreenRoutes.TEAM_DETAIL_VIEW_SCREEN_ROUTE);
     } else if (event is AboutScreenNavigationEvent) {
       navigatorKey.currentState.pushNamed(ScreenRoutes.ABOUT_SCREEN_ROUTE);
     }

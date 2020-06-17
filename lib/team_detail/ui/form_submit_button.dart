@@ -9,12 +9,17 @@ class TeamSubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
+    return SizedBox(
+      width: double.infinity,
+      child: FlatButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(2.0),
+        ),
+        onPressed: _onPressed,
+        textColor: Colors.blue,
+        disabledTextColor: Colors.grey,
+        child: Text('Submit'),
       ),
-      onPressed: _onPressed,
-      child: Text('Submit'),
     );
   }
 }

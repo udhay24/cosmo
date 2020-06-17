@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:pubg/data_source/model/user_detail.dart';
+import 'package:pubg/data_source/model/user_model.dart';
 import 'package:pubg/user_detail/bloc/bloc.dart';
 
 abstract class UserProfileEvent extends Equatable {
@@ -34,7 +34,7 @@ class JoinTeamPressed extends UserProfileEvent {
 }
 
 class UpdateProfile extends UserProfileEvent {
-  final UserDetail userDetail;
+  final User userDetail;
 
   UpdateProfile({@required this.userDetail});
 
