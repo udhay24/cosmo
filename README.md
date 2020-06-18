@@ -3,7 +3,7 @@
 pubg team registration app
 
 ## Getting Started
-<td align="center"><a href="https://github.com/udhay24/cosmo/releases/download/v0.1/app-release.apk"><img src="https://user-images.githubusercontent.com/663460/26973090-f8fdc986-4d14-11e7-995a-e7c5e79ed925.png" alt="Get it on Github" height="68"></a></td>
+<td align="center"><a href="https://github.com/udhay24/cosmo/releases/download/v0.4/app-release.apk"><img src="https://user-images.githubusercontent.com/663460/26973090-f8fdc986-4d14-11e7-995a-e7c5e79ed925.png" alt="Get it on Github" height="68"></a></td>
 
 This project is a starting point for a Flutter application.
 
