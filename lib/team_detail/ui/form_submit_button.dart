@@ -18,6 +18,8 @@ class TeamSubmitButton extends StatelessWidget {
         onPressed: _onPressed,
         textColor: Colors.blue,
         disabledTextColor: Colors.grey,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
         child: Text('Submit'),
       ),
     );

@@ -34,7 +34,7 @@ class NavigationBloc extends Bloc<NavigationEvent, dynamic> {
           .pushNamed(ScreenRoutes.SLOT_SELECTION_SCREEN_ROUTE);
     } else if (event is TeamDetailNavigationEvent) {
       navigatorKey.currentState
-          .pushNamed(ScreenRoutes.TEAM_DETAIL_SCREEN_ROUTE);
+          .pushNamed(ScreenRoutes.TEAM_DETAIL_SCREEN_ROUTE, arguments: event.isFormEditable);
     } else if (event is AboutScreenNavigationEvent) {
       navigatorKey.currentState.pushNamed(ScreenRoutes.ABOUT_SCREEN_ROUTE);
     }

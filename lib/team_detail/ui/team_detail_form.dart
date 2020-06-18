@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pubg/data_source/model/team_model.dart';
 import 'package:pubg/data_source/model/user_model.dart';
 import 'package:pubg/team_detail/bloc/bloc.dart';
 import 'package:pubg/team_detail/model/team_detail.dart';
@@ -14,6 +13,9 @@ import 'package:pubg/util/validators.dart';
 
 class TeamDetailForm extends StatefulWidget {
   State<TeamDetailForm> createState() => _TeamDetailFormState();
+  final bool isFormEditable;
+
+  TeamDetailForm({@required this.isFormEditable});
 }
 
 class _TeamDetailFormState extends State<TeamDetailForm> {
@@ -43,9 +45,6 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
   void initState() {
     super.initState();
     _teamDetailBloc = BlocProvider.of<TeamDetailBloc>(context);
-//    _teamNameController.addListener(_onFormUpdated);
-//    _teamIDController.addListener(_onFormUpdated);
-//    _teamCodeController.addListener(_onFormUpdated);
     _teamDetailBloc.add(TeamDetailScreenInitialized());
   }
 
@@ -132,7 +131,9 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
                 ),
               ),
               TeamSubmitButton(
-                  onPressed: submitEnabled ? _onFormSubmitted : null),
+                  onPressed: (submitEnabled && widget.isFormEditable)
+                      ? _onFormSubmitted
+                      : null),
             ],
           );
         },
@@ -162,6 +163,7 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
   TextFormField _buildCodeFormField() {
     return TextFormField(
         controller: _teamCodeController,
+        readOnly: !widget.isFormEditable,
         decoration: InputDecoration(
           border: UnderlineInputBorder(borderSide: BorderSide()),
           labelText: 'Team Code',
@@ -193,6 +195,7 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
   TextFormField _buildIdFormField() {
     return TextFormField(
         controller: _teamIDController,
+        readOnly: !widget.isFormEditable,
         decoration: InputDecoration(
             border: UnderlineInputBorder(borderSide: BorderSide()),
             labelText: 'Team ID',
@@ -203,10 +206,12 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
                   FontAwesomeIcons.pen,
                   size: 14,
                 ),
-                onPressed: () {
-                  _teamIDController.text =
-                      "${_teamNameController.text}_${Random().nextInt(100000)}";
-                })),
+                onPressed: widget.isFormEditable
+                    ? () {
+                        _teamIDController.text =
+                            "${_teamNameController.text}_${Random().nextInt(100000)}";
+                      }
+                    : null)),
         autocorrect: false,
         validator: (value) {
           if (Validators.isValidName(value)) {
@@ -220,6 +225,7 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
   Widget _buildNameFormField() {
     return TextFormField(
         controller: _teamNameController,
+        readOnly: !widget.isFormEditable,
         decoration: InputDecoration(
             border: UnderlineInputBorder(borderSide: BorderSide()),
             labelText: 'Team Name',
@@ -231,9 +237,11 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
                   Icons.close,
                   size: 20,
                 ),
-                onPressed: () {
-                  _teamNameController.clear();
-                })),
+                onPressed: widget.isFormEditable
+                    ? () {
+                        _teamNameController.clear();
+                      }
+                    : null)),
         autocorrect: false,
         validator: (value) {
           if (Validators.isValidName(value)) {
@@ -323,19 +331,23 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
                     ),
                     label: Text(
                       "remove user",
-                      style: TextStyle(color: Color(0xaeff4b5b)),
                     ),
-                    onPressed: () {
-                      List<User> updatedMembers = List.from(team.teamMembers)
-                        ..removeAt(position);
-                      setState(() {
-                        team = TeamDetail(
-                            teamName: team.teamName,
-                            teamCode: team.teamCode,
-                            teamId: team.teamId,
-                            teamMembers: updatedMembers.cast<User>());
-                      });
-                    })),
+//                    color: Color(0xaeff4b5b),
+                    textColor: Color(0xaeff4b5b),
+                    disabledTextColor: Colors.blueGrey,
+                    onPressed: widget.isFormEditable
+                        ? () {
+                            List<User> updatedMembers =
+                                List.from(team.teamMembers)..removeAt(position);
+                            setState(() {
+                              team = TeamDetail(
+                                  teamName: team.teamName,
+                                  teamCode: team.teamCode,
+                                  teamId: team.teamId,
+                                  teamMembers: updatedMembers.cast<User>());
+                            });
+                          }
+                        : null)),
           ],
         );
       },

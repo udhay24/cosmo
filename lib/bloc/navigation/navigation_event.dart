@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 
 abstract class NavigationEvent extends Equatable {
   const NavigationEvent();
@@ -40,8 +41,11 @@ class JoinTeamNavigationEvent extends NavigationEvent {
 }
 
 class TeamDetailNavigationEvent extends NavigationEvent {
+  final bool isFormEditable;
+  TeamDetailNavigationEvent({@required this.isFormEditable});
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [isFormEditable];
 }
 
 class SlotSelectionNavigationEvent extends NavigationEvent {

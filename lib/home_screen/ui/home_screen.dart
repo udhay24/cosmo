@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_event.dart';
@@ -230,10 +231,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
               } else if (value == "manage_team") {
                 BlocProvider.of<NavigationBloc>(context)
-                    .add(TeamDetailNavigationEvent());
+                    .add(TeamDetailNavigationEvent(isFormEditable: true));
               } else if (value == "view_team") {
                 BlocProvider.of<NavigationBloc>(context)
-                    .add(TeamDetailNavigationEvent());
+                    .add(TeamDetailNavigationEvent(isFormEditable: false));
               } else if (value == "about") {
                 BlocProvider.of<NavigationBloc>(context)
                     .add(AboutScreenNavigationEvent());

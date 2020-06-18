@@ -78,7 +78,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         return BlocProvider<TeamDetailBloc>(
             create: (context) => TeamDetailBloc(
                 userRepository: RepositoryProvider.of<UserRepository>(context)),
-            child: TeamDetailScreen());
+            child: TeamDetailScreen(isFormEditable: (settings.arguments as bool),));
       });
 
     case ScreenRoutes.ABOUT_SCREEN_ROUTE:
