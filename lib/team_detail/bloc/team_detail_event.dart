@@ -7,15 +7,6 @@ abstract class TeamDetailEvent extends Equatable {
   const TeamDetailEvent();
 }
 
-class TeamMemberDetailChanged extends TeamDetailEvent {
-  final Team team;
-
-  TeamMemberDetailChanged({@required this.team});
-
-  @override
-  List<Object> get props => [team];
-}
-
 class TeamDetailScreenInitialized extends TeamDetailEvent {
   @override
   List<Object> get props => [];

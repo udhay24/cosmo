@@ -7,7 +7,6 @@ import 'package:pubg/data_source/model/team_model.dart';
 import 'package:pubg/data_source/model/user_model.dart';
 import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/team_detail/model/team_detail.dart';
-import 'package:pubg/util/validators.dart';
 
 import 'bloc.dart';
 
@@ -27,21 +26,8 @@ class TeamDetailBloc extends Bloc<TeamDetailEvent, TeamDetailState> {
   ) async* {
     if (event is TeamDetailScreenInitialized) {
       yield* _mapScreenInitializedToState();
-    } else if (event is TeamMemberDetailChanged) {
-      yield* _mapDetailChangedToState(event);
-    } else if (event is TeamDetailSubmitPressed) {
+    }  else if (event is TeamDetailSubmitPressed) {
       yield* _mapTeamSubmittedChangedToState(event);
-    }
-  }
-
-  Stream<TeamDetailState> _mapDetailChangedToState(
-      TeamMemberDetailChanged event) async* {
-    if (Validators.isValidName(event.team.teamName) &&
-        Validators.isValidName(event.team.teamCode) &&
-        (event.team.teamMembers.length > 0)) {
-      yield SubmitFormVisible();
-    } else {
-      yield SubmitFormInVisible();
     }
   }
 
@@ -49,17 +35,16 @@ class TeamDetailBloc extends Bloc<TeamDetailEvent, TeamDetailState> {
       TeamDetailSubmitPressed event) async* {
     yield TeamDetailUpdating();
     try {
+      List<DocumentReference> teamMembers = List();
+      for (var member in event.team.teamMembers) {
+        teamMembers.add(await _userRepository.getUserRefFromUuid(member.userUuid));
+      }
       await _userRepository.updateTeamDetail(
         Team(
             teamName: event.team.teamName,
             teamCode: event.team.teamCode,
             teamId: event.team.teamId,
-            teamMembers: event.team.teamMembers
-                .map((e) async {
-                  return await _userRepository.getUserRefFromUuid(e.userUuid);
-                })
-                .cast<DocumentReference>()
-                .toList(),
+            teamMembers: teamMembers,
             teamOwner: await _userRepository.getCurrentUserReference()),
       );
       yield TeamDetailChangeSuccess();

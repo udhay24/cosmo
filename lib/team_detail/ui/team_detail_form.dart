@@ -10,6 +10,7 @@ import 'package:pubg/team_detail/bloc/bloc.dart';
 import 'package:pubg/team_detail/model/team_detail.dart';
 import 'package:pubg/team_detail/ui/form_submit_button.dart';
 import 'package:pubg/util/network_util.dart';
+import 'package:pubg/util/validators.dart';
 
 class TeamDetailForm extends StatefulWidget {
   State<TeamDetailForm> createState() => _TeamDetailFormState();
@@ -27,7 +28,8 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
 
   TeamDetailBloc _teamDetailBloc;
 
-  GlobalKey<FormState> _globalKey = GlobalKey();
+  GlobalKey<FormState> _formKey = GlobalKey();
+  bool submitEnabled = false;
 
   @override
   void dispose() {
@@ -41,9 +43,9 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
   void initState() {
     super.initState();
     _teamDetailBloc = BlocProvider.of<TeamDetailBloc>(context);
-    _teamNameController.addListener(_onFormUpdated);
-    _teamIDController.addListener(_onFormUpdated);
-    _teamCodeController.addListener(_onFormUpdated);
+//    _teamNameController.addListener(_onFormUpdated);
+//    _teamIDController.addListener(_onFormUpdated);
+//    _teamCodeController.addListener(_onFormUpdated);
     _teamDetailBloc.add(TeamDetailScreenInitialized());
   }
 
@@ -104,7 +106,9 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
                   child: Padding(
                     padding: EdgeInsets.all(20),
                     child: Form(
-                      key: _globalKey,
+                      key: _formKey,
+                      onChanged: () => setState(() =>
+                          submitEnabled = _formKey.currentState.validate()),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,9 +131,8 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
                   ),
                 ),
               ),
-              Builder(builder: (context) {
-                  return TeamSubmitButton(onPressed: null);
-              }),
+              TeamSubmitButton(
+                  onPressed: submitEnabled ? _onFormSubmitted : null),
             ],
           );
         },
@@ -143,10 +146,7 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
         Text(
           heading,
           style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: Colors.black54
-          ),
+              fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black54),
         ),
         Expanded(
           child: Divider(
@@ -161,70 +161,87 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
 
   TextFormField _buildCodeFormField() {
     return TextFormField(
-      controller: _teamCodeController,
-      decoration: InputDecoration(
-        border: UnderlineInputBorder(borderSide: BorderSide()),
-        labelText: 'Team Code',
-        helperText:
-            "This is a Secret code which will be used by other members to join your team",
-        suffix: IconButton(
-            icon: Icon(
-              codeVisible ? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye,
-              size: 14,
-            ),
-            onPressed: () {
-              setState(() {
-                codeVisible = !codeVisible;
-              });
-            }),
-      ),
-      obscureText: codeVisible,
-      autocorrect: false,
-      autovalidate: true,
-    );
+        controller: _teamCodeController,
+        decoration: InputDecoration(
+          border: UnderlineInputBorder(borderSide: BorderSide()),
+          labelText: 'Team Code',
+          helperText:
+              "This is a Secret code which will be used by other members to join your team",
+          helperMaxLines: 2,
+          suffix: IconButton(
+              icon: Icon(
+                codeVisible ? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye,
+                size: 14,
+              ),
+              onPressed: () {
+                setState(() {
+                  codeVisible = !codeVisible;
+                });
+              }),
+        ),
+        obscureText: codeVisible,
+        autocorrect: false,
+        validator: (value) {
+          if (Validators.isValidName(value)) {
+            return null;
+          } else {
+            return "Invalid ID";
+          }
+        });
   }
 
   TextFormField _buildIdFormField() {
     return TextFormField(
-      controller: _teamIDController,
-      decoration: InputDecoration(
-          border: UnderlineInputBorder(borderSide: BorderSide()),
-          labelText: 'Team ID',
-          helperText:
-              "This is a unique id representing your team in event registrations",
-          suffix: IconButton(
-              icon: Icon(
-                FontAwesomeIcons.pen,
-                size: 14,
-              ),
-              onPressed: () {
-                _teamIDController.text =
-                    "${_teamNameController.text}_${Random().nextInt(100000)}";
-              })),
-      autocorrect: false,
-      autovalidate: true,
-    );
+        controller: _teamIDController,
+        decoration: InputDecoration(
+            border: UnderlineInputBorder(borderSide: BorderSide()),
+            labelText: 'Team ID',
+            helperText:
+                "This is a unique id representing your team in event registrations",
+            suffix: IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.pen,
+                  size: 14,
+                ),
+                onPressed: () {
+                  _teamIDController.text =
+                      "${_teamNameController.text}_${Random().nextInt(100000)}";
+                })),
+        autocorrect: false,
+        validator: (value) {
+          if (Validators.isValidName(value)) {
+            return null;
+          } else {
+            return "Invalid ID";
+          }
+        });
   }
 
   Widget _buildNameFormField() {
     return TextFormField(
-      controller: _teamNameController,
-      decoration: InputDecoration(
-          border: UnderlineInputBorder(borderSide: BorderSide()),
-          labelText: 'Team Name',
-          helperText:
-              "This is the name of your team which will be seen by everyone",
-          suffix: IconButton(
-              icon: Icon(
-                Icons.close,
-                size: 20,
-              ),
-              onPressed: () {
-                _teamNameController.clear();
-              })),
-      autocorrect: false,
-      autovalidate: true,
-    );
+        controller: _teamNameController,
+        decoration: InputDecoration(
+            border: UnderlineInputBorder(borderSide: BorderSide()),
+            labelText: 'Team Name',
+            helperText:
+                "This is the name of your team which will be seen by everyone",
+            helperMaxLines: 2,
+            suffix: IconButton(
+                icon: Icon(
+                  Icons.close,
+                  size: 20,
+                ),
+                onPressed: () {
+                  _teamNameController.clear();
+                })),
+        autocorrect: false,
+        validator: (value) {
+          if (Validators.isValidName(value)) {
+            return null;
+          } else {
+            return "Invalid ID";
+          }
+        });
   }
 
   Widget _buildUserList() {
@@ -329,17 +346,13 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
     );
   }
 
-  void _onFormUpdated() {
-    _teamDetailBloc.add(TeamMemberDetailChanged(
-        team: Team(
+  void _onFormSubmitted() {
+    team = TeamDetail(
       teamName: _teamNameController.text,
       teamId: _teamIDController.text,
       teamCode: _teamCodeController.text,
       teamMembers: team.teamMembers ?? List(),
-    )));
-  }
-
-  void _onFormSubmitted() {
+    );
     _teamDetailBloc.add(
       TeamDetailSubmitPressed(team: team),
     );
