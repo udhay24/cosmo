@@ -262,93 +262,59 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
         );
       },
       itemBuilder: (context, position) {
-        return ExpansionTile(
+        return ListTile(
           title: Text(team.teamMembers[position].userName),
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Align(
+          subtitle: Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Align(
                     alignment: Alignment.topLeft,
-                    child: Text("User Id: "),
+                    child: Text("Phone number: ")),
+              ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                    child: ButtonBar(
+                      children: <Widget>[
+                        Text(
+                          "${team.teamMembers[position].phoneNumber}",
+                          style: GoogleFonts.abel(
+                              fontWeight: FontWeight.w600, letterSpacing: 1),
+                        ),
+                        Icon(FontAwesomeIcons.whatsapp)
+                      ],
+                    ),
+                    onTap: () {
+                      String url =
+                          "https://wa.me/91${team.teamMembers[position].phoneNumber}";
+                      launchURL(url);
+                    },
                   ),
                 ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: Text(
-                      "${team.teamMembers[position].userUuid}",
-                      style: GoogleFonts.abel(
-                          fontWeight: FontWeight.w600, letterSpacing: 1),
-                    ),
-                  ),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Row(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Text("Phone number: ")),
-                ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: GestureDetector(
-                      child: ButtonBar(
-                        children: <Widget>[
-                          Text(
-                            "${team.teamMembers[position].phoneNumber}",
-                            style: GoogleFonts.abel(
-                                fontWeight: FontWeight.w600, letterSpacing: 1),
-                          ),
-                          Icon(FontAwesomeIcons.whatsapp)
-                        ],
-                      ),
-                      onTap: () {
-                        String url =
-                            "https://wa.me/91${team.teamMembers[position].phoneNumber}";
-                        launchURL(url);
-                      },
-                    ),
-                  ),
-                )
-              ],
-            ),
-            Align(
-                alignment: Alignment.bottomCenter,
-                child: FlatButton.icon(
-                    icon: Icon(
-                      Icons.delete_outline,
-                      color: Color(0xaeff4b5b),
-                    ),
-                    label: Text(
-                      "remove user",
-                    ),
-//                    color: Color(0xaeff4b5b),
-                    textColor: Color(0xaeff4b5b),
-                    disabledTextColor: Colors.blueGrey,
-                    onPressed: widget.isFormEditable
-                        ? () {
-                            List<User> updatedMembers =
-                                List.from(team.teamMembers)..removeAt(position);
-                            setState(() {
-                              team = TeamDetail(
-                                  teamName: team.teamName,
-                                  teamCode: team.teamCode,
-                                  teamId: team.teamId,
-                                  teamMembers: updatedMembers.cast<User>());
-                            });
-                          }
-                        : null)),
-          ],
+              )
+            ],
+          ),
+          trailing: IconButton(
+              icon: Icon(
+                Icons.delete_outline,
+              ),
+              disabledColor: Colors.blueGrey,
+              color: Color(0xaeff4b5b),
+              onPressed: widget.isFormEditable
+                  ? () {
+                      List<User> updatedMembers = List.from(team.teamMembers)
+                        ..removeAt(position);
+                      setState(() {
+                        team = TeamDetail(
+                            teamName: team.teamName,
+                            teamCode: team.teamCode,
+                            teamId: team.teamId,
+                            teamMembers: updatedMembers.cast<User>());
+                      });
+                    }
+                  : null),
         );
       },
       itemCount: team.teamMembers.length ?? 0,

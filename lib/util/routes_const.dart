@@ -14,7 +14,6 @@ import 'package:pubg/register/bloc/bloc.dart';
 import 'package:pubg/register/ui/register_screen.dart';
 import 'package:pubg/team_detail/bloc/bloc.dart';
 import 'package:pubg/team_detail/ui/team_detail_screen.dart';
-import 'package:pubg/team_detail/ui/team_detail_view_screen.dart';
 import 'package:pubg/user_detail/bloc/bloc.dart';
 import 'package:pubg/user_detail/ui/profile_update_screen.dart';
 
