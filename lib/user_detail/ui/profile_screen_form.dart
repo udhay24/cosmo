@@ -63,7 +63,11 @@ class _UserProfileFormState extends State<UserProfileForm> {
             _selectedTeamName.value.isNotEmpty) {
           _updateProfile();
         }
-      } else if (state is UserProfileUpdateSuccess) {
+      } else if (state is CreatingTeam) {
+        Scaffold.of(context).showSnackBar(buildLoadingSnackBar("Creating Team"));
+        Navigator.of(context).pop();
+      }
+      else if (state is UserProfileUpdateSuccess) {
         Scaffold.of(context).showSnackBar(buildSnackBar("Profile Updated"));
       } else if (state is UserProfileLoadedState) {
         _userNameController.text = state.userDetail.userName;

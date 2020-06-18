@@ -28,3 +28,11 @@ class SlotSelected extends HomeScreenEvent {
   @override
   List<Object> get props => [selectedSlot, eventId];
 }
+
+class UpdateFcmCode extends HomeScreenEvent {
+  final String fcmCode;
+  UpdateFcmCode({@required this.fcmCode});
+
+  @override
+  List<Object> get props => [fcmCode];
+}

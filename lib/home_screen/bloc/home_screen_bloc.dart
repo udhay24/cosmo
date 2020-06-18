@@ -31,6 +31,8 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
       yield* _mapInitialEventState(event);
     } else if (event is SlotSelected) {
       yield* _mapSlotSelectedEvent(event);
+    } else if (event is UpdateFcmCode) {
+      _mapUpdateFcmCodeEvent(event);
     }
   }
 
@@ -65,5 +67,9 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
       print("available_events_fetch_failed: $error");
       yield AvailableEventsFailure();
     }
+  }
+
+  void _mapUpdateFcmCodeEvent(UpdateFcmCode event) async {
+    _userRepository.updateUserFcmCode(event.fcmCode);
   }
 }

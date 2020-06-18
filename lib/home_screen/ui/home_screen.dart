@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -11,6 +12,7 @@ import 'package:pubg/data_source/model/available_event.dart';
 import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/home_screen/bloc/bloc.dart';
 import 'package:pubg/home_screen/ui/slot_selection_dialog.dart';
+import 'package:pubg/util/notification_util.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -18,6 +20,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
   static List<String> queryParam = [
     "gaming",
     "call of duty",
@@ -30,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     BlocProvider.of<HomeScreenBloc>(context).add(HomeScreenStarted());
+    _initializeFirebaseMessaging();
   }
 
   @override
@@ -257,5 +262,27 @@ class _HomeScreenState extends State<HomeScreen> {
             .add(UserProfileNavigateEvent());
       },
     );
+  }
+
+  _initializeFirebaseMessaging() {
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+//        _showItemDialog(message);
+      },
+      onBackgroundMessage: myBackgroundMessageHandler,
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+//        _navigateToItemDetail(message);
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+//        _navigateToItemDetail(message);
+      },
+    );
+    _firebaseMessaging.getToken().then((String token) {
+      assert(token != null);
+      BlocProvider.of<HomeScreenBloc>(context).add(UpdateFcmCode(fcmCode: token));
+    });
   }
 }

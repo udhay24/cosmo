@@ -58,8 +58,20 @@ class UserRepository {
     _fireStore
         .collection('users')
         .document(firebaseUser.uid)
-        .setData(user.toJson());
+        .setData(user.toJson(), merge: true);
   }
+
+  ///update the user detail
+  updateUserFcmCode(String fcmCode) async {
+    var firebaseUser = await _firebaseUser;
+    _fireStore
+        .collection('users')
+        .document(firebaseUser.uid)
+        .setData({
+      'fcm_code': fcmCode
+    }, merge: true);
+  }
+
 
   removeUserFromTeam() async {
     try {
@@ -238,8 +250,6 @@ class UserRepository {
   //registers current team to the event
   registerTeamForEvent(AvailableEvent event, int slot) async {
     String dateFormat = DateFormat('dd-MM-yyyy').format(DateTime.now());
-    var user = await _firebaseUser;
-
     var eventRef = await getEventDocFromID(event.eventID);
     var currentTeam = (await getUserDetail()).joinedTeam;
 
