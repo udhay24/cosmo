@@ -39,7 +39,7 @@ class _CreateTeamFormState extends State<CreateTeamForm> {
               .viewInsets,
           child: Form(
             key: _formKey,
-            onChanged: () => setState(() => _formKey.currentState.validate()),
+            onChanged: () => setState(() => _submitEnabled = _formKey.currentState.validate()),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(mainAxisSize: MainAxisSize.min,
