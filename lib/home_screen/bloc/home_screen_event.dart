@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:pubg/data_source/model/event_notification.dart';
 
 abstract class HomeScreenEvent extends Equatable {
   const HomeScreenEvent();
@@ -12,7 +13,7 @@ class HomeScreenStarted extends HomeScreenEvent {
 }
 
 class EventSelected extends HomeScreenEvent {
-  final String eventID;
+  final int eventID;
 
   EventSelected({@required this.eventID});
 
@@ -21,7 +22,7 @@ class EventSelected extends HomeScreenEvent {
 }
 
 class SlotSelected extends HomeScreenEvent {
-  final String eventId;
+  final int eventId;
   final int selectedSlot;
   SlotSelected({@required this.selectedSlot, @required this.eventId});
 
@@ -35,4 +36,15 @@ class UpdateFcmCode extends HomeScreenEvent {
 
   @override
   List<Object> get props => [fcmCode];
+}
+
+class EventNotificationReceived extends HomeScreenEvent {
+  final String eventId;
+  final String roomId;
+  final String roomPassword;
+
+  EventNotificationReceived({@required this.roomId, @required this.roomPassword, @required this.eventId, });
+
+  @override
+  List<Object> get props => [eventId, roomPassword, roomId];
 }

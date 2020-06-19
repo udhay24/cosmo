@@ -223,7 +223,7 @@ class UserRepository {
     return availableSlots;
   }
 
-  Future<DocumentReference> getEventDocFromID(String eventID) async {
+  Future<DocumentReference> getEventDocFromID(int eventID) async {
     var event = await _fireStore
         .collection("available_event")
         .where("event_id", isEqualTo: eventID)
@@ -240,7 +240,7 @@ class UserRepository {
   }
 
   Future<EventDetail> getEventDetailFromId(
-      String eventID) async {
+      int eventID) async {
     DocumentReference _eventRef = await getEventDocFromID(eventID);
     List<int> availableSlots = await getAvailableSlots(_eventRef);
     AvailableEvent event = await getEventFromRef(_eventRef);

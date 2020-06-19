@@ -1,7 +1,7 @@
 class AvailableEvent {
   String eventName;
   String eventDescription;
-  String eventID;
+  int eventID;
 
   AvailableEvent({this.eventName, this.eventDescription});
 

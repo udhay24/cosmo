@@ -3,16 +3,19 @@ import 'dart:math';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_event.dart';
 import 'package:pubg/bloc/navigation/bloc.dart';
+import 'package:pubg/data_source/database.dart';
+import 'package:pubg/data_source/event_repository.dart';
 import 'package:pubg/data_source/model/available_event.dart';
+import 'package:pubg/data_source/model/event_notification.dart';
 import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/home_screen/bloc/bloc.dart';
 import 'package:pubg/home_screen/ui/slot_selection_dialog.dart';
 import 'package:pubg/util/notification_util.dart';
+import 'package:sqflite/sqflite.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -21,6 +24,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  HomeScreenBloc _homeScreenBloc;
 
   static List<String> queryParam = [
     "gaming",
@@ -33,7 +38,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<HomeScreenBloc>(context).add(HomeScreenStarted());
+    _homeScreenBloc = BlocProvider.of<HomeScreenBloc>(context)
+      ..add(HomeScreenStarted());
     _initializeFirebaseMessaging();
   }
 
@@ -85,10 +91,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             child:
                                 _getEventCard(state.availableEvents[position]),
                             onTap: () {
-                              BlocProvider.of<HomeScreenBloc>(context).add(
-                                  EventSelected(
-                                      eventID: state
-                                          .availableEvents[position].eventID));
+                              _homeScreenBloc.add(EventSelected(
+                                  eventID:
+                                      state.availableEvents[position].eventID));
                             },
                           );
                         }),
@@ -118,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   context: context,
                   builder: (buildContext) {
                     return SlotSelectionDialog(
-                      homeScreenBloc: BlocProvider.of<HomeScreenBloc>(context),
+                      homeScreenBloc: _homeScreenBloc,
                       eventId: state.eventID,
                     );
                   });
@@ -224,6 +229,8 @@ class _HomeScreenState extends State<HomeScreen> {
               return <PopupMenuItem<String>>[
                 popupMenuItem,
                 PopupMenuItem<String>(
+                    child: const Text("Notifications"), value: "notification"),
+                PopupMenuItem<String>(
                     child: const Text("Log out"), value: "log_out"),
                 PopupMenuItem<String>(
                   child: const Text("About us"),
@@ -243,6 +250,9 @@ class _HomeScreenState extends State<HomeScreen> {
               } else if (value == "about") {
                 BlocProvider.of<NavigationBloc>(context)
                     .add(AboutScreenNavigationEvent());
+              } else if (value == "notification") {
+                BlocProvider.of<NavigationBloc>(context)
+                    .add(EventNotificationsNavigationEvent());
               }
             },
           );
@@ -268,21 +278,28 @@ class _HomeScreenState extends State<HomeScreen> {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
-//        _showItemDialog(message);
+        handleNotificationEvent(message);
       },
       onBackgroundMessage: myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
-//        _navigateToItemDetail(message);
+        handleNotificationEvent(message);
       },
       onResume: (Map<String, dynamic> message) async {
         print("onResume: $message");
-//        _navigateToItemDetail(message);
+        handleNotificationEvent(message);
       },
     );
     _firebaseMessaging.getToken().then((String token) {
       assert(token != null);
-      BlocProvider.of<HomeScreenBloc>(context).add(UpdateFcmCode(fcmCode: token));
+      _homeScreenBloc.add(UpdateFcmCode(fcmCode: token));
     });
+  }
+
+  handleNotificationEvent(Map<String, dynamic> message) {
+    _homeScreenBloc.add(EventNotificationReceived(
+        roomId: message['data']['room_id'] as String,
+        roomPassword: message['data']['room_password'] as String,
+        eventId: message['data']['event_id'] as String));
   }
 }

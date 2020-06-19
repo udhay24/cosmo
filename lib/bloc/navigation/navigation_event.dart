@@ -57,3 +57,8 @@ class AboutScreenNavigationEvent extends NavigationEvent {
   @override
   List<Object> get props => [];
 }
+
+class EventNotificationsNavigationEvent extends NavigationEvent {
+  @override
+  List<Object> get props => [];
+}

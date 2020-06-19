@@ -5,6 +5,9 @@ import 'package:pubg/about/ui/about_screen.dart';
 import 'package:pubg/data_source/event_repository.dart';
 import 'package:pubg/data_source/login_repository.dart';
 import 'package:pubg/data_source/user_repository.dart';
+import 'package:pubg/event_notification/bloc/bloc.dart';
+import 'package:pubg/event_notification/bloc/event_notification_bloc.dart';
+import 'package:pubg/event_notification/ui/EventNotificationScreen.dart';
 import 'package:pubg/home_screen/bloc/bloc.dart';
 import 'package:pubg/home_screen/bloc/home_screen_bloc.dart';
 import 'package:pubg/home_screen/ui/home_screen.dart';
@@ -28,6 +31,7 @@ class ScreenRoutes {
   static const String TEAM_DETAIL_SCREEN_ROUTE = "/team_detail";
   static const String SLOT_SELECTION_SCREEN_ROUTE = "/slot_selection";
   static const String ABOUT_SCREEN_ROUTE = "/about";
+  static const String EVENT_NOTIFICATION_SCREEN_ROUTE = "/notification_screen";
 }
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -77,12 +81,24 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         return BlocProvider<TeamDetailBloc>(
             create: (context) => TeamDetailBloc(
                 userRepository: RepositoryProvider.of<UserRepository>(context)),
-            child: TeamDetailScreen(isFormEditable: (settings.arguments as bool),));
+            child: TeamDetailScreen(
+              isFormEditable: (settings.arguments as bool),
+            ));
       });
 
     case ScreenRoutes.ABOUT_SCREEN_ROUTE:
       return MaterialPageRoute(builder: (context) {
         return AboutScreen();
+      });
+
+    case ScreenRoutes.EVENT_NOTIFICATION_SCREEN_ROUTE:
+      return MaterialPageRoute(builder: (context) {
+        return BlocProvider<EventNotificationBloc>(
+          create:(context) => EventNotificationBloc(
+            repository: EventRepository()
+          )..add(LoadEventNotifications()),
+          child: EventNotificationScreen(),
+        ) ;
       });
 
     default:

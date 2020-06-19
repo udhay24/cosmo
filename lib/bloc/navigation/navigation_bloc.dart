@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pubg/util/routes_const.dart';
+import 'package:pubg/bloc/navigation/routes_const.dart';
 
 import './bloc.dart';
 
@@ -37,6 +37,8 @@ class NavigationBloc extends Bloc<NavigationEvent, dynamic> {
           .pushNamed(ScreenRoutes.TEAM_DETAIL_SCREEN_ROUTE, arguments: event.isFormEditable);
     } else if (event is AboutScreenNavigationEvent) {
       navigatorKey.currentState.pushNamed(ScreenRoutes.ABOUT_SCREEN_ROUTE);
+    } else if (event is EventNotificationsNavigationEvent) {
+      navigatorKey.currentState.pushNamed(ScreenRoutes.EVENT_NOTIFICATION_SCREEN_ROUTE);
     }
   }
 }

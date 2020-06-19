@@ -8,7 +8,7 @@ import 'package:pubg/home_screen/bloc/bloc.dart';
 import 'package:pubg/home_screen/model/event_detail.dart';
 
 class SlotSelectionDialog extends StatefulWidget {
-  final String eventId;
+  final int eventId;
   final HomeScreenBloc homeScreenBloc;
 
   SlotSelectionDialog({@required this.eventId, @required this.homeScreenBloc});
@@ -84,7 +84,7 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
     );
   }
 
-  Widget _buildSelectSlotButton(BuildContext context, String eventID) {
+  Widget _buildSelectSlotButton(BuildContext context, int eventID) {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 50,
