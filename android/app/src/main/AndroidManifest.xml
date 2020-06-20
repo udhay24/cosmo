@@ -7,7 +7,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name=".Application"
-        android:label="cosmo"
+        android:label="Cosmo"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -24,6 +24,14 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+            <!-- Set custom default icon. This is used when no icon is set for incoming notification messages. -->
+            <meta-data
+                android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/game_icon" />
+            <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming notification message.  -->
+            <meta-data
+                android:name="com.google.firebase.messaging.default_notification_color"
+                android:resource="@android:color/black" />
             <!-- Displays an Android View that continues showing the launch screen
                  Drawable until Flutter paints its first frame, then this splash
                  screen fades out. A splash screen is useful to avoid any visual
