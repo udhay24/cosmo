@@ -244,7 +244,7 @@ class UserRepository {
     DocumentReference _eventRef = await getEventDocFromID(eventID);
     List<int> availableSlots = await getAvailableSlots(_eventRef);
     AvailableEvent event = await getEventFromRef(_eventRef);
-    return EventDetail(event: event, availableSlots: availableSlots);
+    return EventDetail(event: event, availableSlots: availableSlots, isRegistrationOpen: availableSlots.isNotEmpty);
   }
 
   //registers current team to the event

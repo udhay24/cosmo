@@ -17,7 +17,15 @@ class EventNotificationScreen extends StatelessWidget {
         if (state is LoadingEventNotifications) {
           return Center(child: CircularProgressIndicator());
         } else if (state is EventNotificationLoadedState) {
-          return ListView.builder(
+          return ListView.separated(
+            separatorBuilder: (context, position) {
+              return Divider(
+                height: 5,
+                thickness: 2,
+                  indent: 20,
+                endIndent: 20,
+              );
+            },
             itemBuilder: (context, position) {
               var notification = state.eventNotifications[position];
               return _buildNotificationTile(notification);
@@ -35,7 +43,15 @@ class EventNotificationScreen extends StatelessWidget {
   ListTile _buildNotificationTile(NotificationModel notification) {
     return ListTile(
       title: Text("${notification.eventName}"),
-      subtitle: Text("${notification.roomID} - ${notification.roomPassword}"),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text("Room ID - ${notification.roomID}"),
+          Text("Room Password - ${notification.roomPassword}")
+        ],
+      ),
+      isThreeLine: true,
     );
   }
 }

@@ -51,7 +51,9 @@ class _UserProfileFormState extends State<UserProfileForm> {
         listener: (context, state) {
       if (state is FindTeamSuccess) {
         _teamReference.value = state.teamReference;
-        Scaffold.of(context).showSnackBar(buildSnackBar("Team found"));
+        Scaffold.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(buildSnackBar("Team found"));
         Navigator.of(context).pop();
         if (_formKey.currentState.validate() &&
             _selectedTeamName.value.isNotEmpty) {
@@ -64,7 +66,9 @@ class _UserProfileFormState extends State<UserProfileForm> {
           _updateProfile();
         }
       } else if (state is CreatingTeam) {
-        Scaffold.of(context).showSnackBar(buildLoadingSnackBar("Creating Team"));
+        Scaffold.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(buildLoadingSnackBar("Creating Team"));
         Navigator.of(context).pop();
       }
       else if (state is UserProfileUpdateSuccess) {
@@ -75,17 +79,21 @@ class _UserProfileFormState extends State<UserProfileForm> {
         _teamReference.value = state.userDetail.joinedTeam;
       } else if (state is UserProfileUpdating) {
         Scaffold.of(context)
-            .showSnackBar(buildLoadingSnackBar("Updating profile"));
+          ..hideCurrentSnackBar()
+          ..showSnackBar(buildLoadingSnackBar("Updating profile"));
       } else if (state is UserProfileStartUpdate) {
         _updateProfile();
       } else if (state is FindTeamFailure) {
-        Scaffold.of(context).showSnackBar(buildSnackBar("Team Not Found"));
+        Scaffold.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(buildSnackBar("Team Not Found"));
       } else if (state is FindTeamSearching) {
         Scaffold.of(context)
             .showSnackBar(buildLoadingSnackBar("Searching Team"));
       } else if (state is CannotJoinTeam) {
-        Scaffold.of(context).showSnackBar(
-          buildSnackBar("This team has reached maximum members limit"),
+        Scaffold.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(buildSnackBar("This team has reached maximum members limit"),
         );
       } else if (state is CreateTeamSuccess) {
         Navigator.of(context).pop();

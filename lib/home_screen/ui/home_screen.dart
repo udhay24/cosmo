@@ -47,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          title: Text("Cosmo"),
           actions: <Widget>[
             _buildProfileMenuAction(context),
             _buildOverFlowMenu(context),
@@ -85,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemCount: state.availableEvents.length,
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
-                        physics: ClampingScrollPhysics(),
+                        physics: BouncingScrollPhysics(),
                         itemBuilder: (context, position) {
                           return GestureDetector(
                             child:

@@ -32,7 +32,9 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
             .getEventDetailFromId(widget.eventId),
         builder: (context, AsyncSnapshot<EventDetail> value) {
           if ((value != null) && (value.hasData)) {
-            slotSelected = value.data.availableSlots.first;
+            slotSelected = value.data.isRegistrationOpen
+                ? value.data.availableSlots.first
+                : 0;
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -47,29 +49,36 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
                   SizedBox(
                     height: 20,
                   ),
-                  _buildSlotOption(),
+                  _buildSlotOption(value.data.isRegistrationOpen),
                   SizedBox(
                     height: 20,
                   ),
-                  _buildSelectSlotButton(context, value.data.event.eventID)
+                  _buildSelectSlotButton(context, value.data.event.eventID, value.data.isRegistrationOpen)
                 ],
               ),
             );
           } else {
             return Container(
-              height: 100,
-                child: Center(child: CircularProgressIndicator()));
+                height: 100, child: Center(child: CircularProgressIndicator()));
           }
         });
   }
 
-  Widget _buildSlotOption() {
+  Widget _buildSlotOption(bool isRegistrationOpen) {
     return Row(
       children: <Widget>[
-        Transform.rotate(angle: 125, child: Icon(FontAwesomeIcons.ticketAlt, color: Colors.grey,),),
-        SizedBox(width: 20,),
+        Transform.rotate(
+          angle: 125,
+          child: Icon(
+            FontAwesomeIcons.ticketAlt,
+            color: Colors.grey,
+          ),
+        ),
+        SizedBox(
+          width: 20,
+        ),
         Text(
-          "Available Slot :    $slotSelected",
+          "Available Slot :    ${isRegistrationOpen ? slotSelected : "No Slots Available"}",
           style: GoogleFonts.abel(fontWeight: FontWeight.w600, fontSize: 15),
         ),
       ],
@@ -84,11 +93,11 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
     );
   }
 
-  Widget _buildSelectSlotButton(BuildContext context, int eventID) {
+  Widget _buildSelectSlotButton(BuildContext context, int eventID, bool isRegistrationOpen) {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 50,
-      child: FlatButton(
+        width: MediaQuery.of(context).size.width,
+        height: 50,
+        child: FlatButton(
           textColor: Colors.white,
           color: Colors.blue,
           shape: RoundedRectangleBorder(
@@ -98,11 +107,12 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
             "Register",
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
-          onPressed: () {
-            widget.homeScreenBloc
-              ..add(SlotSelected(selectedSlot: slotSelected, eventId: eventID));
-          }),
-    );
+          onPressed: isRegistrationOpen
+              ? () => widget.homeScreenBloc
+                ..add(
+                    SlotSelected(selectedSlot: slotSelected, eventId: eventID))
+              : null,
+        ));
   }
 
   DropdownButton<String> _buildDropdownButton(List<int> availableSlots) {
