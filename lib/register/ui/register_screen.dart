@@ -7,6 +7,8 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
+      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         elevation: 0,
           title: Text(
@@ -15,7 +17,6 @@ class RegisterScreen extends StatelessWidget {
           ),
         backgroundColor: Colors.transparent,
       ),
-      resizeToAvoidBottomInset: false,
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -27,7 +28,6 @@ class RegisterScreen extends StatelessWidget {
           colorFilter: ColorFilter.mode(Colors.red, BlendMode.darken),
         )),
         child:RegisterForm(),
-        alignment: Alignment.center,
       ),
     );
   }

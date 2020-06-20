@@ -72,130 +72,125 @@ class _RegisterFormState extends State<RegisterForm> {
       },
       child: BlocBuilder<RegisterBloc, RegisterState>(
         builder: (context, state) {
-          return Stack(
-            alignment: Alignment.center,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: Form(
-                  key: _formKey,
-                  onChanged: () => setState(
-                      () => _submitEnabled = _formKey.currentState.validate()),
-                  child: ListView(
-                    children: <Widget>[
-                      TextFormField(
-                        controller: _emailController,
-                        style: GoogleFonts.poppins(color: Colors.white),
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.email,
-                            color: Colors.white,
-                          ),
-                          labelText: 'Email',
-                          fillColor: Colors.white,
-                          labelStyle: GoogleFonts.abel(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                          errorStyle: GoogleFonts.abel(color: Colors.white),
-                          border: new UnderlineInputBorder(
-                            borderRadius: new BorderRadius.circular(4.0),
-                            borderSide: new BorderSide(),
-                          ),
-                        ),
-                        keyboardType: TextInputType.emailAddress,
-                        autocorrect: false,
-                        autovalidate: true,
-                        validator: (value) {
-                          return !Validators.isValidEmail(value)
-                              ? 'Invalid Email'
-                              : null;
-                        },
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 60),
+            child: Form(
+              key: _formKey,
+              onChanged: () => setState(
+                  () => _submitEnabled = _formKey.currentState.validate()),
+              child: ListView(
+                children: <Widget>[
+                  TextFormField(
+                    controller: _emailController,
+                    style: GoogleFonts.poppins(color: Colors.white),
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.email,
+                        color: Colors.white,
                       ),
-                      SizedBox(
-                        height: 10,
+                      labelText: 'Email',
+                      fillColor: Colors.white,
+                      labelStyle: GoogleFonts.abel(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                      errorStyle: GoogleFonts.abel(color: Colors.white),
+                      border: new UnderlineInputBorder(
+                        borderRadius: new BorderRadius.circular(4.0),
+                        borderSide: new BorderSide(),
                       ),
-                      TextFormField(
-                        controller: _passwordController,
-                        style: GoogleFonts.poppins(color: Colors.white),
-                        decoration: InputDecoration(
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              passwordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                passwordVisible = !passwordVisible;
-                              });
-                            },
-                          ),
-                          prefixIcon: Icon(Icons.lock, color: Colors.white),
-                          labelText: 'Password',
-                          fillColor: Colors.white,
-                          labelStyle: GoogleFonts.abel(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                          errorStyle: GoogleFonts.abel(color: Colors.white),
-                        ),
-                        obscureText: passwordVisible,
-                        autocorrect: false,
-                        autovalidate: true,
-                        validator: (value) {
-                          return !Validators.isValidPassword(value)
-                              ? 'Invalid Password'
-                              : null;
-                        },
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        style: GoogleFonts.poppins(color: Colors.white),
-                        decoration: InputDecoration(
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              passwordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                passwordVisible = !passwordVisible;
-                              });
-                            },
-                          ),
-                          prefixIcon: Icon(Icons.lock, color: Colors.white),
-                          labelText: 'Re-enter Password',
-                          fillColor: Colors.white,
-                          labelStyle: GoogleFonts.abel(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                          errorStyle: GoogleFonts.abel(color: Colors.white),
-                        ),
-                        obscureText: passwordVisible,
-                        autocorrect: false,
-                        autovalidate: true,
-                        onChanged: (value) {
-                          if (value == _passwordController.text) {
-                            doesPasswordsMatch = true;
-                          }
-                        },
-                        validator: (value) {
-                          return value != _passwordController.text
-                              ? "Passwords don't match"
-                              : null;
-                        },
-                      ),
-                      RegisterButton(
-                        onPressed: _submitEnabled ? _onFormSubmitted : null,
-                      ),
-                    ],
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    autocorrect: false,
+                    autovalidate: true,
+                    validator: (value) {
+                      return !Validators.isValidEmail(value)
+                          ? 'Invalid Email'
+                          : null;
+                    },
                   ),
-                ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    controller: _passwordController,
+                    style: GoogleFonts.poppins(color: Colors.white),
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            passwordVisible = !passwordVisible;
+                          });
+                        },
+                      ),
+                      prefixIcon: Icon(Icons.lock, color: Colors.white),
+                      labelText: 'Password',
+                      fillColor: Colors.white,
+                      labelStyle: GoogleFonts.abel(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                      errorStyle: GoogleFonts.abel(color: Colors.white),
+                    ),
+                    obscureText: passwordVisible,
+                    autocorrect: false,
+                    autovalidate: true,
+                    validator: (value) {
+                      return !Validators.isValidPassword(value)
+                          ? 'Invalid Password'
+                          : null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    style: GoogleFonts.poppins(color: Colors.white),
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            passwordVisible = !passwordVisible;
+                          });
+                        },
+                      ),
+                      prefixIcon: Icon(Icons.lock, color: Colors.white),
+                      labelText: 'Re-enter Password',
+                      fillColor: Colors.white,
+                      labelStyle: GoogleFonts.abel(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                      errorStyle: GoogleFonts.abel(color: Colors.white),
+                    ),
+                    obscureText: passwordVisible,
+                    autocorrect: false,
+                    autovalidate: true,
+                    onChanged: (value) {
+                      if (value == _passwordController.text) {
+                        doesPasswordsMatch = true;
+                      }
+                    },
+                    validator: (value) {
+                      return value != _passwordController.text
+                          ? "Passwords don't match"
+                          : null;
+                    },
+                  ),
+                  RegisterButton(
+                    onPressed: _submitEnabled ? _onFormSubmitted : null,
+                  ),
+                ],
+                shrinkWrap: true,
+                physics: BouncingScrollPhysics(),
               ),
-            ],
+            ),
           );
         },
       ),

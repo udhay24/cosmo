@@ -54,11 +54,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
         Scaffold.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(buildSnackBar("Team found"));
-        Navigator.of(context).pop();
-        if (_formKey.currentState.validate() &&
-            _selectedTeamName.value.isNotEmpty) {
-          _updateProfile();
-        }
+        _updateProfile();
       } else if (state is FindTeamSearching) {
         Navigator.of(context).pop();
         Scaffold.of(context)
@@ -76,11 +72,10 @@ class _UserProfileFormState extends State<UserProfileForm> {
             buildSnackBar("Team doesn't exist"),
           );
       } else if (state is CreateTeamSuccess) {
+        Scaffold.of(context)
+          ..hideCurrentSnackBar();
         _teamReference.value = state.teamReference;
-        if (_formKey.currentState.validate() &&
-            _selectedTeamName.value.isNotEmpty) {
-          _updateProfile();
-        }
+        _updateProfile();
       } else if (state is CreatingTeam) {
         Scaffold.of(context)
           ..hideCurrentSnackBar()
@@ -90,7 +85,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
         Scaffold.of(context).showSnackBar(buildSnackBar("Profile Updated"));
       } else if (state is UserProfileLoadedState) {
         _userNameController.text = state.userDetail.userName;
-        _phoneNumberController.text = state.userDetail.phoneNumber.toString();
+        _phoneNumberController.text = state.userDetail.phoneNumber?.toString() ?? "";
         _teamReference.value = state.userDetail.joinedTeam;
       } else if (state is UserProfileUpdating) {
         Scaffold.of(context)
@@ -241,7 +236,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
 
   _updateProfile() {
     if (_formKey.currentState.validate() &&
-        _selectedTeamName.value.isNotEmpty) {
+        (_teamReference.value != null)) {
       BlocProvider.of<UserProfileBloc>(context).add(UpdateProfile(
           userDetail: User(
               userName: _userNameController.value.text,
