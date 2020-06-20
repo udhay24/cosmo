@@ -1,19 +1,11 @@
-import 'dart:math';
-
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_event.dart';
 import 'package:pubg/bloc/navigation/bloc.dart';
-import 'package:pubg/data_source/model/available_event.dart';
 import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/home_screen/bloc/bloc.dart';
 import 'package:pubg/home_screen/ui/available_event_widget.dart';
-import 'package:pubg/home_screen/ui/no_internet_Screen.dart';
-import 'package:pubg/home_screen/ui/slot_selection_dialog.dart';
-import 'package:pubg/util/notification_util.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

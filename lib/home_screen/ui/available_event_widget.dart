@@ -3,10 +3,11 @@ import 'dart:math';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pubg/bloc/navigation/bloc.dart';
 import 'package:pubg/data_source/model/available_event.dart';
 import 'package:pubg/home_screen/bloc/bloc.dart';
+import 'package:pubg/util/network_util.dart';
 import 'package:pubg/util/notification_util.dart';
 import 'package:pubg/util/widget_util.dart';
 
@@ -33,6 +34,7 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
     _initializeFirebaseMessaging();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeScreenBloc, HomeScreenState>(
@@ -47,22 +49,29 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
       },
       builder: (context, state) {
         if (state is AvailableEventsSuccess) {
-          return ListView.builder(
-              itemCount: state.availableEvents.length,
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              physics: BouncingScrollPhysics(),
-              itemBuilder: (context, position) {
-                return GestureDetector(
-                  child:
-                  _getEventCard(state.availableEvents[position]),
-                  onTap: () {
-                    BlocProvider.of<HomeScreenBloc>(context).add(EventSelected(
-                        eventID:
-                        state.availableEvents[position].eventID));
-                  },
-                );
-              });
+          return Column(
+            children: <Widget>[
+              Expanded(
+                child: ListView.builder(
+                    itemCount: state.availableEvents.length,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    physics: BouncingScrollPhysics(),
+                    itemBuilder: (context, position) {
+                      return GestureDetector(
+                        child: _getEventCard(state.availableEvents[position]),
+                        onTap: () {
+                          BlocProvider.of<HomeScreenBloc>(context).add(
+                              EventSelected(
+                                  eventID:
+                                      state.availableEvents[position].eventID));
+                        },
+                      );
+                    }),
+              ),
+              _buildSocialMediaCard()
+            ],
+          );
         } else if (state is AvailableEventsLoading) {
           return Center(child: CircularProgressIndicator());
         } else {
@@ -107,7 +116,10 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
                     image: DecorationImage(
                         fit: BoxFit.cover,
                         image: NetworkImage(
-                          "https://source.unsplash.com/featured/?${queryParam[Random.secure().nextInt(queryParam.length - 1)]},${queryParam[Random.secure().nextInt(queryParam.length - 1)]}",
+                          "https://source.unsplash.com/featured/?${queryParam[Random
+                              .secure().nextInt(
+                              queryParam.length - 1)]},${queryParam[Random
+                              .secure().nextInt(queryParam.length - 1)]}",
                         ),
                         colorFilter:
                         ColorFilter.mode(Colors.grey, BlendMode.overlay))),
@@ -170,21 +182,25 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         handleNotificationEvent(message);
-        Scaffold.of(context).showSnackBar(buildSnackBar("New Event Details Received"));
+        Scaffold.of(context)
+            .showSnackBar(buildSnackBar("New Event Details Received"));
       },
       onBackgroundMessage: myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
         handleNotificationEvent(message);
-        BlocProvider.of<NavigationBloc>(context).add(EventNotificationsNavigationEvent());
+        BlocProvider.of<NavigationBloc>(context)
+            .add(EventNotificationsNavigationEvent());
       },
       onResume: (Map<String, dynamic> message) async {
         handleNotificationEvent(message);
-        BlocProvider.of<NavigationBloc>(context).add(EventNotificationsNavigationEvent());
+        BlocProvider.of<NavigationBloc>(context)
+            .add(EventNotificationsNavigationEvent());
       },
     );
     _firebaseMessaging.getToken().then((String token) {
       assert(token != null);
-      BlocProvider.of<HomeScreenBloc>(context).add(UpdateFcmCode(fcmCode: token));
+      BlocProvider.of<HomeScreenBloc>(context)
+          .add(UpdateFcmCode(fcmCode: token));
     });
   }
 
@@ -195,5 +211,55 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
           roomPassword: message['data']['room_password'] as String,
           eventId: message['data']['event_id'] as String));
     }
+  }
+
+  Widget _buildSocialMediaCard() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Divider(
+          height: 2,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          child: Text("Join us on", style: GoogleFonts.sourceSansPro(
+              fontSize: 16, fontWeight: FontWeight.bold
+          ),),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            IconButton(
+              icon: Image.asset('assets/icons/facebook-48.png'),
+              onPressed: () {
+                launchURL(
+                    "https://www.facebook.com/Team-Cosmos-111189120584649/");
+              },
+            ),
+            IconButton(
+              icon: Image.asset('assets/icons/instagram-48.png'),
+              onPressed: () {
+                launchURL(
+                    "https://instagram.com/cosmogamingz?igshid=7o93qh2op04u");
+              },
+            ),
+            IconButton(
+              icon: Image.asset('assets/icons/youtube-48.png'),
+              onPressed: () {
+                launchURL(
+                    "https://www.youtube.com/channel/UCVJWGqiu1NYP0yG7-bkCSog");
+              },
+            ),
+            IconButton(
+              icon: Image.asset('assets/icons/whatsapp-30.png'),
+              onPressed: () {
+                launchURL("https://chat.whatsapp.com/LQez1dzk6HR31EVG3aN6Np");
+              },
+            ),
+
+          ],
+        ),
+      ],
+    );
   }
 }
