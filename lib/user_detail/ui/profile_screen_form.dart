@@ -172,6 +172,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
       title: Text("Selected Team"),
       subtitle: Text(value),
       leading: Icon(FontAwesomeIcons.gamepad),
+      initiallyExpanded: true,
       children: <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

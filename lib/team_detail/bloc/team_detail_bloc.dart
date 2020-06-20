@@ -47,6 +47,10 @@ class TeamDetailBloc extends Bloc<TeamDetailEvent, TeamDetailState> {
             teamMembers: teamMembers,
             teamOwner: await _userRepository.getCurrentUserReference()),
       );
+      await Future.forEach(event.removedUsers, (User user) async {
+        var updatedUser = User(userName: user.userName, phoneNumber: user.phoneNumber, userUuid: user.userUuid, joinedTeam: null);
+        await _userRepository.updateUserDetail(updatedUser);
+      });
       yield TeamDetailChangeSuccess();
     } catch (_) {
       yield TeamDetailChangeFailure();

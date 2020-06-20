@@ -58,7 +58,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   Stream<UserProfileState> _mapInitializedEventToState(
       ProfileScreenInitialized event) async* {
     try {
-      var userDetails = await _userRepository.getUserDetail();
+      var userDetails = await _userRepository.getCurrentUserDetail();
       yield UserProfileLoadedState(userDetail: userDetails);
     } catch (error) {
       print("error in loading user detail $error");
@@ -107,8 +107,8 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       UpdateProfile event) async* {
     yield UserProfileUpdating();
     try {
-      await _userRepository.removeUserFromTeam();
-      await _userRepository.updateUserDetail(event.userDetail);
+      await _userRepository.removeCurrentUserFromTeam();
+      await _userRepository.updateCurrentUserDetail(event.userDetail);
       await _userRepository
           .addCurrentUserToTeamWithRef(event.userDetail.joinedTeam);
       yield UserProfileUpdateSuccess();

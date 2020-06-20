@@ -28,6 +28,8 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
   TeamDetail team =
       TeamDetail(teamName: "", teamId: "", teamCode: "", teamMembers: List());
 
+  final List<User> removedMembers = List();
+
   TeamDetailBloc _teamDetailBloc;
 
   GlobalKey<FormState> _formKey = GlobalKey();
@@ -304,6 +306,7 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
               color: Color(0xaeff4b5b),
               onPressed: widget.isFormEditable
                   ? () {
+                      removedMembers.add(team.teamMembers[position]);
                       List<User> updatedMembers = List.from(team.teamMembers)
                         ..removeAt(position);
                       setState(() {
@@ -332,7 +335,7 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
       teamMembers: team.teamMembers ?? List(),
     );
     _teamDetailBloc.add(
-      TeamDetailSubmitPressed(team: team),
+      TeamDetailSubmitPressed(team: team, removedUsers: removedMembers),
     );
   }
 }
