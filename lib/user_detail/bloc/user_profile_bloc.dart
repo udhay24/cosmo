@@ -1,10 +1,10 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:pubg/data_source/model/team_model.dart';
 import 'package:pubg/data_source/user_repository.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:rxdart/streams.dart';
 
 import './bloc.dart';
 
@@ -17,6 +17,24 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
 
   @override
   UserProfileState get initialState => InitialUserProfileState();
+
+  @override
+  Stream<Transition<UserProfileEvent, UserProfileState>> transformEvents(
+      Stream<UserProfileEvent> events,
+      TransitionFunction<UserProfileEvent, UserProfileState> transitionFn,
+      ) {
+    final nonDebounceStream = events.where((event) {
+      return (event is! NewTeamIdEntered);
+    });
+    final debounceStream = events.where((event) {
+      return (event is NewTeamIdEntered);
+    }).debounceTime(Duration(milliseconds: 300));
+    return super.transformEvents(
+      nonDebounceStream.mergeWith([debounceStream]),
+      transitionFn,
+    );
+  }
+
 
   @override
   Stream<UserProfileState> mapEventToState(
@@ -32,6 +50,8 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       yield* _mapUpdateProfileEvent(event);
     } else if (event is SaveProfilePressed) {
       yield* _mapSaveProfileEvent(event);
+    } else if (event is NewTeamIdEntered) {
+      yield* _mapNewTeamIdEvent(event);
     }
   }
 
@@ -99,5 +119,19 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
 
   Stream<UserProfileState> _mapSaveProfileEvent(SaveProfilePressed event) async* {
     yield UserProfileStartUpdate();
+  }
+
+  Stream<UserProfileState> _mapNewTeamIdEvent(NewTeamIdEntered event) async* {
+    try {
+      yield ValidatingTeamId();
+      var results = await _userRepository.getMatchingTeams(event.teamID);
+      if (results.length > 0) {
+        yield InValidTeamId();
+      } else {
+        yield ValidTeamId();
+      }
+    } catch (e) {
+      yield InValidTeamId();
+    }
   }
 }

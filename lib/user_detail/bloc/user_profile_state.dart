@@ -93,3 +93,18 @@ class CreateTeamFailure extends UserProfileState {
   @override
   List<Object> get props => [];
 }
+
+class ValidTeamId extends UserProfileState {
+  @override
+  List<Object> get props => [];
+}
+
+class InValidTeamId extends UserProfileState {
+  @override
+  List<Object> get props => [];
+}
+
+class ValidatingTeamId extends UserProfileState {
+  @override
+  List<Object> get props => [];
+}

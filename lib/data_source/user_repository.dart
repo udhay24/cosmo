@@ -31,7 +31,6 @@ class UserRepository {
     return _fireStore.collection("users").document(uuid);
   }
 
-
   /// checks if the user profile is complete or any detail is missing
   Future<bool> isUserProfileComplete() async {
     try {
@@ -67,11 +66,8 @@ class UserRepository {
     _fireStore
         .collection('users')
         .document(firebaseUser.uid)
-        .setData({
-      'fcm_code': fcmCode
-    }, merge: true);
+        .setData({'fcm_code': fcmCode}, merge: true);
   }
-
 
   removeUserFromTeam() async {
     try {
@@ -239,12 +235,14 @@ class UserRepository {
     return AvailableEvent.fromJson(eventData);
   }
 
-  Future<EventDetail> getEventDetailFromId(
-      int eventID) async {
+  Future<EventDetail> getEventDetailFromId(int eventID) async {
     DocumentReference _eventRef = await getEventDocFromID(eventID);
     List<int> availableSlots = await getAvailableSlots(_eventRef);
     AvailableEvent event = await getEventFromRef(_eventRef);
-    return EventDetail(event: event, availableSlots: availableSlots, isRegistrationOpen: availableSlots.isNotEmpty);
+    return EventDetail(
+        event: event,
+        availableSlots: availableSlots,
+        isRegistrationOpen: availableSlots.isNotEmpty);
   }
 
   //registers current team to the event
@@ -262,5 +260,14 @@ class UserRepository {
                 selectedSlot: slot,
                 date: Timestamp.now())
             .toJson());
+  }
+
+  //get matching team ids
+  Future<List<String>> getMatchingTeams(String teamId) async {
+    var documents = await _fireStore
+        .collection('teams')
+        .where('team_id', isEqualTo: teamId)
+        .getDocuments();
+    return documents.documents.map((e) => e['team_id']).cast<String>().toList();
   }
 }

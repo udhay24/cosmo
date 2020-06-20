@@ -46,3 +46,12 @@ class SaveProfilePressed extends UserProfileEvent {
   @override
   List<Object> get props => [];
 }
+
+class NewTeamIdEntered extends UserProfileEvent {
+  final String teamID;
+
+  NewTeamIdEntered({@required this.teamID});
+
+  @override
+  List<Object> get props => [teamID];
+}

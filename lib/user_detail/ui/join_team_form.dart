@@ -75,8 +75,8 @@ class _JoinTeamFormState extends State<JoinTeamForm> {
                       }),
                   OutlineButton(
                       child: Text(
-                        "Join",   style: TextStyle(
-                          fontWeight: FontWeight.w600),
+                        "Join",
+                        style: TextStyle(fontWeight: FontWeight.w600),
                       ),
                       borderSide: BorderSide.none,
                       textColor: Colors.blueAccent,

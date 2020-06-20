@@ -19,6 +19,8 @@ class _CreateTeamFormState extends State<CreateTeamForm> {
 
   GlobalKey<FormState> _formKey = GlobalKey();
   bool _submitEnabled = false;
+  bool validTeamId = false;
+  bool showProgressBar = false;
 
   @override
   void dispose() {
@@ -30,19 +32,30 @@ class _CreateTeamFormState extends State<CreateTeamForm> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserProfileBloc, UserProfileState>(
+    return BlocConsumer<UserProfileBloc, UserProfileState>(
       bloc: widget.userProfileBloc,
+      listener: (previousState, state) {
+        if (state is ValidTeamId) {
+          validTeamId = true;
+          showProgressBar = false;
+        } else if (state is InValidTeamId) {
+          validTeamId = false;
+          showProgressBar = false;
+        } else if (state is ValidatingTeamId) {
+          showProgressBar = true;
+        }
+      },
       builder: (context, state) {
         return Padding(
-          padding: MediaQuery
-              .of(context)
-              .viewInsets,
+          padding: MediaQuery.of(context).viewInsets,
           child: Form(
             key: _formKey,
-            onChanged: () => setState(() => _submitEnabled = _formKey.currentState.validate()),
+            onChanged: () => setState(
+                () => _submitEnabled = _formKey.currentState.validate()),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(mainAxisSize: MainAxisSize.min,
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     TextFormField(
@@ -61,19 +74,7 @@ class _CreateTeamFormState extends State<CreateTeamForm> {
                     SizedBox(
                       height: 15,
                     ),
-                    TextFormField(
-                      controller: _teamIDController,
-                      decoration: InputDecoration.collapsed(
-                          hintText: "Team ID",
-                          hintStyle: TextStyle(color: Colors.black54)),
-                      validator: (value) {
-                        if (!Validators.isValidName(value)) {
-                          return "Invalid Team ID";
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
+                    _buildCreateFormField(),
                     SizedBox(
                       height: 15,
                     ),
@@ -98,12 +99,12 @@ class _CreateTeamFormState extends State<CreateTeamForm> {
                       borderSide: BorderSide.none,
                       textColor: Colors.blueAccent,
                       disabledTextColor: Colors.grey,
-                      onPressed: _submitEnabled ? () =>
-                          widget.userProfileBloc.add(CreateTeamPressed(
+                      onPressed: _submitEnabled
+                          ? () => widget.userProfileBloc.add(CreateTeamPressed(
                               teamName: _teamNameController.text,
                               teamID: _teamIDController.text,
                               teamCode: _teamCodeController.text))
-                      : null,
+                          : null,
                       child: Text("Create Team"),
                     )
                   ]),
@@ -111,6 +112,43 @@ class _CreateTeamFormState extends State<CreateTeamForm> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildCreateFormField() {
+    return Row(
+      children: <Widget>[
+        Expanded(
+            child: TextFormField(
+          controller: _teamIDController,
+          decoration: InputDecoration.collapsed(
+            hintText: "Team ID",
+            hintStyle: TextStyle(color: Colors.black54),
+          ),
+          autovalidate: true,
+          onChanged: (value) {
+            widget.userProfileBloc
+                .add(NewTeamIdEntered(teamID: _teamIDController.text));
+          },
+          validator: (value) {
+            if (Validators.isValidName(value) && validTeamId) {
+              return null;
+            } else {
+              return !Validators.isValidName(value) ? "Invalid team id": "Id already taken";
+            }
+          },
+        )),
+        SizedBox(
+          height: 15,
+          width: 15,
+          child: Visibility(
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+            ),
+            visible: showProgressBar,
+          ),
+        )
+      ],
     );
   }
 }

@@ -59,6 +59,22 @@ class _UserProfileFormState extends State<UserProfileForm> {
             _selectedTeamName.value.isNotEmpty) {
           _updateProfile();
         }
+      } else if (state is FindTeamSearching) {
+        Navigator.of(context).pop();
+        Scaffold.of(context)
+            .showSnackBar(buildLoadingSnackBar("Searching Team"));
+      } else if (state is CannotJoinTeam) {
+        Scaffold.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            buildSnackBar("This team has reached maximum members limit"),
+          );
+      } else if (state is FindTeamFailure) {
+        Scaffold.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            buildSnackBar("Team doesn't exist"),
+          );
       } else if (state is CreateTeamSuccess) {
         _teamReference.value = state.teamReference;
         if (_formKey.currentState.validate() &&
@@ -70,8 +86,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
           ..hideCurrentSnackBar()
           ..showSnackBar(buildLoadingSnackBar("Creating Team"));
         Navigator.of(context).pop();
-      }
-      else if (state is UserProfileUpdateSuccess) {
+      } else if (state is UserProfileUpdateSuccess) {
         Scaffold.of(context).showSnackBar(buildSnackBar("Profile Updated"));
       } else if (state is UserProfileLoadedState) {
         _userNameController.text = state.userDetail.userName;
@@ -87,14 +102,6 @@ class _UserProfileFormState extends State<UserProfileForm> {
         Scaffold.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(buildSnackBar("Team Not Found"));
-      } else if (state is FindTeamSearching) {
-        Scaffold.of(context)
-            .showSnackBar(buildLoadingSnackBar("Searching Team"));
-      } else if (state is CannotJoinTeam) {
-        Scaffold.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(buildSnackBar("This team has reached maximum members limit"),
-        );
       } else if (state is CreateTeamSuccess) {
         Navigator.of(context).pop();
       }
