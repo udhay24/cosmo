@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -197,7 +195,7 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
   TextFormField _buildIdFormField() {
     return TextFormField(
         controller: _teamIDController,
-        readOnly: !widget.isFormEditable,
+        readOnly: true,
         decoration: InputDecoration(
             border: UnderlineInputBorder(borderSide: BorderSide()),
             labelText: 'Team ID',
@@ -208,12 +206,7 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
                   FontAwesomeIcons.pen,
                   size: 14,
                 ),
-                onPressed: widget.isFormEditable
-                    ? () {
-                        _teamIDController.text =
-                            "${_teamNameController.text}_${Random().nextInt(100000)}";
-                      }
-                    : null)),
+                onPressed: null)),
         autocorrect: false,
         validator: (value) {
           if (Validators.isValidName(value)) {
