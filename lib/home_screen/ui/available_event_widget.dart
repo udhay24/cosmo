@@ -47,42 +47,22 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
       },
       builder: (context, state) {
         if (state is AvailableEventsSuccess) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Center(
-                  child: Text(
-                    "Available Events",
-                    style: TextStyle(
-                        fontFamily: FontAwesomeIcons.font.fontFamily,
-                        letterSpacing: 2,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                    itemCount: state.availableEvents.length,
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    physics: BouncingScrollPhysics(),
-                    itemBuilder: (context, position) {
-                      return GestureDetector(
-                        child:
-                        _getEventCard(state.availableEvents[position]),
-                        onTap: () {
-                          BlocProvider.of<HomeScreenBloc>(context).add(EventSelected(
-                              eventID:
-                              state.availableEvents[position].eventID));
-                        },
-                      );
-                    }),
-              ),
-            ],
-          );
+          return ListView.builder(
+              itemCount: state.availableEvents.length,
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              physics: BouncingScrollPhysics(),
+              itemBuilder: (context, position) {
+                return GestureDetector(
+                  child:
+                  _getEventCard(state.availableEvents[position]),
+                  onTap: () {
+                    BlocProvider.of<HomeScreenBloc>(context).add(EventSelected(
+                        eventID:
+                        state.availableEvents[position].eventID));
+                  },
+                );
+              });
         } else if (state is AvailableEventsLoading) {
           return Center(child: CircularProgressIndicator());
         } else {
