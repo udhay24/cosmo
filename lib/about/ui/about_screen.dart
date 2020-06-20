@@ -12,7 +12,7 @@ class AboutScreen extends StatelessWidget {
       body: Container(
         child: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.max,
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -122,15 +122,13 @@ class AboutScreen extends StatelessWidget {
                       "https://www.youtube.com/channel/UCVJWGqiu1NYP0yG7-bkCSog");
                 },
               ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      "Made with ❤️ by Team Cosmo",
-                      style: GoogleFonts.roboto(fontWeight: FontWeight.bold),
-                    ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    "Made with ❤️ by Team Cosmo",
+                    style: GoogleFonts.roboto(fontWeight: FontWeight.bold),
                   ),
                 ),
               )
