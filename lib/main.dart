@@ -33,7 +33,6 @@ void main() {
           BlocProvider<AuthenticationBloc>(
             create: (context) =>
                 AuthenticationBloc(userRepository: loginRepository)
-                  ..add(AppStarted()),
           ),
           BlocProvider<NavigationBloc>(
             create: (context) => NavigationBloc(navigatorKey: _navigationKey),

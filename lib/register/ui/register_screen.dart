@@ -22,7 +22,7 @@ class RegisterScreen extends StatelessWidget {
         decoration: BoxDecoration(
             image: DecorationImage(
           image: AssetImage(
-              "images/pubg_background_registration_screen.jpg"),
+              "assets/images/pubg_background_registration_screen.jpg"),
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(Colors.red, BlendMode.darken),
         )),

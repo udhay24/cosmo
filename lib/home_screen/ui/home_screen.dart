@@ -13,6 +13,7 @@ import 'package:pubg/data_source/model/available_event.dart';
 import 'package:pubg/data_source/model/event_notification.dart';
 import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/home_screen/bloc/bloc.dart';
+import 'package:pubg/home_screen/ui/no_internet_Screen.dart';
 import 'package:pubg/home_screen/ui/slot_selection_dialog.dart';
 import 'package:pubg/util/notification_util.dart';
 import 'package:sqflite/sqflite.dart';
@@ -101,7 +102,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               );
-            } else if (state is AvailableEventsFailure) {
+            }
+            else if (state is AvailableEventsFailure) {
               return Center(
                 child: Text("Home screen "
                     "Fetching Failed"),
@@ -111,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
             } else {
               return Center(
                 child:
-                    Container(child: Text("Unknown state has occurred $state")),
+                    NoInternetWidget(),
               );
             }
           },

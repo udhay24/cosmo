@@ -27,17 +27,17 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   Stream<AuthenticationState> _mapAppStartedToState() async* {
-    final isSignedIn = await userRepository.isSignedIn();
-    if (isSignedIn) {
-      final name = await userRepository.getUser();
-      yield Authenticated(name);
-    } else {
-      yield UnAuthenticated();
-    }
+//    final isSignedIn = await userRepository.isSignedIn();
+//    if (isSignedIn) {
+//      final name = await userRepository.getUser();
+//      yield Authenticated(name);
+//    } else {
+//      yield UnAuthenticated();
+//    }
   }
 
   Stream<AuthenticationState> _mapLoggedInToState() async* {
-    yield Authenticated(await userRepository.getUser());
+    yield Authenticated();
   }
 
   Stream<AuthenticationState> _mapLoggedOutToState() async* {

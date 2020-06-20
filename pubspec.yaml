@@ -38,6 +38,7 @@ dependencies:
   firebase_messaging: ^6.0.3
   flutter_icons: ^1.1.0
   url_launcher: ^5.4.10
+  lottie: ^0.4.0+1
   sqflite:
   path:
 
@@ -63,8 +64,9 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - images/
-  #   - images/a_dot_ham.jpeg
+    - assets/images/
+    - assets/icons/
+    - assets/lottie/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
