@@ -62,6 +62,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _launchEvent(BuildContext context, AuthenticationEvent event) {
+    _timer?.cancel();
     _timer = Timer(Duration(seconds: 2),
         () => BlocProvider.of<AuthenticationBloc>(context).add(event));
   }
