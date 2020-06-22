@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,11 +19,10 @@ class AvailableEventWidget extends StatefulWidget {
 
 class _AvailableEventWidgetState extends State<AvailableEventWidget> {
   static List<String> queryParam = [
-    "gaming",
     "call of duty",
     "xbox",
-    "game",
-    "video game"
+    "guns",
+    "soldier",
   ];
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
@@ -52,20 +49,23 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
           return Column(
             children: <Widget>[
               Expanded(
-                child: ListView.builder(
+                child: ListView.separated(
                     itemCount: state.availableEvents.length,
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
                     physics: BouncingScrollPhysics(),
+                    separatorBuilder: (context, position) {
+                      return Divider(
+                        height: 4,
+                        thickness: 2,
+                        indent: 30,
+                        endIndent: 30,
+                      );
+                    },
                     itemBuilder: (context, position) {
-                      return GestureDetector(
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: _getEventCard(state.availableEvents[position]),
-                        onTap: () {
-                          BlocProvider.of<HomeScreenBloc>(context).add(
-                              EventSelected(
-                                  eventID:
-                                      state.availableEvents[position].eventID));
-                        },
                       );
                     }),
               ),
@@ -101,79 +101,74 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
   }
 
   Widget _getEventCard(AvailableEvent event) {
-    return SizedBox.fromSize(
-      size: Size(MediaQuery.of(context).size.width, 200),
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Stack(
-          children: <Widget>[
-            Card(
-              clipBehavior: Clip.hardEdge,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5)),
-              child: Container(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                          "https://source.unsplash.com/featured/?${queryParam[Random
-                              .secure().nextInt(
-                              queryParam.length - 1)]},${queryParam[Random
-                              .secure().nextInt(queryParam.length - 1)]}",
-                        ),
-                        colorFilter:
-                        ColorFilter.mode(Colors.grey, BlendMode.overlay))),
-              ),
+    return Container(
+      height: 180,
+      child: Row(
+        children: <Widget>[
+          Card(
+            clipBehavior: Clip.hardEdge,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            child: Container(
+              width: 120,
+              height: 180,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage("assets/images/pubg_player.jpg"),
+                      colorFilter:
+                          ColorFilter.mode(Colors.grey, BlendMode.overlay))),
             ),
-            Positioned(
-              child: Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SizedBox(
-                    width: 200,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          event.eventName,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w400),
-                        ),
-                        Text(
-                          event.eventDescription,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.w300,
-                            letterSpacing: 2,
-                          ),
-                        )
-                      ],
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    event.eventName,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    event.eventDescription,
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.w300,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 6,
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: FlatButton(
+                      onPressed: () {
+                        BlocProvider.of<HomeScreenBloc>(context)
+                            .add(EventSelected(eventID: event.eventID));
+                      },
+                      child: Text("Register"),
+                      textColor: Colors.blueAccent,
+//                    Icon(
+//                      Icons.arrow_forward,
+//                      color: Colors.black, )
                     ),
                   ),
-                ),
+                ],
               ),
-              bottom: -20,
-              left: 10,
             ),
-            Positioned(
-              child: Icon(
-                Icons.arrow_forward,
-                color: Colors.white,
-              ),
-              right: 30,
-              bottom: 10,
-            )
-          ],
-          overflow: Overflow.visible,
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -222,9 +217,11 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          child: Text("Join us on", style: GoogleFonts.sourceSansPro(
-              fontSize: 16, fontWeight: FontWeight.bold
-          ),),
+          child: Text(
+            "Join us on",
+            style: GoogleFonts.sourceSansPro(
+                fontSize: 16, fontWeight: FontWeight.bold),
+          ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -256,7 +253,6 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
                 launchURL("https://chat.whatsapp.com/LQez1dzk6HR31EVG3aN6Np");
               },
             ),
-
           ],
         ),
       ],
