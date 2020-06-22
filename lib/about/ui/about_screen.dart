@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:package_info/package_info.dart';
+import 'package:pubg/bloc/navigation/bloc.dart';
 import 'package:pubg/util/network_util.dart';
 
 class AboutScreen extends StatelessWidget {
@@ -11,21 +14,30 @@ class AboutScreen extends StatelessWidget {
       ),
       body: Container(
         child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              _buildWelcomeText(),
               Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: _buildWelcomeText(),
-              ),
-              Divider(
-                thickness: 2,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
-                  "Hello there boys and girls..! Want to be part of epic fights and raids,fun gameplay and out of the world driving and custom room matches, then you have joined the right places.you won't be disappointed as there will be no shortage of awesomeness.",
-                  style: GoogleFonts.sourceSansPro(),
+                  "About Us",
+                  style: GoogleFonts.sourceSansPro(
+                      fontWeight: FontWeight.w600, fontSize: 18),
+                ),
+              ),
+              Text(
+                "Hello there boys and girls..! Want to be part of epic fights and raids,fun gameplay and out of the world driving and custom room matches, then you have joined the right places.you won't be disappointed as there will be no shortage of awesomeness.",
+                style: GoogleFonts.sourceSansPro(),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  "Social Media",
+                  style: GoogleFonts.sourceSansPro(
+                      fontWeight: FontWeight.w600, fontSize: 18),
                 ),
               ),
               ListTile(
@@ -39,7 +51,8 @@ class AboutScreen extends StatelessWidget {
                     child: Image.asset('assets/icons/instagram-48.png')),
                 onTap: () {
                   launchURL(
-                      "https://instagram.com/cosmogamingz?igshid=7o93qh2op04u");
+                      url:
+                          "https://instagram.com/cosmogamingz?igshid=7o93qh2op04u");
                 },
               ),
               ListTile(
@@ -52,7 +65,7 @@ class AboutScreen extends StatelessWidget {
                     width: 24,
                     child: Image.asset('assets/icons/discord-64.png')),
                 onTap: () {
-                  launchURL("https://discord.com/invite/ZfNZ2nW");
+                  launchURL(url: "https://discord.com/invite/ZfNZ2nW");
                 },
               ),
               ListTile(
@@ -65,7 +78,7 @@ class AboutScreen extends StatelessWidget {
                     width: 24,
                     child: Image.asset('assets/icons/mixer-logo-64.png')),
                 onTap: () {
-                  launchURL("https://mixer.com/Havard1511");
+                  launchURL(url: "https://mixer.com/Havard1511");
                 },
               ),
               ListTile(
@@ -78,7 +91,8 @@ class AboutScreen extends StatelessWidget {
                     width: 24,
                     child: Image.asset('assets/icons/whatsapp-30.png')),
                 onTap: () {
-                  launchURL("https://chat.whatsapp.com/LQez1dzk6HR31EVG3aN6Np");
+                  launchURL(
+                      url: "https://chat.whatsapp.com/LQez1dzk6HR31EVG3aN6Np");
                 },
               ),
               ListTile(
@@ -92,6 +106,7 @@ class AboutScreen extends StatelessWidget {
                     child: Image.asset('assets/icons/facebook-48.png')),
                 onTap: () {
                   launchURL(
+                      url:
                       "https://www.facebook.com/Team-Cosmos-111189120584649/");
                 },
               ),
@@ -105,7 +120,7 @@ class AboutScreen extends StatelessWidget {
                     width: 24,
                     child: Image.asset('assets/icons/tiktok-48.png')),
                 onTap: () {
-                  launchURL("https://vm.tiktok.com/JJjf3cM/");
+                  launchURL(url: "https://vm.tiktok.com/JJjf3cM/");
                 },
               ),
               ListTile(
@@ -119,8 +134,57 @@ class AboutScreen extends StatelessWidget {
                     child: Image.asset('assets/icons/youtube-48.png')),
                 onTap: () {
                   launchURL(
+                      url:
                       "https://www.youtube.com/channel/UCVJWGqiu1NYP0yG7-bkCSog");
                 },
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  "Other",
+                  style: GoogleFonts.sourceSansPro(
+                      fontWeight: FontWeight.w600, fontSize: 18),
+                ),
+              ),
+              ListTile(
+                title: Text(
+                  "Third party software used",
+                  style: GoogleFonts.sourceSansPro(),
+                ),
+                onTap: () {
+                  BlocProvider.of<NavigationBloc>(context)
+                      .add(ThirdPartyScreenNavigationEvent());
+                },
+              ),
+              ListTile(
+                title: Text(
+                  "Privacy Policy",
+                  style: GoogleFonts.sourceSansPro(),
+                ),
+                onTap: () {
+                  launchURL(
+                    url: "https://cosmo-gamingz.flycricket.io/privacy.html",
+                  );
+                },
+              ),
+              ListTile(
+                title: Text(
+                  "App Version",
+                  style: GoogleFonts.sourceSansPro(),
+                ),
+                subtitle: FutureBuilder(
+                  builder: (context, AsyncSnapshot<PackageInfo> snapshot) {
+                    if ((snapshot != null) && (snapshot.hasData)) {
+                      return Text(snapshot.data.version);
+                    } else {
+                      return Text("-");
+                    }
+                  },
+                  future: PackageInfo.fromPlatform(),
+                ),
+              ),
+              SizedBox(
+                height: 20,
               ),
               Align(
                 alignment: Alignment.bottomCenter,
@@ -139,11 +203,16 @@ class AboutScreen extends StatelessWidget {
     );
   }
 
-  Text _buildWelcomeText() => Text(
-        "Welcome to Cosmo Gaming",
-        style: GoogleFonts.sourceSansPro(
-          fontWeight: FontWeight.w600,
-          fontSize: 20
+  Widget _buildWelcomeText() =>
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Align(
+          alignment: Alignment.center,
+          child: Text(
+            "Welcome to Cosmo Gaming",
+            style: GoogleFonts.sourceSansPro(
+                fontWeight: FontWeight.w600, fontSize: 20),
+          ),
         ),
       );
 }

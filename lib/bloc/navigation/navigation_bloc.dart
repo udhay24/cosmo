@@ -38,7 +38,11 @@ class NavigationBloc extends Bloc<NavigationEvent, dynamic> {
     } else if (event is AboutScreenNavigationEvent) {
       navigatorKey.currentState.pushNamed(ScreenRoutes.ABOUT_SCREEN_ROUTE);
     } else if (event is EventNotificationsNavigationEvent) {
-      navigatorKey.currentState.pushNamed(ScreenRoutes.EVENT_NOTIFICATION_SCREEN_ROUTE);
+      navigatorKey.currentState
+          .pushNamed(ScreenRoutes.EVENT_NOTIFICATION_SCREEN_ROUTE);
+    } else if (event is ThirdPartyScreenNavigationEvent) {
+      navigatorKey.currentState
+          .pushNamed(ScreenRoutes.THIRD_PARTY_SCREEN_ROUTE);
     }
   }
 }

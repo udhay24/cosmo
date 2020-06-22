@@ -159,9 +159,6 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
                       },
                       child: Text("Register"),
                       textColor: Colors.blueAccent,
-//                    Icon(
-//                      Icons.arrow_forward,
-//                      color: Colors.black, )
                     ),
                   ),
                 ],
@@ -230,27 +227,29 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
               icon: Image.asset('assets/icons/facebook-48.png'),
               onPressed: () {
                 launchURL(
-                    "https://www.facebook.com/Team-Cosmos-111189120584649/");
+                    url:
+                        "https://www.facebook.com/Team-Cosmos-111189120584649/");
               },
             ),
             IconButton(
               icon: Image.asset('assets/icons/instagram-48.png'),
               onPressed: () {
                 launchURL(
-                    "https://instagram.com/cosmogamingz?igshid=7o93qh2op04u");
+                    url: "https://instagram.com/cosmogamingz?igshid=7o93qh2op04u");
               },
             ),
             IconButton(
               icon: Image.asset('assets/icons/youtube-48.png'),
               onPressed: () {
                 launchURL(
-                    "https://www.youtube.com/channel/UCVJWGqiu1NYP0yG7-bkCSog");
+                    url: "https://www.youtube.com/channel/UCVJWGqiu1NYP0yG7-bkCSog");
               },
             ),
             IconButton(
               icon: Image.asset('assets/icons/whatsapp-30.png'),
               onPressed: () {
-                launchURL("https://chat.whatsapp.com/LQez1dzk6HR31EVG3aN6Np");
+                launchURL(
+                    url: "https://chat.whatsapp.com/LQez1dzk6HR31EVG3aN6Np");
               },
             ),
           ],

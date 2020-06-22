@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pubg/SplashScreen.dart';
 import 'package:pubg/about/ui/about_screen.dart';
+import 'package:pubg/about/ui/third_party_screen.dart';
 import 'package:pubg/data_source/event_repository.dart';
 import 'package:pubg/data_source/login_repository.dart';
 import 'package:pubg/data_source/user_repository.dart';
@@ -32,6 +33,7 @@ class ScreenRoutes {
   static const String SLOT_SELECTION_SCREEN_ROUTE = "/slot_selection";
   static const String ABOUT_SCREEN_ROUTE = "/about";
   static const String EVENT_NOTIFICATION_SCREEN_ROUTE = "/notification_screen";
+  static const String THIRD_PARTY_SCREEN_ROUTE = "/third_party";
 }
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -94,12 +96,15 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case ScreenRoutes.EVENT_NOTIFICATION_SCREEN_ROUTE:
       return MaterialPageRoute(builder: (context) {
         return BlocProvider<EventNotificationBloc>(
-          create:(context) => EventNotificationBloc(
-            repository: EventRepository()
-          )..add(LoadEventNotifications()),
+          create: (context) =>
+              EventNotificationBloc(repository: EventRepository())
+                ..add(LoadEventNotifications()),
           child: EventNotificationScreen(),
-        ) ;
+        );
       });
+
+    case ScreenRoutes.THIRD_PARTY_SCREEN_ROUTE:
+      return MaterialPageRoute(builder: (context) => ThirdPartyScreen());
 
     default:
       return MaterialPageRoute(
