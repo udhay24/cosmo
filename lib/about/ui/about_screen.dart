@@ -163,7 +163,8 @@ class AboutScreen extends StatelessWidget {
                 ),
                 onTap: () {
                   launchURL(
-                    url: "https://cosmo-gamingz.flycricket.io/privacy.html",
+                    url:
+                        "https://sites.google.com/view/cosmo-privacy-policy/home",
                   );
                 },
               ),
