@@ -249,7 +249,7 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
               icon: Image.asset('assets/icons/whatsapp-30.png'),
               onPressed: () {
                 launchURL(
-                    url: "https://chat.whatsapp.com/LQez1dzk6HR31EVG3aN6Np");
+                    url: "https://chat.whatsapp.com/JzlCRzapzOr86f41k1nTE1");
               },
             ),
           ],
