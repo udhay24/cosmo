@@ -21,8 +21,8 @@ jobs:
         java-version: '12.x'
 
     - run: echo $SIGNING_KEY | base64 -d > android/app/key.jks
-        env:
-          SIGNING_KEY: ${{ secrets.KEY_JKS }}
+      env:
+        SIGNING_KEY: ${{ secrets.KEY_JKS }}
 
     - uses: subosito/flutter-action@v1
       with:
