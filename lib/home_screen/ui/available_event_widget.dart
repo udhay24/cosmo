@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pubg/bloc/navigation/bloc.dart';
-import 'package:pubg/data_source/model/available_event.dart';
 import 'package:pubg/home_screen/bloc/bloc.dart';
+import 'package:pubg/home_screen/model/event_detail.dart';
 import 'package:pubg/util/network_util.dart';
 import 'package:pubg/util/notification_util.dart';
 import 'package:pubg/util/widget_util.dart';
@@ -18,12 +18,6 @@ class AvailableEventWidget extends StatefulWidget {
 }
 
 class _AvailableEventWidgetState extends State<AvailableEventWidget> {
-  static List<String> queryParam = [
-    "call of duty",
-    "xbox",
-    "guns",
-    "soldier",
-  ];
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
@@ -95,12 +89,14 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
               });
         } else if (state is EventRegistrationSuccess) {
           Navigator.of(listenerContext).pop();
+          BlocProvider.of<HomeScreenBloc>(context)
+              .add(HomeScreenStarted()); //refresh the screen
         }
       },
     );
   }
 
-  Widget _getEventCard(AvailableEvent event) {
+  Widget _getEventCard(CosmoEventUIModel event) {
     return Container(
       height: 180,
       child: Row(
@@ -129,7 +125,7 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    event.eventName,
+                    event.event.eventName,
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         fontSize: 18,
@@ -140,7 +136,7 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
                     height: 20,
                   ),
                   Text(
-                    event.eventDescription,
+                    event.event.eventDescription,
                     textAlign: TextAlign.justify,
                     style: TextStyle(
                       fontSize: 14,
@@ -155,9 +151,11 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
                     child: FlatButton(
                       onPressed: () {
                         BlocProvider.of<HomeScreenBloc>(context)
-                            .add(EventSelected(eventID: event.eventID));
+                            .add(EventSelected(eventID: event.event.eventID));
                       },
-                      child: Text("Register"),
+                      child: event.isRegistered
+                          ? Text("Update Registration")
+                          : Text("Register"),
                       textColor: Colors.blueAccent,
                     ),
                   ),
@@ -235,14 +233,16 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
               icon: Image.asset('assets/icons/instagram-48.png'),
               onPressed: () {
                 launchURL(
-                    url: "https://instagram.com/cosmogamingz?igshid=7o93qh2op04u");
+                    url:
+                    "https://instagram.com/cosmogamingz?igshid=7o93qh2op04u");
               },
             ),
             IconButton(
               icon: Image.asset('assets/icons/youtube-48.png'),
               onPressed: () {
                 launchURL(
-                    url: "https://www.youtube.com/channel/UCVJWGqiu1NYP0yG7-bkCSog");
+                    url:
+                    "https://www.youtube.com/channel/UCVJWGqiu1NYP0yG7-bkCSog");
               },
             ),
             IconButton(

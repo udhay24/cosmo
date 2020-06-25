@@ -58,39 +58,48 @@ class _CreateTeamFormState extends State<CreateTeamForm> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    TextFormField(
-                      controller: _teamNameController,
-                      decoration: InputDecoration.collapsed(
-                          hintText: "Team Name",
-                          hintStyle: TextStyle(color: Colors.black54)),
-                      validator: (value) {
-                        if (!Validators.isValidName(value)) {
-                          return "Invalid Team Name";
-                        } else {
-                          return null;
-                        }
-                      },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: TextFormField(
+                        controller: _teamNameController,
+                        decoration: InputDecoration.collapsed(
+                            hintText: "Team Name",
+                            hintStyle: TextStyle(color: Colors.black54)),
+                        validator: (value) {
+                          if (!Validators.isValidName(value)) {
+                            return "Invalid Team Name";
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
                     ),
                     SizedBox(
                       height: 15,
                     ),
-                    _buildCreateFormField(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: _buildCreateFormField(),
+                    ),
                     SizedBox(
                       height: 15,
                     ),
-                    TextFormField(
-                      controller: _teamCodeController,
-                      decoration: InputDecoration.collapsed(
-                          hintText: "Team Code",
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(color: Colors.black54)),
-                      validator: (value) {
-                        if (!Validators.isValidName(value)) {
-                          return "Invalid Team Code";
-                        } else {
-                          return null;
-                        }
-                      },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: TextFormField(
+                        controller: _teamCodeController,
+                        decoration: InputDecoration.collapsed(
+                            hintText: "Team Code",
+                            border: InputBorder.none,
+                            hintStyle: TextStyle(color: Colors.black54)),
+                        validator: (value) {
+                          if (!Validators.isValidName(value)) {
+                            return "Invalid Team Code";
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
                     ),
                     SizedBox(
                       height: 25,

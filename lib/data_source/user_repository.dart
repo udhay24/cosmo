@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pubg/data_source/model/user_model.dart';
+import 'package:pubg/util/time_util.dart';
 
 import 'model/team_model.dart';
 
@@ -90,13 +91,15 @@ class UserRepository {
   removeTeamMembershipFromUser(String userID) async {
     try {
       var user = await getUserFromRef(await getUserRefFromUuid(userID));
-      var updatedUser = User(userName: user.userName, phoneNumber: user.phoneNumber, userUuid: user.userUuid, joinedTeam: null);
+      var updatedUser = User(userName: user.userName,
+          phoneNumber: user.phoneNumber,
+          userUuid: user.userUuid,
+          joinedTeam: null);
       await updateCurrentUserDetail(updatedUser);
     } catch (_) {
       print("error removing user from team");
     }
   }
-
 
 
   ///create a new team and returns the reference
@@ -148,7 +151,7 @@ class UserRepository {
 
   Future<Team> getTeamDetails(String teamDocumentID) async {
     var teamDetails =
-        await _fireStore.collection("teams").document(teamDocumentID).get();
+    await _fireStore.collection("teams").document(teamDocumentID).get();
     return Team.fromJson(teamDetails.data);
   }
 
@@ -220,5 +223,21 @@ class UserRepository {
         .where('team_id', isEqualTo: teamId)
         .getDocuments();
     return documents.documents.map((e) => e['team_id']).cast<String>().toList();
+  }
+
+  Future<bool> isRegisteredWithEvent(int eventID) async {
+    try {
+      var user = await getCurrentUserDetail();
+      var selectedSlot = await _fireStore.document(
+          "registrations/${getCurrentDate()}/$eventID/${user.joinedTeam
+              .documentID}").get();
+      if ((selectedSlot != null) && (selectedSlot.data != null)) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      return false;
+    }
   }
 }

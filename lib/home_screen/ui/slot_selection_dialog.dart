@@ -98,7 +98,7 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
     );
   }
 
-  Widget _buildEventHeading(EventDetail value) {
+  Widget _buildEventHeading(SelectedEventDetail value) {
     return ListTile(
       leading: Icon(FontAwesomeIcons.accusoft),
       title: Text(value.event.eventName),

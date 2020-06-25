@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pubg/data_source/event_repository.dart';
+import 'package:pubg/data_source/model/available_event.dart';
 import 'package:pubg/data_source/model/event_notification.dart';
 import 'package:pubg/data_source/user_repository.dart';
+import 'package:pubg/home_screen/model/event_detail.dart';
 
 import './bloc.dart';
 
@@ -65,10 +67,19 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
   }
 
   Stream<HomeScreenState> _mapInitialEventState(HomeScreenEvent event) async* {
+    Future<CosmoEventUIModel> mapToUIModel(CosmoGameEvent event) async {
+      return CosmoEventUIModel(
+          event: event,
+          isRegistered:
+              await _userRepository.isRegisteredWithEvent(event.eventID));
+    }
+
     try {
       yield AvailableEventsLoading();
       var availableEvents = await _eventRepository.getAvailableEvent();
-      yield AvailableEventsSuccess(availableEvents: availableEvents);
+      var events = await Future.wait(availableEvents.map(mapToUIModel));
+
+      yield AvailableEventsSuccess(availableEvents: events);
     } catch (error) {
       print("available_events_fetch_failed: $error");
       yield AvailableEventsFailure();

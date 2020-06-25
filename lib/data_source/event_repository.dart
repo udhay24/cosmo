@@ -8,28 +8,29 @@ import 'package:pubg/data_source/model/event_notification.dart';
 import 'package:pubg/data_source/model/registration.dart';
 import 'package:pubg/home_screen/model/event_detail.dart';
 import 'package:pubg/util/available_slot.dart';
+import 'package:pubg/util/time_util.dart';
 import 'package:sqflite/sqflite.dart';
 
 class EventRepository {
   var _fireStore = Firestore.instance;
   var db = SqlitePersistence.create();
 
-  Future<List<AvailableEvent>> getAvailableEvent() async {
+  Future<List<CosmoGameEvent>> getAvailableEvent() async {
     var documents =
         await _fireStore.collection("available_event").getDocuments();
 
     return documents.documents
-        .map((e) => AvailableEvent.fromJson(e.data))
+        .map((e) => CosmoGameEvent.fromJson(e.data))
         .toList();
   }
 
-  Future<AvailableEvent> getEventInfoFromID(int id) async {
+  Future<CosmoGameEvent> getEventInfoFromID(int id) async {
     var events = await _fireStore
         .collection('available_event')
         .where('event_id', isEqualTo: id)
         .getDocuments();
 
-    return AvailableEvent.fromJson(events.documents[0].data);
+    return CosmoGameEvent.fromJson(events.documents[0].data);
   }
 
   addEventDetailsToDatabase(EventNotification eventDetails) async {
@@ -56,10 +57,9 @@ class EventRepository {
 
   Stream<List<int>> getAvailableSlots(DocumentReference reference) async* {
     var event = await getEventFromRef(reference);
-    String dateFormat = DateFormat('dd-MM-yyyy').format(DateTime.now());
 
     Stream<QuerySnapshot> availableSlotsQuery = _fireStore
-        .collection("registrations/$dateFormat/${event.eventID}")
+        .collection("registrations/${getCurrentDate()}/${event.eventID}")
         .snapshots();
 //        .transform(StreamTransformer<QuerySnapshot, List<int>>.fromHandlers(
 //            handleData: (data, sink) {
@@ -88,21 +88,21 @@ class EventRepository {
         .document(event.documents[0].documentID);
   }
 
-  Future<AvailableEvent> getEventFromRef(
+  Future<CosmoGameEvent> getEventFromRef(
       DocumentReference documentReference) async {
     var eventData = (await documentReference.get()).data;
-    return AvailableEvent.fromJson(eventData);
+    return CosmoGameEvent.fromJson(eventData);
   }
 
-  Future<EventDetail> getEventDetailFromId(int eventID) async {
+  Future<SelectedEventDetail> getEventDetailFromId(int eventID) async {
     DocumentReference _eventRef = await getEventDocFromID(eventID);
     Stream<List<int>> availableSlots = getAvailableSlots(_eventRef);
-    AvailableEvent event = await getEventFromRef(_eventRef);
-    return EventDetail(event: event, availableSlots: availableSlots);
+    CosmoGameEvent event = await getEventFromRef(_eventRef);
+    return SelectedEventDetail(event: event, availableSlots: availableSlots);
   }
 
   //registers current team to the event
-  registerTeamForEvent(AvailableEvent event, int slot,
+  registerTeamForEvent(CosmoGameEvent event, int slot,
       DocumentReference currentTeam) async {
     String dateFormat = DateFormat('dd-MM-yyyy').format(DateTime.now());
     var eventRef = await getEventDocFromID(event.eventID);
