@@ -19,6 +19,11 @@ jobs:
     - uses: actions/setup-java@v1
       with:
         java-version: '12.x'
+
+    - run: echo $SIGNING_KEY | base64 -d > android/app/key.jks
+        env:
+          SIGNING_KEY: ${{ secrets.KEY_JKS }}
+
     - uses: subosito/flutter-action@v1
       with:
         channel: 'beta'
@@ -28,9 +33,6 @@ jobs:
       run: flutter test
       #     - name: analyse build
       #       run: flutter analyze .
-    - run: echo $SIGNING_KEY | base64 -d > key.jks
-      env:
-        SIGNING_KEY: ${{ secrets.KEY_JKS }}
 
     - name: Generate build
       run: flutter build apk
