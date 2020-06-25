@@ -29,8 +29,8 @@ jobs:
       #     - name: analyse build
       #       run: flutter analyze .
     - run: echo $SIGNING_KEY | base64 -d > key.jks
-        env:
-          SIGNING_KEY: ${{ secrets.KEY_JKS }}
+      env:
+        SIGNING_KEY: ${{ secrets.KEY_JKS }}
 
     - name: Generate build
       run: flutter build apk
