@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/home_screen/bloc/bloc.dart';
 import 'package:pubg/home_screen/model/event_detail.dart';
 
@@ -23,45 +22,59 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
   @override
   void initState() {
     super.initState();
+    widget.homeScreenBloc
+        .add(EventRegistrationDialogOpened(eventID: widget.eventId));
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: RepositoryProvider.of<UserRepository>(context)
-            .getEventDetailFromId(widget.eventId),
-        builder: (context, AsyncSnapshot<EventDetail> value) {
-          if ((value != null) && (value.hasData)) {
-            slotSelected = value.data.isRegistrationOpen
-                ? value.data.availableSlots.first
-                : 0;
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Container(child: _buildEventHeading(value.data)),
-                  Divider(
-                    height: 20,
-                    thickness: 2,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  _buildSlotOption(value.data.isRegistrationOpen),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  _buildSelectSlotButton(context, value.data.event.eventID, value.data.isRegistrationOpen)
-                ],
-              ),
-            );
-          } else {
-            return Container(
-                height: 100, child: Center(child: CircularProgressIndicator()));
-          }
-        });
+    return BlocBuilder(
+      bloc: widget.homeScreenBloc,
+      builder: (context, state) {
+        if (state is SelectedEventDetailLoading) {
+          return Container(
+              height: 100, child: Center(child: CircularProgressIndicator()));
+        } else if (state is SelectedEventDetailFailure) {
+          return Container(
+              height: 100, child: Center(child: Text("Something went wrong")));
+        } else if (state is SelectedEventDetailLoaded) {
+          return StreamBuilder(
+            builder: (context, AsyncSnapshot<List<int>> data) {
+              if ((data.data?.length ?? 0) > 1) {
+                slotSelected = data.data?.first ?? 0;
+              }
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Container(child: _buildEventHeading(state.eventDetail)),
+                    Divider(
+                      height: 20,
+                      thickness: 2,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    _buildSlotOption(data.data?.isNotEmpty),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    _buildSelectSlotButton(context,
+                        state.eventDetail.event.eventID, data.data?.isNotEmpty)
+                  ],
+                ),
+              );
+            },
+            stream: state.eventDetail.availableSlots,
+            initialData: <int>[],
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 
   Widget _buildSlotOption(bool isRegistrationOpen) {
@@ -93,7 +106,8 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
     );
   }
 
-  Widget _buildSelectSlotButton(BuildContext context, int eventID, bool isRegistrationOpen) {
+  Widget _buildSelectSlotButton(
+      BuildContext context, int eventID, bool isRegistrationOpen) {
     return Container(
         width: MediaQuery.of(context).size.width,
         height: 50,
