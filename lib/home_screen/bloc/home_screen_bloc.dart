@@ -36,14 +36,17 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
       _mapUpdateFcmCodeEvent(event);
     } else if (event is EventNotificationReceived) {
       _mapNotificationEvent(event);
+    } else if (event is EventRegistrationDialogOpened) {
+      yield* _mapRegistrationDialogOpened(event);
     }
   }
 
   Stream<HomeScreenState> _mapSlotSelectedEvent(SlotSelected event) async* {
     try {
-      var selectedEvent = await _userRepository.getEventFromRef(
-          await _userRepository.getEventDocFromID(event.eventId));
-      _userRepository.registerTeamForEvent(selectedEvent, event.selectedSlot);
+      var selectedEvent = await _eventRepository.getEventFromRef(
+          await _eventRepository.getEventDocFromID(event.eventId));
+      _eventRepository.registerTeamForEvent(selectedEvent, event.selectedSlot,
+          (await _userRepository.getCurrentUserDetail()).joinedTeam);
       yield EventRegistrationSuccess();
     } catch (error) {
       yield EventRegistrationFailure();
@@ -84,6 +87,18 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
           roomPassword: event.roomPassword));
     } catch (error) {
       print("notification error $error");
+    }
+  }
+
+  Stream<HomeScreenState> _mapRegistrationDialogOpened(
+      EventRegistrationDialogOpened event) async* {
+    yield SelectedEventDetailLoading();
+    try {
+      var eventDetail =
+          await _eventRepository.getEventDetailFromId(event.eventID);
+      yield SelectedEventDetailLoaded(eventDetail: eventDetail);
+    } catch (Error) {
+      yield SelectedEventDetailFailure();
     }
   }
 }

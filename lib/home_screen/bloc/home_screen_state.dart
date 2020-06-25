@@ -1,8 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pubg/data_source/model/available_event.dart';
-import 'package:pubg/home_screen/bloc/bloc.dart';
+import 'package:pubg/home_screen/model/event_detail.dart';
 
 abstract class HomeScreenState extends Equatable {
   const HomeScreenState();
@@ -58,8 +57,31 @@ class EventRegistrationFailure extends HomeScreenState {
 class ShowSlotDialog extends HomeScreenState {
   final eventID;
 
-  ShowSlotDialog({@required this.eventID,});
+  ShowSlotDialog({
+    @required this.eventID,
+  });
 
   @override
-  List<Object> get props => [eventID,];
+  List<Object> get props => [
+        eventID,
+      ];
+}
+
+class SelectedEventDetailLoaded extends HomeScreenState {
+  final EventDetail eventDetail;
+
+  SelectedEventDetailLoaded({@required this.eventDetail});
+
+  @override
+  List<Object> get props => [eventDetail];
+}
+
+class SelectedEventDetailLoading extends HomeScreenState {
+  @override
+  List<Object> get props => [];
+}
+
+class SelectedEventDetailFailure extends HomeScreenState {
+  @override
+  List<Object> get props => [];
 }

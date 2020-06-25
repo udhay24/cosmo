@@ -1,11 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intl/intl.dart';
-import 'package:pubg/data_source/model/available_event.dart';
-import 'package:pubg/data_source/model/registration.dart';
 import 'package:pubg/data_source/model/user_model.dart';
-import 'package:pubg/home_screen/model/event_detail.dart';
-import 'package:pubg/util/available_slot.dart';
 
 import 'model/team_model.dart';
 
@@ -216,70 +211,6 @@ class UserRepository {
   Future<User> getUserFromRef(DocumentReference docs) async {
     var user = (await docs.get()).data;
     return User.fromJson(user);
-  }
-
-  ///events functions
-  Future<List<int>> getAvailableSlots(DocumentReference reference) async {
-    var event = await getEventFromRef(reference);
-    String dateFormat = DateFormat('dd-MM-yyyy').format(DateTime.now());
-
-    List<int> selectedSlots = await _fireStore
-        .collection("registrations/$dateFormat/${event.eventID}")
-        .getDocuments()
-        .then((value) {
-      return value.documents.map((e) {
-        return e.data['selected_slot'] as int;
-      }).toList();
-    });
-
-    List<int> totalSlots =
-        List<int>.generate(AvailableSlots.TOTAL_SLOTS, (index) => index + 1);
-    List<int> availableSlots = totalSlots
-      ..removeWhere((element) => selectedSlots.contains(element));
-    return availableSlots;
-  }
-
-  Future<DocumentReference> getEventDocFromID(int eventID) async {
-    var event = await _fireStore
-        .collection("available_event")
-        .where("event_id", isEqualTo: eventID)
-        .getDocuments();
-    return _fireStore
-        .collection("available_event")
-        .document(event.documents[0].documentID);
-  }
-
-  Future<AvailableEvent> getEventFromRef(
-      DocumentReference documentReference) async {
-    var eventData = (await documentReference.get()).data;
-    return AvailableEvent.fromJson(eventData);
-  }
-
-  Future<EventDetail> getEventDetailFromId(int eventID) async {
-    DocumentReference _eventRef = await getEventDocFromID(eventID);
-    List<int> availableSlots = await getAvailableSlots(_eventRef);
-    AvailableEvent event = await getEventFromRef(_eventRef);
-    return EventDetail(
-        event: event,
-        availableSlots: availableSlots,
-        isRegistrationOpen: availableSlots.isNotEmpty);
-  }
-
-  //registers current team to the event
-  registerTeamForEvent(AvailableEvent event, int slot) async {
-    String dateFormat = DateFormat('dd-MM-yyyy').format(DateTime.now());
-    var eventRef = await getEventDocFromID(event.eventID);
-    var currentTeam = (await getCurrentUserDetail()).joinedTeam;
-
-    _fireStore
-        .collection("registrations/$dateFormat/${event.eventID}")
-        .document(currentTeam.documentID)
-        .setData(Registration(
-                selectedEvent: eventRef,
-                team: currentTeam,
-                selectedSlot: slot,
-                date: Timestamp.now())
-            .toJson());
   }
 
   //get matching team ids
