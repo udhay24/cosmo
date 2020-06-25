@@ -26,8 +26,8 @@ jobs:
       run: flutter pub get
     - name: Run tests
       run: flutter test
-    - name: analyse build
-      run: flutter analyze .
+#     - name: analyse build
+#       run: flutter analyze .
     - name: Generate build
       run: flutter build apk
     - name: Upload a Build Artifact
