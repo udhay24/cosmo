@@ -60,6 +60,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1050325654502-jp6cq4n7rf6hit8pc5sp6vqha3vg3448.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.udhay.pubg",
+            "certificate_hash": "31b012a4e18080f502f6ff7aa03edf159bd122d3"
+          }
+        },
+        {
           "client_id": "1050325654502-oe95pqkq8ig6895gmv191jshv614nb79.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
