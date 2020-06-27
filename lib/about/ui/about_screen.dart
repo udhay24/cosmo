@@ -166,7 +166,10 @@ class AboutScreen extends StatelessWidget {
                 subtitle: FutureBuilder(
                   builder: (context, AsyncSnapshot<PackageInfo> snapshot) {
                     if ((snapshot != null) && (snapshot.hasData)) {
-                      return Text(snapshot.data.version);
+                      return Text(
+                        snapshot.data.version,
+                        style: Theme.of(context).textTheme.subtitle1,
+                      );
                     } else {
                       return Text("-");
                     }

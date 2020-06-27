@@ -41,21 +41,28 @@ class ThirdPartyScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Text(
                 "Third-party Licenses",
-                style: TextStyle(fontWeight: FontWeight.w600),
+                style: Theme.of(context).textTheme.headline3,
               ),
             ),
             Text(
-                "Several fantastic free and open source third party software have helped us to created this project. a few of them required us to include their license agreement. hence we have included the entire list below"),
+              "Several fantastic free and open source third party software have helped us to created this project. a few of them required us to include their license agreement. hence we have included the entire list below",
+              style: Theme.of(context).textTheme.headline5,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Text(
-                  "Third party software which are part of the flutter-android client:"),
+                "Third party software which are part of the flutter-android client:",
+                style: Theme.of(context).textTheme.headline5,
+              ),
             ),
             ListView.separated(
               padding: EdgeInsets.all(8),
               physics: ClampingScrollPhysics(),
               itemBuilder: (context, position) {
-                return Text(thirdPartySoftware[position]);
+                return Text(
+                  thirdPartySoftware[position],
+                  style: Theme.of(context).textTheme.subtitle1,
+                );
               },
               separatorBuilder: (context, position) {
                 return SizedBox(
