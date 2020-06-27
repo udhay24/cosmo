@@ -16,7 +16,7 @@ class EventNotificationScreen extends StatelessWidget {
           return Center(child: CircularProgressIndicator());
         } else if (state is EventNotificationLoadedState) {
           return (state.eventNotifications.length == 0)
-              ? _buildNoNotification()
+              ? _buildNoNotification(context)
               : ListView.separated(
                   separatorBuilder: (context, position) {
                     return Divider(
@@ -44,9 +44,12 @@ class EventNotificationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNoNotification() {
+  Widget _buildNoNotification(BuildContext context) {
     return Center(
-      child: Text("No new Notifications"),
+      child: Text("No new Notifications", style: Theme
+          .of(context)
+          .textTheme
+          .headline4,),
     );
   }
 
