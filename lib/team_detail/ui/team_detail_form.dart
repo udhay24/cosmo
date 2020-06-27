@@ -265,18 +265,24 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
                 padding: const EdgeInsets.all(8.0),
                 child: Align(
                     alignment: Alignment.topLeft,
-                    child: Text("Phone number: ")),
+                    child: Text(
+                      "Phone number: ",
+                      style: Theme.of(context).textTheme.headline6,
+                    )),
               ),
               Expanded(
                 child: Align(
                   alignment: Alignment.topRight,
                   child: GestureDetector(
                     child: ButtonBar(
+                      mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Text(
                           "${team.teamMembers[position].phoneNumber}",
                           style: GoogleFonts.abel(
-                              fontWeight: FontWeight.w600, letterSpacing: 1),
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 1,
+                              color: Colors.black87),
                         ),
                         Icon(FontAwesomeIcons.whatsapp)
                       ],

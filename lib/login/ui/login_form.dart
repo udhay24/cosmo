@@ -5,7 +5,6 @@ import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_event.dart';
 import 'package:pubg/login/bloc/bloc.dart';
 import 'package:pubg/login/ui/create_account_button.dart';
-import 'package:pubg/util/themes.dart';
 import 'package:pubg/util/validators.dart';
 
 import 'google_login_button.dart';
@@ -88,8 +87,7 @@ class _LoginFormState extends State<LoginForm> {
                             width: 40,
                             height: 5,
                             child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                  color: Themes.COLOR_PRIMARY),
+                              decoration: BoxDecoration(color: Colors.green),
                             ),
                           ),
                           SizedBox(

@@ -113,15 +113,16 @@ class _UserProfileFormState extends State<UserProfileForm> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Display name"),
+                  Text(
+                    "Display name",
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 12.0),
                     child: TextFormField(
                       controller: _userNameController,
                       decoration: InputDecoration.collapsed(
                         hintText: "name",
-                        fillColor: Colors.blue,
-                        focusColor: Colors.blue,
                         border: UnderlineInputBorder(),
                       ),
                       maxLength: 24,
@@ -135,9 +136,12 @@ class _UserProfileFormState extends State<UserProfileForm> {
                       },
                     ),
                   ),
-                  Text("Phone number"),
+                  Text(
+                    "Phone number",
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 12.0),
                     child: TextFormField(
                       controller: _phoneNumberController,
                       decoration: InputDecoration.collapsed(

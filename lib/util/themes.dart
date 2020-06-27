@@ -1,8 +1,126 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class Themes {
-  static const COLOR_PRIMARY = Colors.green;
+import 'color/dark_color.dart';
+import 'color/lightColor.dart';
 
+class AppTheme {
+  const AppTheme();
 
+  static ThemeData getLightTheme(BuildContext context) {
+    return Theme.of(context).copyWith(
+      backgroundColor: LightColor.background,
+      primaryColor: Colors.white,
+      appBarTheme: AppBarTheme(
+          color: Colors.white, textTheme: Theme.of(context).textTheme),
+      accentColor: LightColor.black,
+      primaryColorLight: LightColor.brighter,
+      cardTheme: CardTheme(color: LightColor.background),
+      textTheme: TextTheme(
+        headline1: h1Style,
+        headline2: h2Style,
+        headline3: h3Style,
+        headline4: h4Style,
+        headline5: h5Style,
+        headline6: h6Style,
+        subtitle1: GoogleFonts.sourceSansPro(
+            fontWeight: FontWeight.w400, fontSize: 16, color: LightColor.black),
+        subtitle2: GoogleFonts.sourceSansPro(
+            fontWeight: FontWeight.w300, fontSize: 14, color: LightColor.black),
+      ),
+      primaryIconTheme:
+          Theme.of(context).iconTheme.copyWith(color: Colors.black),
+      bottomAppBarColor: LightColor.background,
+      dividerColor: LightColor.lightGrey,
+      colorScheme: ColorScheme(
+          primary: Colors.black,
+          primaryVariant: LightColor.purple,
+          secondary: LightColor.lightBlue,
+          secondaryVariant: LightColor.darkBlue,
+          surface: LightColor.background,
+          background: LightColor.background,
+          error: Colors.red,
+          onPrimary: LightColor.Darker,
+          onSecondary: LightColor.background,
+          onSurface: LightColor.Darker,
+          onBackground: LightColor.titleTextColor,
+          onError: LightColor.titleTextColor,
+          brightness: Brightness.dark),
+    );
+  }
+
+  static ThemeData lightTheme = ThemeData(
+    primarySwatch: Colors.blue,
+    backgroundColor: LightColor.background,
+    primaryColor: LightColor.purple,
+    accentColor: LightColor.lightblack,
+    primaryColorDark: LightColor.Darker,
+    primaryColorLight: LightColor.brighter,
+    cardTheme: CardTheme(color: LightColor.background),
+    textTheme: TextTheme(display1: TextStyle(color: LightColor.black)),
+    iconTheme: IconThemeData(color: LightColor.lightblack),
+    bottomAppBarColor: LightColor.background,
+    dividerColor: LightColor.lightGrey,
+    colorScheme: ColorScheme(
+        primary: LightColor.purple,
+        primaryVariant: LightColor.purple,
+        secondary: LightColor.lightBlue,
+        secondaryVariant: LightColor.darkBlue,
+        surface: LightColor.background,
+        background: LightColor.background,
+        error: Colors.red,
+        onPrimary: LightColor.Darker,
+        onSecondary: LightColor.background,
+        onSurface: LightColor.Darker,
+        onBackground: LightColor.titleTextColor,
+        onError: LightColor.titleTextColor,
+        brightness: Brightness.dark),
+  );
+  static ThemeData darkTheme = ThemeData(
+    primarySwatch: Colors.blue,
+    backgroundColor: DarkColor.background,
+    primaryColor: DarkColor.purple,
+    accentColor: DarkColor.lightblack,
+    primaryColorDark: DarkColor.Darker,
+    primaryColorLight: DarkColor.brighter,
+    cardTheme: CardTheme(color: DarkColor.background),
+    textTheme: TextTheme(body1: TextStyle(color: DarkColor.titleTextColor)),
+    iconTheme: IconThemeData(color: DarkColor.lightblack),
+    bottomAppBarColor: DarkColor.lightblack,
+    dividerColor: LightColor.subTitleTextColor,
+    colorScheme: ColorScheme(
+        primary: DarkColor.purple,
+        primaryVariant: DarkColor.purple,
+        secondary: DarkColor.lightBlue,
+        secondaryVariant: DarkColor.darkBlue,
+        surface: DarkColor.background,
+        background: DarkColor.background,
+        error: Colors.red,
+        onPrimary: DarkColor.Brighter,
+        onSecondary: DarkColor.Darker,
+        onSurface: DarkColor.white,
+        onBackground: DarkColor.titleTextColor,
+        onError: DarkColor.titleTextColor,
+        brightness: Brightness.dark),
+  );
+
+  static TextStyle titleStyle =
+      const TextStyle(color: LightColor.titleTextColor, fontSize: 16);
+  static TextStyle subTitleStyle =
+      const TextStyle(color: LightColor.subTitleTextColor, fontSize: 12);
+
+  static TextStyle h1Style = const TextStyle(
+      fontSize: 24, fontWeight: FontWeight.bold, color: LightColor.black);
+  static TextStyle h2Style = GoogleFonts.sourceSansPro(
+      fontSize: 22, color: LightColor.black, fontWeight: FontWeight.w400);
+  static TextStyle h3Style = GoogleFonts.sourceSansPro(
+      fontSize: 20, color: LightColor.black, fontWeight: FontWeight.w600);
+  static TextStyle h4Style = GoogleFonts.sourceSansPro(
+      fontSize: 18, color: LightColor.black, fontWeight: FontWeight.w600);
+  static TextStyle h5Style =
+      GoogleFonts.sourceSansPro(fontSize: 16, color: LightColor.black);
+  static TextStyle h6Style =
+      GoogleFonts.sourceSansPro(fontSize: 14, color: LightColor.black);
 }
