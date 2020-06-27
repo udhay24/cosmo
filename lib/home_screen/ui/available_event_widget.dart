@@ -120,14 +120,20 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
                 left: 20,
                 child: Column(
                   children: [
-                    Text(
-                      event.event.eventName,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
+                    SizedBox(
+                      width: 150,
+                      child: Text(
+                        event.event.eventName,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
                           fontSize: 20,
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white),
+                          color: Colors.white,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.fade,
+                      ),
                     ),
                     SizedBox(
                       height: 20,
@@ -136,7 +142,7 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
                       width: 150,
                       child: Text(
                         event.event.eventDescription,
-                        textAlign: TextAlign.justify,
+                        textAlign: TextAlign.start,
                         style: TextStyle(
                             fontSize: 16,
                             fontStyle: FontStyle.italic,
@@ -226,7 +232,7 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
               onPressed: () {
                 launchURL(
                     url:
-                    "https://www.facebook.com/Team-Cosmos-111189120584649/");
+                        "https://www.facebook.com/Team-Cosmos-111189120584649/");
               },
             ),
             IconButton(
