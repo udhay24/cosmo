@@ -72,8 +72,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
             buildSnackBar("Team doesn't exist"),
           );
       } else if (state is CreateTeamSuccess) {
-        Scaffold.of(context)
-          ..hideCurrentSnackBar();
+        Scaffold.of(context)..hideCurrentSnackBar();
         _teamReference.value = state.teamReference;
         _updateProfile();
       } else if (state is CreatingTeam) {
@@ -85,7 +84,8 @@ class _UserProfileFormState extends State<UserProfileForm> {
         Scaffold.of(context).showSnackBar(buildSnackBar("Profile Updated"));
       } else if (state is UserProfileLoadedState) {
         _userNameController.text = state.userDetail.userName;
-        _phoneNumberController.text = state.userDetail.phoneNumber?.toString() ?? "";
+        _phoneNumberController.text =
+            state.userDetail.phoneNumber?.toString() ?? "";
         _teamReference.value = state.userDetail.joinedTeam;
       } else if (state is UserProfileUpdating) {
         Scaffold.of(context)
@@ -113,51 +113,63 @@ class _UserProfileFormState extends State<UserProfileForm> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Display name"),
-                  TextFormField(
-                    controller: _userNameController,
-                    decoration: InputDecoration.collapsed(
-                      hintText: "name",
-                      fillColor: Colors.blue,
-                      focusColor: Colors.blue,
-                      border: UnderlineInputBorder(),
-                    ),
-                    maxLength: 24,
-                    autocorrect: false,
-                    autovalidate: true,
-                    validator: (value) {
-                      if (!Validators.isValidName(value)) {
-                        return 'Invalid name';
-                      }
-                      return null;
-                    },
+                  Text(
+                    "Display name",
+                    style: Theme.of(context).textTheme.headline4,
                   ),
-                  SizedBox(),
-                  Text("Phone number"),
-                  TextFormField(
-                    controller: _phoneNumberController,
-                    decoration: InputDecoration.collapsed(
-                      hintText: "number",
-                      fillColor: Colors.blue,
-                      focusColor: Colors.blue,
-                      border: UnderlineInputBorder(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12.0),
+                    child: TextFormField(
+                      controller: _userNameController,
+                      decoration: InputDecoration.collapsed(
+                        hintText: "name",
+                        border: UnderlineInputBorder(),
+                      ),
+                      maxLength: 24,
+                      autocorrect: false,
+                      autovalidate: true,
+                      validator: (value) {
+                        if (!Validators.isValidName(value)) {
+                          return 'Invalid name';
+                        }
+                        return null;
+                      },
                     ),
-                    keyboardType: TextInputType.numberWithOptions(),
-                    autocorrect: false,
-                    maxLength: 10,
-                    autovalidate: true,
-                    validator: (value) {
-                      if (!Validators.isValidPhoneNumber(value)) {
-                        return 'Invalid Number';
-                      }
-                      return null;
-                    },
                   ),
-                  ValueListenableBuilder(
-                      valueListenable: _selectedTeamName,
-                      builder: (context, String value, _) {
-                        return _buildSelectedTeam(value);
-                      })
+                  Text(
+                    "Phone number",
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12.0),
+                    child: TextFormField(
+                      controller: _phoneNumberController,
+                      decoration: InputDecoration.collapsed(
+                        hintText: "number",
+                        fillColor: Colors.blue,
+                        focusColor: Colors.blue,
+                        border: UnderlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.numberWithOptions(),
+                      autocorrect: false,
+                      maxLength: 10,
+                      autovalidate: true,
+                      validator: (value) {
+                        if (!Validators.isValidPhoneNumber(value)) {
+                          return 'Invalid Number';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: ValueListenableBuilder(
+                        valueListenable: _selectedTeamName,
+                        builder: (context, String value, _) {
+                          return _buildSelectedTeam(value);
+                        }),
+                  )
                 ],
               ),
             ),
@@ -236,8 +248,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
   }
 
   _updateProfile() {
-    if (_formKey.currentState.validate() &&
-        (_teamReference.value != null)) {
+    if (_formKey.currentState.validate() && (_teamReference.value != null)) {
       BlocProvider.of<UserProfileBloc>(context).add(UpdateProfile(
           userDetail: User(
               userName: _userNameController.value.text,

@@ -15,7 +15,6 @@ class UserProfileScreen extends StatelessWidget {
               "save",
               style: TextStyle(fontSize: 16),
             ),
-            textColor: Colors.white,
             onPressed: () {
               BlocProvider.of<UserProfileBloc>(context)
                   .add(SaveProfilePressed());

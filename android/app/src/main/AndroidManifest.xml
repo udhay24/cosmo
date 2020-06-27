@@ -9,7 +9,7 @@
 
     <application
         android:name=".Application"
-        android:label="Cosmo"
+        android:label="Cosmo Gamingz"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

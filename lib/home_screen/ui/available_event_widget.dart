@@ -1,10 +1,9 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:pubg/bloc/navigation/bloc.dart';
-import 'package:pubg/data_source/model/available_event.dart';
 import 'package:pubg/home_screen/bloc/bloc.dart';
+import 'package:pubg/home_screen/model/event_detail.dart';
 import 'package:pubg/util/network_util.dart';
 import 'package:pubg/util/notification_util.dart';
 import 'package:pubg/util/widget_util.dart';
@@ -18,12 +17,6 @@ class AvailableEventWidget extends StatefulWidget {
 }
 
 class _AvailableEventWidgetState extends State<AvailableEventWidget> {
-  static List<String> queryParam = [
-    "call of duty",
-    "xbox",
-    "guns",
-    "soldier",
-  ];
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
@@ -49,19 +42,11 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
           return Column(
             children: <Widget>[
               Expanded(
-                child: ListView.separated(
+                child: ListView.builder(
                     itemCount: state.availableEvents.length,
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
                     physics: BouncingScrollPhysics(),
-                    separatorBuilder: (context, position) {
-                      return Divider(
-                        height: 4,
-                        thickness: 2,
-                        indent: 30,
-                        endIndent: 30,
-                      );
-                    },
                     itemBuilder: (context, position) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -94,80 +79,100 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
                 );
               });
         } else if (state is EventRegistrationSuccess) {
+          Scaffold.of(context)
+              .showSnackBar(buildSnackBar("Registration success"));
           Navigator.of(listenerContext).pop();
+          BlocProvider.of<HomeScreenBloc>(context)
+              .add(HomeScreenStarted()); //refresh the screen
+        } else if (state is EventRegistrationFailure) {
+          Scaffold.of(context).showSnackBar(
+              buildSnackBar("Registration Failed Try Again Later"));
+        } else if (state is CancellationSuccess) {
+          Scaffold.of(context).showSnackBar(
+              buildSnackBar("Cancelled Registration successfully"));
+          Navigator.of(listenerContext).pop();
+          BlocProvider.of<HomeScreenBloc>(context)
+              .add(HomeScreenStarted()); //refresh the screen
+        } else if (state is CancellationFailure) {
+          Scaffold.of(context).showSnackBar(
+              buildSnackBar("Unable to cancel registration try again later"));
         }
       },
     );
   }
 
-  Widget _getEventCard(AvailableEvent event) {
-    return Container(
-      height: 180,
-      child: Row(
-        children: <Widget>[
-          Card(
-            clipBehavior: Clip.hardEdge,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: Container(
-              width: 120,
-              height: 180,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: AssetImage("assets/images/pubg_player.jpg"),
-                      colorFilter:
-                          ColorFilter.mode(Colors.grey, BlendMode.overlay))),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    event.eventName,
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w400),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    event.eventDescription,
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.w300,
+  Widget _getEventCard(CosmoEventUIModel event) {
+    return Card(
+        clipBehavior: Clip.hardEdge,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        child: Container(
+          height: 200,
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: AssetImage("assets/images/pubg_player.jpg"),
+                  colorFilter:
+                      ColorFilter.mode(Colors.grey, BlendMode.darken))),
+          child: Stack(
+            children: [
+              Positioned(
+                bottom: 20,
+                left: 20,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: 150,
+                      child: Text(
+                        event.event.eventName,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.fade,
+                      ),
                     ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 6,
-                  ),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: FlatButton(
-                      onPressed: () {
-                        BlocProvider.of<HomeScreenBloc>(context)
-                            .add(EventSelected(eventID: event.eventID));
-                      },
-                      child: Text("Register"),
-                      textColor: Colors.blueAccent,
+                    SizedBox(
+                      height: 20,
                     ),
-                  ),
-                ],
+                    SizedBox(
+                      width: 150,
+                      child: Text(
+                        event.event.eventDescription,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 3,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+              Positioned(
+                right: 20,
+                bottom: 10,
+                child: FlatButton(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  onPressed: () {
+                    BlocProvider.of<HomeScreenBloc>(context)
+                        .add(EventSelected(eventID: event.event.eventID));
+                  },
+                  child: event.isRegistered ? Text("Update") : Text("Register"),
+                  textColor: Colors.blueAccent,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ));
   }
 
   _initializeFirebaseMessaging() {
@@ -216,8 +221,7 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           child: Text(
             "Join us on",
-            style: GoogleFonts.sourceSansPro(
-                fontSize: 16, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.headline5,
           ),
         ),
         Row(
@@ -235,14 +239,16 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
               icon: Image.asset('assets/icons/instagram-48.png'),
               onPressed: () {
                 launchURL(
-                    url: "https://instagram.com/cosmogamingz?igshid=7o93qh2op04u");
+                    url:
+                    "https://instagram.com/cosmogamingz?igshid=7o93qh2op04u");
               },
             ),
             IconButton(
               icon: Image.asset('assets/icons/youtube-48.png'),
               onPressed: () {
                 launchURL(
-                    url: "https://www.youtube.com/channel/UCVJWGqiu1NYP0yG7-bkCSog");
+                    url:
+                    "https://www.youtube.com/channel/UCVJWGqiu1NYP0yG7-bkCSog");
               },
             ),
             IconButton(
