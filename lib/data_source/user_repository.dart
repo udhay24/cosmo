@@ -225,19 +225,21 @@ class UserRepository {
     return documents.documents.map((e) => e['team_id']).cast<String>().toList();
   }
 
-  Future<bool> isRegisteredWithEvent(int eventID) async {
+  Future<Map<bool, int>> isRegisteredWithEvent(int eventID) async {
     try {
       var user = await getCurrentUserDetail();
-      var selectedSlot = await _fireStore.document(
-          "registrations/${getCurrentDate()}/$eventID/${user.joinedTeam
-              .documentID}").get();
-      if ((selectedSlot != null) && (selectedSlot.data != null)) {
-        return true;
+      var selectedSlot = (await _fireStore
+              .document(
+                  "registrations/${getCurrentDate()}/$eventID/${user.joinedTeam.documentID}")
+              .get())
+          .data['selected_slot'] as int;
+      if ((selectedSlot != null) && (selectedSlot != null)) {
+        return {true: selectedSlot};
       } else {
-        return false;
+        return {false: null};
       }
     } catch (error) {
-      return false;
+      return {false: null};
     }
   }
 }

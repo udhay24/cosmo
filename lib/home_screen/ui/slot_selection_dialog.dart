@@ -17,8 +17,6 @@ class SlotSelectionDialog extends StatefulWidget {
 }
 
 class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
-  int slotSelected;
-
   @override
   void initState() {
     super.initState();
@@ -30,7 +28,7 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
   Widget build(BuildContext context) {
     return BlocBuilder(
       bloc: widget.homeScreenBloc,
-      builder: (context, state) {
+      builder: (_, state) {
         if (state is SelectedEventDetailLoading) {
           return Container(
               height: 100, child: Center(child: CircularProgressIndicator()));
@@ -39,10 +37,7 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
               height: 100, child: Center(child: Text("Something went wrong")));
         } else if (state is SelectedEventDetailLoaded) {
           return StreamBuilder(
-            builder: (context, AsyncSnapshot<List<int>> data) {
-              if ((data.data?.length ?? 0) > 1) {
-                slotSelected = data.data?.first ?? 0;
-              }
+            builder: (_, AsyncSnapshot<List<int>> data) {
               return Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -57,12 +52,25 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
                     SizedBox(
                       height: 20,
                     ),
-                    _buildSlotOption(data.data?.isNotEmpty),
+                    Builder(builder: (_) {
+                      if ((data.data.length > 0) &&
+                          (!state.eventDetail.isRegistered)) {
+                        return SlotRegistrationWidget(
+                          availableSlots: data.data,
+                          eventID: state.eventDetail.event.eventID,
+                          bloc: widget.homeScreenBloc,
+                        );
+                      } else if (state.eventDetail.isRegistered) {
+                        return _buildCancelRegistrationEvent(
+                            state.eventDetail.previousSelectedSlot,
+                            state.eventDetail.event.eventID);
+                      } else {
+                        return _buildClosedEventWidget();
+                      }
+                    }),
                     SizedBox(
                       height: 20,
                     ),
-                    _buildSelectSlotButton(context,
-                        state.eventDetail.event.eventID, data.data?.isNotEmpty)
                   ],
                 ),
               );
@@ -77,27 +85,6 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
     );
   }
 
-  Widget _buildSlotOption(bool isRegistrationOpen) {
-    return Row(
-      children: <Widget>[
-        Transform.rotate(
-          angle: 125,
-          child: Icon(
-            FontAwesomeIcons.ticketAlt,
-            color: Colors.grey,
-          ),
-        ),
-        SizedBox(
-          width: 20,
-        ),
-        Text(
-          "Available Slot :    ${isRegistrationOpen ? slotSelected : "No Slots Available"}",
-          style: GoogleFonts.abel(fontWeight: FontWeight.w600, fontSize: 15),
-        ),
-      ],
-    );
-  }
-
   Widget _buildEventHeading(SelectedEventDetail value) {
     return ListTile(
       leading: Icon(FontAwesomeIcons.accusoft),
@@ -106,52 +93,161 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
     );
   }
 
-  Widget _buildSelectSlotButton(
-      BuildContext context, int eventID, bool isRegistrationOpen) {
-    return Container(
-        width: MediaQuery.of(context).size.width,
-        height: 50,
-        child: FlatButton(
-          textColor: Colors.white,
-          color: Colors.blue,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(0),
-          ),
-          child: Text(
-            "Register",
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
-          onPressed: isRegistrationOpen
-              ? () => widget.homeScreenBloc
-                ..add(
-                    SlotSelected(selectedSlot: slotSelected, eventId: eventID))
-              : null,
-        ));
+  Widget _buildCancelRegistrationEvent(int selectedSlot, int eventID) {
+    return Column(
+      children: [
+        Text("You have already registered for slot $selectedSlot"),
+        SizedBox(
+          height: 10,
+        ),
+        Container(
+            width: MediaQuery.of(context).size.width,
+            height: 50,
+            child: FlatButton(
+                textColor: Colors.white,
+                color: Colors.red,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0),
+                ),
+                child: Text(
+                  "Cancel Registration",
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                onPressed: () {
+                  widget.homeScreenBloc
+                    ..add(RegistrationCancelled(eventID: eventID));
+                }))
+      ],
+    );
   }
 
-  DropdownButton<String> _buildDropdownButton(List<int> availableSlots) {
-    return DropdownButton<String>(
-      value: '$slotSelected',
-      icon: Icon(Icons.arrow_downward),
-      dropdownColor: Colors.white,
-      iconSize: 24,
-      elevation: 2,
-      style: TextStyle(color: Colors.deepPurple),
-      underline: Container(
-        height: 2,
-        color: Colors.deepPurpleAccent,
-      ),
-      onChanged: (String newValue) {
-        setState(() {
-          slotSelected = int.parse(newValue);
-        });
-      },
-      items: availableSlots.map<DropdownMenuItem<String>>((int value) {
-        return DropdownMenuItem<String>(
-          value: "$value",
-          child: Text("$value"),
-        );
-      }).toList(),
+  Widget _buildClosedEventWidget() {
+    return Column(
+      children: [
+        Row(
+          children: <Widget>[
+            Transform.rotate(
+              angle: 125,
+              child: Icon(
+                FontAwesomeIcons.ticketAlt,
+                color: Colors.grey,
+              ),
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Text(
+              "Available Slot :  No Slots Available",
+              style:
+                  GoogleFonts.abel(fontWeight: FontWeight.w600, fontSize: 15),
+            ),
+          ],
+        ),
+        Container(
+            width: MediaQuery.of(context).size.width,
+            height: 50,
+            child: FlatButton(
+                textColor: Colors.white,
+                color: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0),
+                ),
+                child: Text(
+                  "Register",
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                onPressed: null))
+      ],
+    );
+  }
+}
+
+class SlotRegistrationWidget extends StatefulWidget {
+  final List<int> availableSlots;
+  final int eventID;
+  final HomeScreenBloc bloc;
+
+  SlotRegistrationWidget(
+      {@required this.availableSlots,
+      @required this.eventID,
+      @required this.bloc});
+
+  @override
+  _SlotRegistrationWidgetState createState() => _SlotRegistrationWidgetState();
+}
+
+class _SlotRegistrationWidgetState extends State<SlotRegistrationWidget> {
+  int selectedSlot;
+
+  @override
+  initState() {
+    selectedSlot = widget.availableSlots.first;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Transform.rotate(
+              angle: 125,
+              child: Icon(
+                FontAwesomeIcons.ticketAlt,
+                color: Colors.grey,
+              ),
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Text("Available Slots: "),
+            SizedBox(
+              width: 20,
+            ),
+            DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: '$selectedSlot',
+                icon: Icon(Icons.arrow_drop_down),
+                dropdownColor: Colors.white,
+                iconSize: 24,
+                elevation: 2,
+                style: TextStyle(color: Colors.blue),
+                onChanged: (String newValue) {
+                  setState(() {
+                    selectedSlot = int.parse(newValue);
+                  });
+                },
+                items: widget.availableSlots
+                    .map<DropdownMenuItem<String>>((int value) {
+                  return DropdownMenuItem<String>(
+                    value: "$value",
+                    child: Text("$value"),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
+        Container(
+            width: MediaQuery.of(context).size.width,
+            height: 50,
+            child: FlatButton(
+                textColor: Colors.white,
+                color: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0),
+                ),
+                child: Text(
+                  "Register",
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                onPressed: () {
+                  widget.bloc
+                    ..add(SlotSelected(
+                        selectedSlot: selectedSlot, eventId: widget.eventID));
+                }))
+      ],
     );
   }
 }

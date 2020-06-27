@@ -40,6 +40,8 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
       _mapNotificationEvent(event);
     } else if (event is EventRegistrationDialogOpened) {
       yield* _mapRegistrationDialogOpened(event);
+    } else if (event is RegistrationCancelled) {
+      yield* _mapRegistrationCancellation(event);
     }
   }
 
@@ -71,7 +73,9 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
       return CosmoEventUIModel(
           event: event,
           isRegistered:
-              await _userRepository.isRegisteredWithEvent(event.eventID));
+              (await _userRepository.isRegisteredWithEvent(event.eventID))
+                  .keys
+                  .toList()[0]);
     }
 
     try {
@@ -105,11 +109,28 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
       EventRegistrationDialogOpened event) async* {
     yield SelectedEventDetailLoading();
     try {
-      var eventDetail =
-          await _eventRepository.getEventDetailFromId(event.eventID);
+      var registrationDetail =
+      await _userRepository.isRegisteredWithEvent(event.eventID);
+      var eventDetail = await _eventRepository.getEventDetailFromId(
+          event.eventID,
+          registrationDetail.keys.toList()[0],
+          registrationDetail.values.toList()[0]);
       yield SelectedEventDetailLoaded(eventDetail: eventDetail);
     } catch (Error) {
       yield SelectedEventDetailFailure();
+    }
+  }
+
+  Stream<HomeScreenState> _mapRegistrationCancellation(
+      RegistrationCancelled event) async* {
+    yield CancellingRegistration();
+    try {
+      var user = await _userRepository.getCurrentUserDetail();
+      await _eventRepository.removeTeamFromEvent(
+          event.eventID, user.joinedTeam);
+      yield CancellationSuccess();
+    } catch (error) {
+      yield CancellationFailure();
     }
   }
 }

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
 import 'package:pubg/data_source/database.dart';
 import 'package:pubg/data_source/model/available_event.dart';
 import 'package:pubg/data_source/model/event_notification.dart';
@@ -48,7 +47,7 @@ class EventRepository {
   Future<List<EventNotification>> getAllNotificationEvent() async {
     final database = (await db).db;
     final List<Map<String, dynamic>> maps =
-    await database.query(SqlitePersistence.EventNotificationTableName);
+        await database.query(SqlitePersistence.EventNotificationTableName);
     return maps
         .map((e) => EventNotification.fromJson(e))
         .cast<EventNotification>()
@@ -61,9 +60,6 @@ class EventRepository {
     Stream<QuerySnapshot> availableSlotsQuery = _fireStore
         .collection("registrations/${getCurrentDate()}/${event.eventID}")
         .snapshots();
-//        .transform(StreamTransformer<QuerySnapshot, List<int>>.fromHandlers(
-//            handleData: (data, sink) {
-//     ));
 
     yield* availableSlotsQuery.map((event) {
       var selectedSlots = event.documents.map((e) {
@@ -94,20 +90,25 @@ class EventRepository {
     return CosmoGameEvent.fromJson(eventData);
   }
 
-  Future<SelectedEventDetail> getEventDetailFromId(int eventID) async {
+  Future<SelectedEventDetail> getEventDetailFromId(int eventID,
+      bool isRegistered, int previousSlot) async {
     DocumentReference _eventRef = await getEventDocFromID(eventID);
     Stream<List<int>> availableSlots = getAvailableSlots(_eventRef);
     CosmoGameEvent event = await getEventFromRef(_eventRef);
-    return SelectedEventDetail(event: event, availableSlots: availableSlots);
+    return SelectedEventDetail(
+        event: event,
+        availableSlots: availableSlots,
+        isRegistered: isRegistered,
+        previousSelectedSlot: previousSlot);
   }
 
   //registers current team to the event
   registerTeamForEvent(CosmoGameEvent event, int slot,
       DocumentReference currentTeam) async {
-    String dateFormat = DateFormat('dd-MM-yyyy').format(DateTime.now());
+    String dateFormat = getCurrentDate();
     var eventRef = await getEventDocFromID(event.eventID);
 
-    _fireStore
+    await _fireStore
         .collection("registrations/$dateFormat/${event.eventID}")
         .document(currentTeam.documentID)
         .setData(Registration(
@@ -116,5 +117,14 @@ class EventRepository {
         selectedSlot: slot,
         date: Timestamp.now())
         .toJson());
+  }
+
+  removeTeamFromEvent(int eventID, DocumentReference currentTeam) async {
+    String dateFormat = getCurrentDate();
+
+    await _fireStore
+        .collection("registrations/$dateFormat/$eventID")
+        .document(currentTeam.documentID)
+        .delete();
   }
 }

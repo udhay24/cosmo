@@ -91,6 +91,13 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
           Navigator.of(listenerContext).pop();
           BlocProvider.of<HomeScreenBloc>(context)
               .add(HomeScreenStarted()); //refresh the screen
+        } else if (state is CancellationSuccess) {
+          Navigator.of(listenerContext).pop();
+          BlocProvider.of<HomeScreenBloc>(context)
+              .add(HomeScreenStarted()); //refresh the screen
+        } else if (state is CancellationFailure) {
+          Scaffold.of(context).showSnackBar(
+              buildSnackBar("Unable to cancel registration try again later"));
         }
       },
     );
@@ -226,7 +233,7 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
               onPressed: () {
                 launchURL(
                     url:
-                        "https://www.facebook.com/Team-Cosmos-111189120584649/");
+                    "https://www.facebook.com/Team-Cosmos-111189120584649/");
               },
             ),
             IconButton(

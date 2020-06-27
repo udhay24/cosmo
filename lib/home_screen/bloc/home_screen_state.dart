@@ -84,3 +84,18 @@ class SelectedEventDetailFailure extends HomeScreenState {
   @override
   List<Object> get props => [];
 }
+
+class CancellingRegistration extends HomeScreenState {
+  @override
+  List<Object> get props => [];
+}
+
+class CancellationSuccess extends HomeScreenState {
+  @override
+  List<Object> get props => [];
+}
+
+class CancellationFailure extends HomeScreenState {
+  @override
+  List<Object> get props => [];
+}
