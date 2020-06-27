@@ -1,11 +1,11 @@
-class AvailableEvent {
+class CosmoGameEvent {
   String eventName;
   String eventDescription;
   int eventID;
 
-  AvailableEvent({this.eventName, this.eventDescription});
+  CosmoGameEvent({this.eventName, this.eventDescription});
 
-  AvailableEvent.fromJson(Map<String, dynamic> json) {
+  CosmoGameEvent.fromJson(Map<String, dynamic> json) {
     eventName = json['event_name'];
     eventDescription = json['event_description'];
     eventID = json['event_id'];

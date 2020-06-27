@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pubg/bloc/navigation/bloc.dart';
 import 'package:pubg/util/network_util.dart';
@@ -19,31 +18,29 @@ class AboutScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              _buildWelcomeText(),
+              _buildWelcomeText(context),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
                   "About Us",
-                  style: GoogleFonts.sourceSansPro(
-                      fontWeight: FontWeight.w600, fontSize: 18),
+                  style: Theme.of(context).textTheme.headline4,
                 ),
               ),
               Text(
                 "Hello there boys and girls..! Want to be part of epic fights and raids,fun gameplay and out of the world driving and custom room matches, then you have joined the right places.you won't be disappointed as there will be no shortage of awesomeness.",
-                style: GoogleFonts.sourceSansPro(),
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+              SizedBox(
+                height: 10,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Text(
-                  "Social Media",
-                  style: GoogleFonts.sourceSansPro(
-                      fontWeight: FontWeight.w600, fontSize: 18),
-                ),
+                child: Text("Social Media",
+                    style: Theme.of(context).textTheme.headline4),
               ),
               ListTile(
                 title: Text(
                   "Follow us on Instagram",
-                  style: GoogleFonts.sourceSansPro(),
                 ),
                 trailing: SizedBox(
                     height: 24,
@@ -58,7 +55,6 @@ class AboutScreen extends StatelessWidget {
               ListTile(
                 title: Text(
                   "Join us on Discord",
-                  style: GoogleFonts.sourceSansPro(),
                 ),
                 trailing: SizedBox(
                     height: 24,
@@ -70,21 +66,19 @@ class AboutScreen extends StatelessWidget {
               ),
               ListTile(
                 title: Text(
-                  "Join us on Mixer",
-                  style: GoogleFonts.sourceSansPro(),
+                  "Join us on Twitch",
                 ),
                 trailing: SizedBox(
                     height: 24,
                     width: 24,
-                    child: Image.asset('assets/icons/mixer-logo-64.png')),
+                    child: Image.asset('assets/icons/twitch-48.png')),
                 onTap: () {
-                  launchURL(url: "https://mixer.com/Havard1511");
+                  launchURL(url: "https://www.twitch.tv/cosmo_gamingz");
                 },
               ),
               ListTile(
                 title: Text(
                   "Join our what's app group",
-                  style: GoogleFonts.sourceSansPro(),
                 ),
                 trailing: SizedBox(
                     height: 24,
@@ -98,7 +92,6 @@ class AboutScreen extends StatelessWidget {
               ListTile(
                 title: Text(
                   "Follow our Facebook page",
-                  style: GoogleFonts.sourceSansPro(),
                 ),
                 trailing: SizedBox(
                     height: 24,
@@ -113,7 +106,6 @@ class AboutScreen extends StatelessWidget {
               ListTile(
                 title: Text(
                   "Check out our videos on TikTok",
-                  style: GoogleFonts.sourceSansPro(),
                 ),
                 trailing: SizedBox(
                     height: 24,
@@ -126,7 +118,6 @@ class AboutScreen extends StatelessWidget {
               ListTile(
                 title: Text(
                   "Check out our videos on YouTube",
-                  style: GoogleFonts.sourceSansPro(),
                 ),
                 trailing: SizedBox(
                     height: 24,
@@ -142,14 +133,15 @@ class AboutScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
                   "Other",
-                  style: GoogleFonts.sourceSansPro(
-                      fontWeight: FontWeight.w600, fontSize: 18),
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .headline4,
                 ),
               ),
               ListTile(
                 title: Text(
                   "Third party software used",
-                  style: GoogleFonts.sourceSansPro(),
                 ),
                 onTap: () {
                   BlocProvider.of<NavigationBloc>(context)
@@ -159,7 +151,6 @@ class AboutScreen extends StatelessWidget {
               ListTile(
                 title: Text(
                   "Privacy Policy",
-                  style: GoogleFonts.sourceSansPro(),
                 ),
                 onTap: () {
                   launchURL(
@@ -171,7 +162,6 @@ class AboutScreen extends StatelessWidget {
               ListTile(
                 title: Text(
                   "App Version",
-                  style: GoogleFonts.sourceSansPro(),
                 ),
                 subtitle: FutureBuilder(
                   builder: (context, AsyncSnapshot<PackageInfo> snapshot) {
@@ -193,7 +183,10 @@ class AboutScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
                     "Made with ❤️ by Team Cosmo",
-                    style: GoogleFonts.roboto(fontWeight: FontWeight.bold),
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .subtitle1,
                   ),
                 ),
               )
@@ -204,15 +197,17 @@ class AboutScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWelcomeText() =>
+  Widget _buildWelcomeText(BuildContext context) =>
       Padding(
         padding: const EdgeInsets.all(8.0),
         child: Align(
           alignment: Alignment.center,
           child: Text(
             "Welcome to Cosmo Gaming",
-            style: GoogleFonts.sourceSansPro(
-                fontWeight: FontWeight.w600, fontSize: 20),
+            style: Theme
+                .of(context)
+                .textTheme
+                .headline3,
           ),
         ),
       );

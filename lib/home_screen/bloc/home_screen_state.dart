@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:pubg/data_source/model/available_event.dart';
 import 'package:pubg/home_screen/model/event_detail.dart';
 
 abstract class HomeScreenState extends Equatable {
@@ -26,10 +25,10 @@ class AvailableEventsFailure extends HomeScreenState {
 
 
 class AvailableEventsSuccess extends HomeScreenState {
-  final List<AvailableEvent> availableEvents;
-  
+  final List<CosmoEventUIModel> availableEvents;
+
   AvailableEventsSuccess({@required this.availableEvents});
-  
+
   @override
   List<Object> get props => [availableEvents];
 }
@@ -68,7 +67,7 @@ class ShowSlotDialog extends HomeScreenState {
 }
 
 class SelectedEventDetailLoaded extends HomeScreenState {
-  final EventDetail eventDetail;
+  final SelectedEventDetail eventDetail;
 
   SelectedEventDetailLoaded({@required this.eventDetail});
 
@@ -82,6 +81,21 @@ class SelectedEventDetailLoading extends HomeScreenState {
 }
 
 class SelectedEventDetailFailure extends HomeScreenState {
+  @override
+  List<Object> get props => [];
+}
+
+class CancellingRegistration extends HomeScreenState {
+  @override
+  List<Object> get props => [];
+}
+
+class CancellationSuccess extends HomeScreenState {
+  @override
+  List<Object> get props => [];
+}
+
+class CancellationFailure extends HomeScreenState {
   @override
   List<Object> get props => [];
 }

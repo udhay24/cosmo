@@ -4,11 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_state.dart';
 import 'package:pubg/bloc/navigation/bloc.dart';
+import 'package:pubg/bloc/navigation/routes_const.dart';
 import 'package:pubg/data_source/login_repository.dart';
 import 'package:pubg/data_source/user_repository.dart';
-import 'package:pubg/bloc/navigation/routes_const.dart';
+import 'package:pubg/util/themes.dart';
 
-import 'bloc/authentication_bloc/authentication_event.dart';
 import 'bloc/bloc_delegate.dart';
 
 void main() {
@@ -54,6 +54,7 @@ class App extends StatelessWidget {
           navigatorKey: BlocProvider.of<NavigationBloc>(context).navigatorKey,
           onGenerateRoute: generateRoute,
           initialRoute: ScreenRoutes.SPLASH_SCREEN_ROUTE,
+          theme: AppTheme.getLightTheme(context),
         );
       },
       listener: (context, state) {
