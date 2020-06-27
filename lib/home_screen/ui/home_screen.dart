@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            "Cosmo",
+            "Cosmo Gamingz",
             style: TextStyle(color: Colors.black),
           ),
           backgroundColor: Colors.white,

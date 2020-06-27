@@ -114,11 +114,8 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
     return Column(
       children: [
         Text(
-          "You have already registered for slot $selectedSlot",
-          style: Theme
-              .of(context)
-              .textTheme
-              .headline5,
+          "You have already registered for slot - $selectedSlot",
+          style: Theme.of(context).textTheme.headline4,
         ),
         SizedBox(
           height: 10,

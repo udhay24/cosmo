@@ -15,6 +15,11 @@ class AppTheme {
       primaryColor: Colors.white,
       appBarTheme: AppBarTheme(
           color: Colors.white, textTheme: Theme.of(context).textTheme),
+      snackBarTheme: SnackBarThemeData(
+          backgroundColor: Colors.black,
+          contentTextStyle: snackBarStyle,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          behavior: SnackBarBehavior.floating),
       accentColor: LightColor.black,
       primaryColorLight: LightColor.brighter,
       cardTheme: CardTheme(color: LightColor.background),
@@ -25,10 +30,8 @@ class AppTheme {
         headline4: h4Style,
         headline5: h5Style,
         headline6: h6Style,
-        subtitle1: GoogleFonts.sourceSansPro(
-            fontWeight: FontWeight.w400, fontSize: 16, color: LightColor.black),
-        subtitle2: GoogleFonts.sourceSansPro(
-            fontWeight: FontWeight.w300, fontSize: 14, color: LightColor.black),
+        subtitle1: s1Style,
+        subtitle2: s2Style,
       ),
       primaryIconTheme:
           Theme.of(context).iconTheme.copyWith(color: Colors.black),
@@ -107,9 +110,14 @@ class AppTheme {
   );
 
   static TextStyle titleStyle =
-      const TextStyle(color: LightColor.titleTextColor, fontSize: 16);
-  static TextStyle subTitleStyle =
-      const TextStyle(color: LightColor.subTitleTextColor, fontSize: 12);
+  const TextStyle(color: LightColor.titleTextColor, fontSize: 16);
+
+  static TextStyle s1Style =
+  GoogleFonts.sourceSansPro(
+      fontWeight: FontWeight.w400, fontSize: 16, color: LightColor.black);
+
+  static TextStyle s2Style = GoogleFonts.sourceSansPro(
+      fontWeight: FontWeight.w300, fontSize: 14, color: LightColor.black);
 
   static TextStyle h1Style = const TextStyle(
       fontSize: 24, fontWeight: FontWeight.bold, color: LightColor.black);
@@ -120,7 +128,10 @@ class AppTheme {
   static TextStyle h4Style = GoogleFonts.sourceSansPro(
       fontSize: 18, color: LightColor.black, fontWeight: FontWeight.w600);
   static TextStyle h5Style =
-      GoogleFonts.sourceSansPro(fontSize: 16, color: LightColor.black);
+  GoogleFonts.sourceSansPro(fontSize: 16, color: LightColor.black);
   static TextStyle h6Style =
-      GoogleFonts.sourceSansPro(fontSize: 14, color: LightColor.black);
+  GoogleFonts.sourceSansPro(fontSize: 14, color: LightColor.black);
+
+  static TextStyle snackBarStyle = GoogleFonts.sourceSansPro(
+      fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white);
 }

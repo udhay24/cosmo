@@ -166,7 +166,7 @@ class _TeamDetailFormState extends State<TeamDetailForm> {
         readOnly: !widget.isFormEditable,
         decoration: InputDecoration(
           border: UnderlineInputBorder(borderSide: BorderSide()),
-          labelText: 'Team Code',
+          labelText: 'Team Password',
           helperText:
               "This is a Secret code which will be used by other members to join your team",
           helperMaxLines: 2,

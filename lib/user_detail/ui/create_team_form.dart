@@ -89,12 +89,12 @@ class _CreateTeamFormState extends State<CreateTeamForm> {
                       child: TextFormField(
                         controller: _teamCodeController,
                         decoration: InputDecoration.collapsed(
-                            hintText: "Team Code",
+                            hintText: "Team Password",
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: Colors.black54)),
                         validator: (value) {
                           if (!Validators.isValidName(value)) {
-                            return "Invalid Team Code";
+                            return "Invalid Team Password";
                           } else {
                             return null;
                           }

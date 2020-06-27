@@ -79,10 +79,17 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
                 );
               });
         } else if (state is EventRegistrationSuccess) {
+          Scaffold.of(context)
+              .showSnackBar(buildSnackBar("Registration success"));
           Navigator.of(listenerContext).pop();
           BlocProvider.of<HomeScreenBloc>(context)
               .add(HomeScreenStarted()); //refresh the screen
+        } else if (state is EventRegistrationFailure) {
+          Scaffold.of(context).showSnackBar(
+              buildSnackBar("Registration Failed Try Again Later"));
         } else if (state is CancellationSuccess) {
+          Scaffold.of(context).showSnackBar(
+              buildSnackBar("Cancelled Registration successfully"));
           Navigator.of(listenerContext).pop();
           BlocProvider.of<HomeScreenBloc>(context)
               .add(HomeScreenStarted()); //refresh the screen
@@ -208,10 +215,7 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           child: Text(
             "Join us on",
-            style: Theme
-                .of(context)
-                .textTheme
-                .headline5,
+            style: Theme.of(context).textTheme.headline5,
           ),
         ),
         Row(

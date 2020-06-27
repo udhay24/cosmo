@@ -69,13 +69,13 @@ class _JoinTeamFormState extends State<JoinTeamForm> {
                     child: TextFormField(
                         controller: _teamCodeController,
                         decoration: InputDecoration.collapsed(
-                            hintText: "Team Code",
+                            hintText: "Team Password",
                             hintStyle: TextStyle(color: Colors.black54)),
                         validator: (value) {
                           if (Validators.isValidName(value)) {
                             return null;
                           } else {
-                            return "Invalid Code";
+                            return "Invalid Password";
                           }
                         }),
                   ),
