@@ -46,33 +46,39 @@ class _JoinTeamFormState extends State<JoinTeamForm> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  TextFormField(
-                      controller: _teamIDController,
-                      decoration: InputDecoration.collapsed(
-                          hintText: "Team Id",
-                          hintStyle: TextStyle(color: Colors.black54)),
-                      validator: (value) {
-                        if (Validators.isValidName(value)) {
-                          return null;
-                        } else {
-                          return "Invalid ID";
-                        }
-                      }),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: TextFormField(
+                        controller: _teamIDController,
+                        decoration: InputDecoration.collapsed(
+                            hintText: "Team Id",
+                            hintStyle: TextStyle(color: Colors.black54)),
+                        validator: (value) {
+                          if (Validators.isValidName(value)) {
+                            return null;
+                          } else {
+                            return "Invalid ID";
+                          }
+                        }),
+                  ),
                   SizedBox(
                     height: 8,
                   ),
-                  TextFormField(
-                      controller: _teamCodeController,
-                      decoration: InputDecoration.collapsed(
-                          hintText: "Team Code",
-                          hintStyle: TextStyle(color: Colors.black54)),
-                      validator: (value) {
-                        if (Validators.isValidName(value)) {
-                          return null;
-                        } else {
-                          return "Invalid Code";
-                        }
-                      }),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: TextFormField(
+                        controller: _teamCodeController,
+                        decoration: InputDecoration.collapsed(
+                            hintText: "Team Password",
+                            hintStyle: TextStyle(color: Colors.black54)),
+                        validator: (value) {
+                          if (Validators.isValidName(value)) {
+                            return null;
+                          } else {
+                            return "Invalid Password";
+                          }
+                        }),
+                  ),
                   OutlineButton(
                       child: Text(
                         "Join",

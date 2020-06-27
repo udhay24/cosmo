@@ -24,7 +24,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Cosmo"),
+          title: Text(
+            "Cosmo Gamingz",
+            style: TextStyle(color: Colors.black),
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0,
           actions: <Widget>[
             _buildProfileMenuAction(context),
             _buildOverFlowMenu(context),
@@ -50,6 +55,9 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           }
           return PopupMenuButton(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)),
+            icon: Icon(Icons.menu),
             itemBuilder: (_) {
               return <PopupMenuItem<String>>[
                 popupMenuItem,

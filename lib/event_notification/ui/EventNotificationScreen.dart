@@ -28,13 +28,17 @@ class EventNotificationScreen extends StatelessWidget {
                   },
                   itemBuilder: (context, position) {
                     var notification = state.eventNotifications[position];
-                    return _buildNotificationTile(notification);
+                    return _buildNotificationTile(context, notification);
                   },
                   itemCount: state.eventNotifications.length,
                   shrinkWrap: true,
                 );
         } else {
-          return Center(child: Text("No able to load the notification"));
+          return Center(
+              child: Text(
+            "No able to load the notification",
+            style: Theme.of(context).textTheme.headline4,
+          ));
         }
       }),
     );
@@ -46,15 +50,32 @@ class EventNotificationScreen extends StatelessWidget {
     );
   }
 
-  ListTile _buildNotificationTile(NotificationModel notification) {
+  ListTile _buildNotificationTile(BuildContext context,
+      NotificationModel notification) {
     return ListTile(
-      title: Text("${notification.eventName}"),
+      title: Text("${notification.eventName}", style: Theme
+          .of(context)
+          .textTheme
+          .headline4,),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text("Room ID - ${notification.roomID}"),
-          Text("Room Password - ${notification.roomPassword}")
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text("Room ID - ${notification.roomID}", style: Theme
+                .of(context)
+                .textTheme
+                .subtitle1,),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text(
+              "Room Password - ${notification.roomPassword}", style: Theme
+                .of(context)
+                .textTheme
+                .subtitle1,),
+          )
         ],
       ),
       isThreeLine: true,

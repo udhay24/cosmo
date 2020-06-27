@@ -22,14 +22,25 @@ class EventSelected extends HomeScreenEvent {
 class SlotSelected extends HomeScreenEvent {
   final int eventId;
   final int selectedSlot;
+
   SlotSelected({@required this.selectedSlot, @required this.eventId});
 
   @override
   List<Object> get props => [selectedSlot, eventId];
 }
 
+class RegistrationCancelled extends HomeScreenEvent {
+  final int eventID;
+
+  RegistrationCancelled({@required this.eventID});
+
+  @override
+  List<Object> get props => [eventID];
+}
+
 class UpdateFcmCode extends HomeScreenEvent {
   final String fcmCode;
+
   UpdateFcmCode({@required this.fcmCode});
 
   @override
