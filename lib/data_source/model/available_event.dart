@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+
 class CosmoGameEvent {
   String eventName;
   String eventDescription;
@@ -17,5 +20,25 @@ class CosmoGameEvent {
     data['event_description'] = this.eventDescription;
     data['event_id'] = this.eventID;
     return data;
+  }
+}
+
+class RoomDetail {
+  int eventID;
+  String roomID;
+  String roomPassword;
+  Timestamp time;
+
+  RoomDetail(
+      {this.roomID,
+      this.roomPassword,
+      @required this.time,
+      @required this.eventID});
+
+  RoomDetail.fromJson(Map<String, dynamic> json) {
+    roomID = json['room_id'];
+    roomPassword = json['room_password'];
+    time = json['time'];
+    eventID = json['event_id'];
   }
 }

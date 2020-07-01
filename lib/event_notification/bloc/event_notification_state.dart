@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:pubg/data_source/model/event_notification.dart';
 import 'package:pubg/event_notification/model/notification_model.dart';
 
 @immutable
@@ -17,7 +16,7 @@ class EventNotificationLoadedState extends EventNotificationState {
   EventNotificationLoadedState({@required this.eventNotifications});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [eventNotifications];
 }
 
 class LoadingEventNotifications extends EventNotificationState {
