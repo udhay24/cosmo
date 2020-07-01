@@ -8,11 +8,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
-#     container:
-#       image:  google/dart:latest
 
     steps:
     - uses: actions/checkout@v1
@@ -31,9 +27,6 @@ jobs:
       run: flutter pub get
     - name: Run tests
       run: flutter test
-      #     - name: analyse build
-      #       run: flutter analyze .
-
     - name: Generate build
       run: flutter build apk
       env:
@@ -41,11 +34,8 @@ jobs:
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
         ALIAS: ${{ secrets.ALIAS }}
-      #        run: echo $KEY_JKS > key.jks
-
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
       with:
-        # Artifact name
         name: staging_build
         path: build/app/outputs/flutter-apk/app-release.apk

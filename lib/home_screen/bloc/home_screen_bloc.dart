@@ -110,13 +110,14 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
     yield SelectedEventDetailLoading();
     try {
       var registrationDetail =
-      await _userRepository.isRegisteredWithEvent(event.eventID);
+          await _userRepository.isRegisteredWithEvent(event.eventID);
       var eventDetail = await _eventRepository.getEventDetailFromId(
           event.eventID,
           registrationDetail.keys.toList()[0],
           registrationDetail.values.toList()[0]);
       yield SelectedEventDetailLoaded(eventDetail: eventDetail);
-    } catch (Error) {
+    } catch (error) {
+      print(error);
       yield SelectedEventDetailFailure();
     }
   }
