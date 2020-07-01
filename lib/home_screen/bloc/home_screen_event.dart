@@ -70,3 +70,12 @@ class EventRegistrationDialogOpened extends HomeScreenEvent {
   @override
   List<Object> get props => [eventID];
 }
+
+class ShowRoomDetails extends HomeScreenEvent {
+  final int eventId;
+
+  ShowRoomDetails({@required this.eventId});
+
+  @override
+  List<Object> get props => [eventId];
+}

@@ -46,39 +46,48 @@ class EventNotificationScreen extends StatelessWidget {
 
   Widget _buildNoNotification(BuildContext context) {
     return Center(
-      child: Text("No new Notifications", style: Theme
-          .of(context)
-          .textTheme
-          .headline4,),
+      child: Text(
+        "No new Notifications",
+        style: Theme.of(context).textTheme.headline4,
+      ),
     );
   }
 
-  ListTile _buildNotificationTile(BuildContext context,
-      NotificationModel notification) {
+  ListTile _buildNotificationTile(
+      BuildContext context, NotificationModel notification) {
     return ListTile(
-      title: Text("${notification.eventName}", style: Theme
-          .of(context)
-          .textTheme
-          .headline4,),
+      title: Text(
+        "${notification.eventName}",
+        style: Theme.of(context).textTheme.headline4,
+      ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(4.0),
-            child: Text("Room ID - ${notification.roomID}", style: Theme
-                .of(context)
-                .textTheme
-                .subtitle1,),
+            child: Text(
+              "Room ID - ${notification.roomID}",
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(4.0),
             child: Text(
-              "Room Password - ${notification.roomPassword}", style: Theme
-                .of(context)
-                .textTheme
-                .subtitle1,),
-          )
+              "Room Password - ${notification.roomPassword}",
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(
+                "Last Updated: ${notification.time}",
+                style: Theme.of(context).textTheme.subtitle2,
+              ),
+            ),
+          ),
         ],
       ),
       isThreeLine: true,

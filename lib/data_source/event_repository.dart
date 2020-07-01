@@ -32,6 +32,14 @@ class EventRepository {
     return CosmoGameEvent.fromJson(events.documents[0].data);
   }
 
+  Future<List<RoomDetail>> getRoomDetails(DocumentReference currentTeam) async {
+    var documents = await _fireStore
+        .collection("event_details")
+        .where("teams", arrayContains: currentTeam)
+        .getDocuments();
+    return documents.documents.map((e) => RoomDetail.fromJson(e.data)).toList();
+  }
+
   addEventDetailsToDatabase(EventNotification eventDetails) async {
     try {
       final database = await db;

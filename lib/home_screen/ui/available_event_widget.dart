@@ -1,11 +1,14 @@
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pubg/bloc/navigation/bloc.dart';
+import 'package:pubg/data_source/model/available_event.dart';
 import 'package:pubg/home_screen/bloc/bloc.dart';
 import 'package:pubg/home_screen/model/event_detail.dart';
 import 'package:pubg/util/network_util.dart';
-import 'package:pubg/util/notification_util.dart';
 import 'package:pubg/util/widget_util.dart';
 
 import 'no_internet_Screen.dart';
@@ -18,10 +21,13 @@ class AvailableEventWidget extends StatefulWidget {
 
 class _AvailableEventWidgetState extends State<AvailableEventWidget> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  static FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
     _initializeFirebaseMessaging();
+    _initLocalNotifications();
     super.initState();
   }
 
@@ -96,6 +102,13 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
         } else if (state is CancellationFailure) {
           Scaffold.of(context).showSnackBar(
               buildSnackBar("Unable to cancel registration try again later"));
+        } else if (state is CancellationFailure) {
+          Scaffold.of(context).showSnackBar(
+              buildSnackBar("Unable to cancel registration try again later"));
+        } else if (state is RoomDetailsAvailable) {
+          _showRoomDetails(state.roomDetail);
+        } else if (state is RoomDetailsNotAvailable) {
+          _showRoomDetailsNotAvailable();
         }
       },
     );
@@ -112,7 +125,7 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
                   fit: BoxFit.cover,
                   image: AssetImage("assets/images/pubg_player.jpg"),
                   colorFilter:
-                      ColorFilter.mode(Colors.grey, BlendMode.darken))),
+                  ColorFilter.mode(Colors.grey, BlendMode.darken))),
           child: Stack(
             children: [
               Positioned(
@@ -175,21 +188,85 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
         ));
   }
 
+  Future<void> _showRoomDetails(RoomDetail roomDetail) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Room Details'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text("Room Id - ${roomDetail.roomID}"),
+                Text("Room Password - ${roomDetail.roomPassword}"),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showRoomDetailsNotAvailable() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Room Details'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text("Room Details are not available. check again later"),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _initLocalNotifications() async {
+    var initializationSettingsAndroid =
+    new AndroidInitializationSettings('@drawable/game_icon');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    _flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
   _initializeFirebaseMessaging() {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
-        handleNotificationEvent(message);
+        _showNotification(message);
         Scaffold.of(context)
             .showSnackBar(buildSnackBar("New Event Details Received"));
       },
       onBackgroundMessage: myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
-        handleNotificationEvent(message);
+        _showNotification(message);
         BlocProvider.of<NavigationBloc>(context)
             .add(EventNotificationsNavigationEvent());
       },
       onResume: (Map<String, dynamic> message) async {
-        handleNotificationEvent(message);
+        _showNotification(message);
         BlocProvider.of<NavigationBloc>(context)
             .add(EventNotificationsNavigationEvent());
       },
@@ -199,6 +276,12 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
       BlocProvider.of<HomeScreenBloc>(context)
           .add(UpdateFcmCode(fcmCode: token));
     });
+  }
+
+  static Future<dynamic> myBackgroundMessageHandler(
+      Map<String, dynamic> message) {
+    _showNotification(message);
+    return Future<void>.value();
   }
 
   handleNotificationEvent(Map<String, dynamic> message) {
@@ -232,7 +315,7 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
               onPressed: () {
                 launchURL(
                     url:
-                        "https://www.facebook.com/Team-Cosmos-111189120584649/");
+                    "https://www.facebook.com/Team-Cosmos-111189120584649/");
               },
             ),
             IconButton(
@@ -262,5 +345,46 @@ class _AvailableEventWidgetState extends State<AvailableEventWidget> {
         ),
       ],
     );
+  }
+
+  static Future _showNotification(Map<String, dynamic> message) async {
+    var pushTitle;
+    var pushText;
+    var action;
+
+    if (Platform.isAndroid) {
+      var nodeData = message['data'];
+      pushTitle = nodeData['title'];
+      pushText = nodeData['body'];
+    } else {
+      pushTitle = message['title'];
+      pushText = message['body'];
+    }
+    print("AppPushs params pushTitle : $pushTitle");
+    print("AppPushs params pushText : $pushText");
+    print("AppPushs params pushAction : $action");
+
+    var platformChannelSpecificsAndroid = new AndroidNotificationDetails(
+        'event_details',
+        'Event Details',
+        'show details for the upcoming registered event',
+        playSound: true,
+        enableVibration: true,
+        importance: Importance.Max,
+        priority: Priority.High);
+
+    var platformChannelSpecificsIos =
+    new IOSNotificationDetails(presentSound: false);
+    var platformChannelSpecifics = new NotificationDetails(
+        platformChannelSpecificsAndroid, platformChannelSpecificsIos);
+
+    new Future.delayed(Duration.zero, () {
+      _flutterLocalNotificationsPlugin.show(
+        100,
+        pushTitle,
+        pushText,
+        platformChannelSpecifics,
+      );
+    });
   }
 }
