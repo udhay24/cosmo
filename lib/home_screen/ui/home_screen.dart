@@ -13,29 +13,57 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
+
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<HomeScreenBloc>(context)
-      ..add(HomeScreenStarted());
+    BlocProvider.of<HomeScreenBloc>(context)..add(HomeScreenStarted());
   }
+
+  static List<Widget> bottomWidgets = [
+    AvailableEventWidget(),
+    Center(
+      child: Text("Tournaments"),
+    )
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "Cosmo Gamingz",
-            style: TextStyle(color: Colors.black),
-          ),
-          backgroundColor: Colors.white,
-          elevation: 0,
-          actions: <Widget>[
-            _buildProfileMenuAction(context),
-            _buildOverFlowMenu(context),
-          ],
+      appBar: AppBar(
+        title: Text(
+          "Cosmo Gamingz",
+          style: TextStyle(color: Colors.black),
         ),
-        body: AvailableEventWidget()
+        backgroundColor: Colors.white,
+        elevation: 0,
+        actions: <Widget>[
+          _buildProfileMenuAction(context),
+          _buildOverFlowMenu(context),
+        ],
+      ),
+      body: Center(
+        child: bottomWidgets[_selectedIndex],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: ImageIcon(AssetImage('assets/icons/event-tab-48.png')),
+              title: Text("Events")),
+          BottomNavigationBarItem(
+              icon: ImageIcon(AssetImage('assets/icons/tournament-48.png')),
+              title: Text("Tournaments"))
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.grey,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+      ),
     );
   }
 
@@ -55,8 +83,8 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           }
           return PopupMenuButton(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10)),
+            shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             icon: Icon(Icons.menu),
             itemBuilder: (_) {
               return <PopupMenuItem<String>>[
@@ -106,5 +134,4 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
-
 }
