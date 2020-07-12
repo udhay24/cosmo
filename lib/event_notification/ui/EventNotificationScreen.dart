@@ -36,7 +36,7 @@ class EventNotificationScreen extends StatelessWidget {
         } else {
           return Center(
               child: Text(
-            "No able to load the notification",
+            "Not able to load the notification",
             style: Theme.of(context).textTheme.headline4,
           ));
         }
