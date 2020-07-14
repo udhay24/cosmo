@@ -10,7 +10,9 @@ class TournamentRepository {
     var results =
         await _firestore.collection("available_tournaments").getDocuments();
 
-    return results.documents.map((e) => TournamentModel.fromJson(e.data));
+    return results.documents
+        .map((e) => TournamentModel.fromJson(e.data))
+        .toList();
   }
 
   void registerUserToTournament(int tournamentID) async {
@@ -19,15 +21,21 @@ class TournamentRepository {
 
     await _firestore.runTransaction((transaction) async {
       var registrationDoc =
-          _firestore.document("tournament_registrations/$tournamentID");
+      _firestore.document("tournament_registrations/$tournamentID");
       var registrationsJson = await transaction.get(registrationDoc);
       var registrations =
-          TournamentRegistrationModel.fromJson(registrationsJson.data);
-      if (!registrations.registeredMembers.contains(userDoc)) {
+      TournamentRegistrationModel.fromJson(registrationsJson.data);
+      if (!registrations.registeredMembers
+          .map((e) => e.documentID)
+          .toList()
+          .contains(userDoc.documentID)) {
         registrations.registeredMembers.add(userDoc);
       }
-      if (!registrations.registeredTeams.contains(teamDoc)) {
-        registrations.registeredMembers.add(teamDoc);
+      if (!registrations.registeredTeams
+          .map((e) => e.documentID)
+          .toList()
+          .contains(teamDoc.documentID)) {
+        registrations.registeredTeams.add(teamDoc);
       }
       transaction.set(registrationDoc, registrations.toJson());
     });

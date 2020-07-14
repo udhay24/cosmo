@@ -39,7 +39,7 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
                   child: Text(
                 "Something went wrong",
                 style: Theme.of(context).textTheme.headline3,
-                  )));
+              )));
         } else if (state is SelectedEventDetailLoaded) {
           return StreamBuilder(
             builder: (_, AsyncSnapshot<List<int>> data) {
@@ -236,8 +236,8 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
                     selectedSlot = int.parse(newValue);
                   });
                 },
-                items: availableSlots
-                    .map<DropdownMenuItem<String>>((int value) {
+                items:
+                availableSlots.map<DropdownMenuItem<String>>((int value) {
                   return DropdownMenuItem<String>(
                     value: "$value",
                     child: Text("$value"),

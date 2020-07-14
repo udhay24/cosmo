@@ -31,10 +31,6 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
     }
   }
 
-  Stream<HomeScreenState> _mapInitialEventState(HomeScreenEvent event) async* {
-
-  }
-
   void _mapUpdateFcmCodeEvent(UpdateFcmCode event) async {
     _userRepository.updateUserFcmCode(event.fcmCode);
   }

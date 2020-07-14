@@ -8,10 +8,13 @@ import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_event.dart';
 import 'package:pubg/bloc/navigation/bloc.dart';
 import 'package:pubg/data_source/event_repository.dart';
+import 'package:pubg/data_source/tournament_repository.dart';
 import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/events_screen/bloc/cosmo_events_bloc.dart';
 import 'package:pubg/events_screen/ui/available_event_widget.dart';
 import 'package:pubg/home_screen/bloc/bloc.dart';
+import 'package:pubg/tournament_screen/bloc/tournaments_screen_bloc.dart';
+import 'package:pubg/tournament_screen/ui/available_tournaments_widget.dart';
 import 'package:pubg/util/network_util.dart';
 import 'package:pubg/util/widget_util.dart';
 
@@ -42,9 +45,12 @@ class _HomeScreenState extends State<HomeScreen> {
         ..add(LoadAvailableEvents()),
       child: AvailableEventWidget(),
     ),
-    Center(
-      child: Text("Tournaments"),
-    )
+    BlocProvider(
+      create: (context) => TournamentsScreenBloc(
+        repository: TournamentRepository(),
+      )..add(LoadAvailableTournaments()),
+      child: TournamentsScreen(),
+    ),
   ];
 
   @override
@@ -62,9 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildOverFlowMenu(context),
         ],
       ),
-      body: Center(
-        child: bottomWidgets[_selectedIndex],
-      ),
+      body: bottomWidgets[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

@@ -25,13 +25,12 @@ class TournamentModel {
     } else {
       throw Exception("Unknown tournament");
     }
-    TournamentModel(
-        registrationClosedDate: json['registration_close_date'],
-        registrationStartDate: json['registration_open_date'],
-        tournamentDescription: json['tournament_description'],
-        tournamentID: json['tournament_id'],
-        tournamentName: json['tournament_name'],
-        tournamentType: type);
+    registrationClosedDate = json['registration_close_date'];
+    registrationStartDate = json['registration_open_date'];
+    tournamentDescription = json['tournament_description'];
+    tournamentID = json['tournament_id'];
+    tournamentName = json['tournament_name'];
+    tournamentType = type;
   }
 }
 
@@ -43,10 +42,9 @@ class TournamentRegistrationModel {
       {@required this.registeredTeams, @required this.registeredMembers});
 
   TournamentRegistrationModel.fromJson(Map<String, dynamic> json) {
-    TournamentRegistrationModel(
-      registeredTeams: json['registered_teams'],
-      registeredMembers: json['registered_members'],
-    );
+    registeredTeams = List<DocumentReference>.from(json['registered_teams']);
+    registeredMembers =
+        List<DocumentReference>.from(json['registered_members']);
   }
 
   Map<String, dynamic> toJson() {
