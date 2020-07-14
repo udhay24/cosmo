@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
               return <PopupMenuItem<String>>[
                 popupMenuItem,
                 PopupMenuItem<String>(
-                    child: const Text("Notifications"), value: "notification"),
+                    child: const Text("ID and Pass"), value: "notification"),
                 PopupMenuItem<String>(
                     child: const Text("Log out"), value: "log_out"),
                 PopupMenuItem<String>(

@@ -8,7 +8,7 @@ class EventNotificationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Notifications"),
+        title: Text("ID and Pass"),
       ),
       body: BlocBuilder<EventNotificationBloc, EventNotificationState>(
           builder: (context, state) {
