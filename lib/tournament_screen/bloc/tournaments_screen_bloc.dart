@@ -5,18 +5,24 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pubg/data_source/model/tournament_model.dart';
 import 'package:pubg/data_source/tournament_repository.dart';
-import 'package:pubg/tournament_screen/tournament_ui_model.dart';
+import 'package:pubg/data_source/user_repository.dart';
+import 'package:pubg/tournament_screen/model/tournament_ui_model.dart';
 
 part 'tournaments_screen_event.dart';
+
 part 'tournaments_screen_state.dart';
 
 class TournamentsScreenBloc
     extends Bloc<TournamentsScreenEvent, TournamentsScreenState> {
   final TournamentRepository _tournamentRepository;
+  final UserRepository _userRepository;
 
-  TournamentsScreenBloc({@required TournamentRepository repository})
-      : assert(repository != null),
+  TournamentsScreenBloc(
+      {@required TournamentRepository repository,
+      @required UserRepository userRepository})
+      : assert(repository != null && userRepository != null),
         _tournamentRepository = repository,
+        _userRepository = userRepository,
         super(TournamentsScreenStarted());
 
   @override
@@ -61,8 +67,12 @@ class TournamentsScreenBloc
 
   Stream<TournamentsScreenState> _mapTournamentSelected(
       TournamentSelected event) async* {
-    yield TournamentShowDialogSuccess(tournament: event.tournament);
-    yield TournamentDialogOpened();
+    yield CheckingUserDetails();
+    if (await _userRepository.isUserProfileComplete()) {
+      yield TournamentShowDialogSuccess(tournament: event.tournament);
+    } else {
+      yield InCompletedUserDetail();
+    }
   }
 
   Stream<TournamentsScreenState> _mapTournamentRegistration(

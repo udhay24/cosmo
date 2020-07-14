@@ -19,6 +19,7 @@ class UserProfileForm extends StatefulWidget {
 class _UserProfileFormState extends State<UserProfileForm> {
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _pubgIDController = TextEditingController();
   ValueNotifier<DocumentReference> _teamReference = ValueNotifier(null);
   ValueNotifier<String> _selectedTeamName = ValueNotifier("");
 
@@ -43,6 +44,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
     _phoneNumberController.dispose();
     _teamReference.dispose();
     _selectedTeamName.dispose();
+    _pubgIDController.dispose();
   }
 
   @override
@@ -87,6 +89,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
         _phoneNumberController.text =
             state.userDetail.phoneNumber?.toString() ?? "";
         _teamReference.value = state.userDetail.joinedTeam;
+        _pubgIDController.text = state.userDetail.pubgID;
       } else if (state is UserProfileUpdating) {
         Scaffold.of(context)
           ..hideCurrentSnackBar()
@@ -104,77 +107,104 @@ class _UserProfileFormState extends State<UserProfileForm> {
       if (state is UserProfileLoading) {
         return Center(child: CircularProgressIndicator());
       } else {
-        return Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
-          Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Display name",
-                    style: Theme.of(context).textTheme.headline4,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0),
-                    child: TextFormField(
-                      controller: _userNameController,
-                      decoration: InputDecoration.collapsed(
-                        hintText: "name",
-                        border: UnderlineInputBorder(),
-                      ),
-                      maxLength: 24,
-                      autocorrect: false,
-                      autovalidate: true,
-                      validator: (value) {
-                        if (!Validators.isValidName(value)) {
-                          return 'Invalid name';
-                        }
-                        return null;
-                      },
+        return Align(
+          alignment: Alignment.topCenter,
+          child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Form(
+              key: _formKey,
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Pubg IG name",
+                      style: Theme.of(context).textTheme.headline4,
                     ),
-                  ),
-                  Text(
-                    "Phone number",
-                    style: Theme.of(context).textTheme.headline4,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0),
-                    child: TextFormField(
-                      controller: _phoneNumberController,
-                      decoration: InputDecoration.collapsed(
-                        hintText: "number",
-                        fillColor: Colors.blue,
-                        focusColor: Colors.blue,
-                        border: UnderlineInputBorder(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: TextFormField(
+                        controller: _userNameController,
+                        decoration: InputDecoration.collapsed(
+                          hintText: "Pubg IG name",
+                          border: UnderlineInputBorder(),
+                        ),
+                        maxLength: 24,
+                        autocorrect: false,
+                        autovalidate: true,
+                        validator: (value) {
+                          if (!Validators.isValidName(value)) {
+                            return 'Invalid name';
+                          }
+                          return null;
+                        },
                       ),
-                      keyboardType: TextInputType.numberWithOptions(),
-                      autocorrect: false,
-                      maxLength: 10,
-                      autovalidate: true,
-                      validator: (value) {
-                        if (!Validators.isValidPhoneNumber(value)) {
-                          return 'Invalid Number';
-                        }
-                        return null;
-                      },
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: ValueListenableBuilder(
-                        valueListenable: _selectedTeamName,
-                        builder: (context, String value, _) {
-                          return _buildSelectedTeam(value);
-                        }),
-                  )
-                ],
+                    Text(
+                      "Pubg ID",
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: TextFormField(
+                        controller: _pubgIDController,
+                        decoration: InputDecoration.collapsed(
+                          hintText: "Pubg ID",
+                          border: UnderlineInputBorder(),
+                        ),
+                        maxLength: 24,
+                        autocorrect: false,
+                        autovalidate: true,
+                        validator: (value) {
+                          if (!Validators.isValidName(value)) {
+                            return 'Invalid name';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    Text(
+                      "Phone number",
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: TextFormField(
+                        controller: _phoneNumberController,
+                        decoration: InputDecoration.collapsed(
+                          hintText: "number",
+                          fillColor: Colors.blue,
+                          focusColor: Colors.blue,
+                          border: UnderlineInputBorder(),
+                        ),
+                        keyboardType: TextInputType.numberWithOptions(),
+                        autocorrect: false,
+                        maxLength: 10,
+                        autovalidate: true,
+                        validator: (value) {
+                          if (!Validators.isValidPhoneNumber(value)) {
+                            return 'Invalid Number';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: ValueListenableBuilder(
+                          valueListenable: _selectedTeamName,
+                          builder: (context, String value, _) {
+                            return _buildSelectedTeam(value);
+                          }),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
-        ]);
+        );
       }
     });
   }
@@ -252,6 +282,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
       BlocProvider.of<UserProfileBloc>(context).add(UpdateProfile(
           userDetail: User(
               userName: _userNameController.value.text,
+              pubgID: _pubgIDController.value.text,
               phoneNumber: int.parse(_phoneNumberController.value.text.trim()),
               userUuid: "",
               joinedTeam: _teamReference.value)));

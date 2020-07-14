@@ -47,8 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
     BlocProvider(
       create: (context) => TournamentsScreenBloc(
-        repository: TournamentRepository(),
-      )..add(LoadAvailableTournaments()),
+          repository: TournamentRepository(),
+          userRepository: RepositoryProvider.of<UserRepository>(context))
+        ..add(LoadAvailableTournaments()),
       child: TournamentsScreen(),
     ),
   ];

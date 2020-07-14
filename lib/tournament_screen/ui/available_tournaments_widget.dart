@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pubg/bloc/navigation/bloc.dart';
 import 'package:pubg/tournament_screen/bloc/tournaments_screen_bloc.dart';
-import 'package:pubg/tournament_screen/tournament_ui_model.dart';
+import 'package:pubg/tournament_screen/model/tournament_ui_model.dart';
 import 'package:pubg/tournament_screen/ui/tournament_registration_dialog.dart';
 import 'package:pubg/util/widget_util.dart';
 
@@ -26,6 +27,9 @@ class TournamentsScreen extends StatelessWidget {
         } else if (state is TournamentRegistrationFailure) {
           Scaffold.of(context).showSnackBar(
               buildSnackBar("Registration Failed. Try again later!"));
+        } else if (state is InCompletedUserDetail) {
+          BlocProvider.of<NavigationBloc>(context)
+              .add(UserProfileNavigateEvent());
         }
       },
       buildWhen: (prevState, nextState) {

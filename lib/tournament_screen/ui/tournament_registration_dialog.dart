@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pubg/tournament_screen/bloc/tournaments_screen_bloc.dart';
 import 'package:pubg/tournament_screen/model/registrations_models.dart';
-import 'package:pubg/tournament_screen/tournament_ui_model.dart';
+import 'package:pubg/tournament_screen/model/tournament_ui_model.dart';
 import 'package:pubg/util/network_util.dart';
 import 'package:pubg/util/themes.dart';
 
