@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pubg/tournament_screen/bloc/tournaments_screen_bloc.dart';
 import 'package:pubg/tournament_screen/model/registrations_models.dart';
 import 'package:pubg/tournament_screen/tournament_ui_model.dart';
 import 'package:pubg/util/network_util.dart';
+import 'package:pubg/util/themes.dart';
 
 class TournamentRegistrationDialog extends StatefulWidget {
   final TournamentUIModel tournamentUIModel;
@@ -62,15 +62,19 @@ class _TournamentRegistrationDialogState
           shrinkWrap: true,
         ),
         FlatButton(
-          child: Text("Register"),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          color: AppColors.PRIMARY_ASCENT,
+          child: Text(
+            "Register",
+          ),
           onPressed: (youtube.isSubscribed &&
-                      instagram.isSubscribed &&
-                      twitch.isSubscribed ||
-                  true)
+                  instagram.isSubscribed &&
+                  twitch.isSubscribed)
               ? () {
                   widget.tournamentsScreenBloc.add(TournamentRegistration(
                       tournamentId: widget
                           .tournamentUIModel.tournamentModel.tournamentID));
+                  Navigator.of(context).pop();
                 }
               : null,
         ),
@@ -105,23 +109,38 @@ class _TournamentRegistrationDialogState
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          registrationsModel.isSubscribed
-              ? Icon(FontAwesomeIcons.ticketAlt)
-              : SizedBox(
+          Row(
+            children: [
+              registrationsModel.isSubscribed
+                  ? Icon(
+                Icons.check,
+                color: AppColors.PRIMARY_ASCENT,
+              )
+                  : SizedBox(
                   height: 12,
                   width: 12,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
+                    valueColor: new AlwaysStoppedAnimation<Color>(
+                        AppColors.PRIMARY_ASCENT),
                   )),
-          Text(
-            "subscribe to ${registrationsModel.platformName}",
-            style: Theme.of(context).textTheme.headline4,
+              SizedBox(
+                width: 15,
+              ),
+              Text(
+                "subscribe to ${registrationsModel.platformName}",
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .headline5,
+              ),
+            ],
           ),
           GestureDetector(
-            child: Icon(FontAwesomeIcons.arrowRight),
+            child: Icon(Icons.keyboard_arrow_right),
             onTap: () {
               launchURL(url: registrationsModel.platformUrl);
-              Timer(Duration(seconds: 5), () {
+              Timer(Duration(seconds: 7), () {
                 setState(() {
                   registrationsModel.isSubscribed = true;
                 });

@@ -8,7 +8,6 @@ import 'package:pubg/data_source/tournament_repository.dart';
 import 'package:pubg/tournament_screen/tournament_ui_model.dart';
 
 part 'tournaments_screen_event.dart';
-
 part 'tournaments_screen_state.dart';
 
 class TournamentsScreenBloc
@@ -63,12 +62,13 @@ class TournamentsScreenBloc
   Stream<TournamentsScreenState> _mapTournamentSelected(
       TournamentSelected event) async* {
     yield TournamentShowDialogSuccess(tournament: event.tournament);
+    yield TournamentDialogOpened();
   }
 
   Stream<TournamentsScreenState> _mapTournamentRegistration(
       TournamentRegistration event) async* {
     try {
-      _tournamentRepository.registerUserToTournament(event.tournamentId);
+      await _tournamentRepository.registerUserToTournament(event.tournamentId);
       yield TournamentRegistrationSuccess();
     } catch (error) {
       print("Tournament bloc $error");

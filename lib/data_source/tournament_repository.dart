@@ -15,16 +15,16 @@ class TournamentRepository {
         .toList();
   }
 
-  void registerUserToTournament(int tournamentID) async {
+  Future<void> registerUserToTournament(int tournamentID) async {
     var userDoc = await _userRepository.getCurrentUserReference();
     var teamDoc = (await _userRepository.getCurrentUserDetail()).joinedTeam;
 
     await _firestore.runTransaction((transaction) async {
       var registrationDoc =
-      _firestore.document("tournament_registrations/$tournamentID");
+          _firestore.document("tournament_registrations/$tournamentID");
       var registrationsJson = await transaction.get(registrationDoc);
       var registrations =
-      TournamentRegistrationModel.fromJson(registrationsJson.data);
+          TournamentRegistrationModel.fromJson(registrationsJson.data);
       if (!registrations.registeredMembers
           .map((e) => e.documentID)
           .toList()
@@ -47,8 +47,11 @@ class TournamentRepository {
         .document("tournament_registrations/$tournamentID")
         .get();
     var tournamentDetails =
-        TournamentRegistrationModel.fromJson(registrationJson.data);
-    if (tournamentDetails.registeredMembers.contains(userDoc)) {
+    TournamentRegistrationModel.fromJson(registrationJson.data);
+    if (tournamentDetails.registeredMembers
+        .map((e) => e.documentID)
+        .toList()
+        .contains(userDoc.documentID)) {
       return true;
     } else {
       return false;
@@ -61,8 +64,11 @@ class TournamentRepository {
         .document("tournament_registrations/$tournamentID")
         .get();
     var tournamentDetails =
-        TournamentRegistrationModel.fromJson(registrationJson.data);
-    if (tournamentDetails.registeredTeams.contains(teamDoc)) {
+    TournamentRegistrationModel.fromJson(registrationJson.data);
+    if (tournamentDetails.registeredTeams
+        .map((e) => e.documentID)
+        .toList()
+        .contains(teamDoc.documentID)) {
       return true;
     } else {
       return false;

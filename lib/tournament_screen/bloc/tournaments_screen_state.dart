@@ -46,3 +46,8 @@ class TournamentRegistrationFailure extends TournamentsScreenState {
   @override
   List<Object> get props => [];
 }
+
+class TournamentDialogOpened extends TournamentsScreenState {
+  @override
+  List<Object> get props => [];
+}

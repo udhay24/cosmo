@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pubg/tournament_screen/bloc/tournaments_screen_bloc.dart';
 import 'package:pubg/tournament_screen/tournament_ui_model.dart';
 import 'package:pubg/tournament_screen/ui/tournament_registration_dialog.dart';
+import 'package:pubg/util/widget_util.dart';
 
 class TournamentsScreen extends StatelessWidget {
   @override
@@ -17,6 +18,14 @@ class TournamentsScreen extends StatelessWidget {
                     tournamentsScreenBloc:
                         BlocProvider.of<TournamentsScreenBloc>(buildContext),
                   ));
+        } else if (state is TournamentRegistrationSuccess) {
+          Scaffold.of(context)
+              .showSnackBar(buildSnackBar("Registration success"));
+          BlocProvider.of<TournamentsScreenBloc>(buildContext)
+              .add(LoadAvailableTournaments());
+        } else if (state is TournamentRegistrationFailure) {
+          Scaffold.of(context).showSnackBar(
+              buildSnackBar("Registration Failed. Try again later!"));
         }
       },
       buildWhen: (prevState, nextState) {
@@ -116,12 +125,13 @@ class TournamentsScreen extends StatelessWidget {
                   onPressed: tournament.isRegistered
                       ? null
                       : () {
-                          BlocProvider.of<TournamentsScreenBloc>(context)
-                              .add(TournamentSelected(tournament: tournament));
-                        },
+                    BlocProvider.of<TournamentsScreenBloc>(context)
+                        .add(TournamentSelected(tournament: tournament));
+                  },
                   child:
-                      tournament.isRegistered ? Text("Joined") : Text("Join"),
+                  tournament.isRegistered ? Text("Joined") : Text("Join"),
                   textColor: Colors.blueAccent,
+                  disabledColor: Colors.grey[300],
                 ),
               ),
             ],
