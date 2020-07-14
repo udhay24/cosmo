@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pubg/bloc/navigation/bloc.dart';
 import 'package:pubg/data_source/model/available_event.dart';
-import 'package:pubg/home_screen/bloc/bloc.dart';
-import 'package:pubg/home_screen/model/event_detail.dart';
+import 'package:pubg/events_screen/bloc/cosmo_events_bloc.dart';
+import 'package:pubg/events_screen/model/event_detail.dart';
 import 'package:pubg/util/widget_util.dart';
 
-import 'no_internet_Screen.dart';
+import '../../home_screen/ui/no_internet_Screen.dart';
 import 'slot_selection_dialog.dart';
 
 class AvailableEventWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<HomeScreenBloc, HomeScreenState>(
-      buildWhen: (HomeScreenState previous, HomeScreenState current) {
+    return BlocConsumer<CosmoEventsBloc, CosmoEventsState>(
+      buildWhen: (CosmoEventsState previous, CosmoEventsState current) {
         if ((current is AvailableEventsLoading) ||
             (current is AvailableEventsFailure) ||
             (current is AvailableEventsSuccess)) {
@@ -59,7 +59,7 @@ class AvailableEventWidget extends StatelessWidget {
               context: context,
               builder: (buildContext) {
                 return SlotSelectionDialog(
-                  homeScreenBloc: BlocProvider.of<HomeScreenBloc>(context),
+                  cosmoEventsBloc: BlocProvider.of<CosmoEventsBloc>(context),
                   eventId: state.eventID,
                 );
               });
@@ -67,8 +67,8 @@ class AvailableEventWidget extends StatelessWidget {
           Scaffold.of(context)
               .showSnackBar(buildSnackBar("Registration success"));
           Navigator.of(listenerContext).pop();
-          BlocProvider.of<HomeScreenBloc>(context)
-              .add(HomeScreenStarted()); //refresh the screen
+          BlocProvider.of<CosmoEventsBloc>(context)
+              .add(LoadAvailableEvents()); //refresh the screen
         } else if (state is EventRegistrationFailure) {
           Scaffold.of(context).showSnackBar(
               buildSnackBar("Registration Failed Try Again Later"));
@@ -76,8 +76,8 @@ class AvailableEventWidget extends StatelessWidget {
           Scaffold.of(context).showSnackBar(
               buildSnackBar("Cancelled Registration successfully"));
           Navigator.of(listenerContext).pop();
-          BlocProvider.of<HomeScreenBloc>(context)
-              .add(HomeScreenStarted()); //refresh the screen
+          BlocProvider.of<CosmoEventsBloc>(context)
+              .add(LoadAvailableEvents()); //refresh the screen
         } else if (state is CancellationFailure) {
           Scaffold.of(context).showSnackBar(
               buildSnackBar("Unable to cancel registration try again later"));
@@ -155,7 +155,7 @@ class AvailableEventWidget extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                   onPressed: () {
-                    BlocProvider.of<HomeScreenBloc>(context)
+                    BlocProvider.of<CosmoEventsBloc>(context)
                         .add(EventSelected(eventID: event.event.eventID));
                   },
                   child: event.isRegistered ? Text("Update") : Text("Register"),

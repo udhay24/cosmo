@@ -7,9 +7,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_event.dart';
 import 'package:pubg/bloc/navigation/bloc.dart';
+import 'package:pubg/data_source/event_repository.dart';
 import 'package:pubg/data_source/user_repository.dart';
+import 'package:pubg/events_screen/bloc/cosmo_events_bloc.dart';
+import 'package:pubg/events_screen/ui/available_event_widget.dart';
 import 'package:pubg/home_screen/bloc/bloc.dart';
-import 'package:pubg/home_screen/ui/available_event_widget.dart';
 import 'package:pubg/util/network_util.dart';
 import 'package:pubg/util/widget_util.dart';
 
@@ -30,11 +32,16 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _initializeFirebaseMessaging();
     _initLocalNotifications();
-    BlocProvider.of<HomeScreenBloc>(context)..add(HomeScreenStarted());
   }
 
   static List<Widget> bottomWidgets = [
-    AvailableEventWidget(),
+    BlocProvider(
+      create: (context) => CosmoEventsBloc(
+          eventRepository: EventRepository(),
+          userRepository: RepositoryProvider.of<UserRepository>(context))
+        ..add(LoadAvailableEvents()),
+      child: AvailableEventWidget(),
+    ),
     Center(
       child: Text("Tournaments"),
     )

@@ -13,7 +13,7 @@ import 'bloc/bloc_delegate.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  BlocSupervisor.delegate = SimpleBlocDelegate();
+  Bloc.observer = SimpleBlocObserver();
   final LoginRepository loginRepository = LoginRepository();
 
   final GlobalKey<NavigatorState> _navigationKey = GlobalKey();
