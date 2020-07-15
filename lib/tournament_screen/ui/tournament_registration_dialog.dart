@@ -22,11 +22,11 @@ class TournamentRegistrationDialog extends StatefulWidget {
 class _TournamentRegistrationDialogState
     extends State<TournamentRegistrationDialog> {
   RequiredRegistrationsModel youtube = RequiredRegistrationsModel(
-      platformName: "Youtube",
+      platformName: "Subscribe us on Youtube",
       platformUrl: "https://www.youtube.com/channel/UCVJWGqiu1NYP0yG7-bkCSog");
 
   RequiredRegistrationsModel instagram = RequiredRegistrationsModel(
-      platformName: "Instagram",
+      platformName: "Follow us on Instagram",
       platformUrl: "https://instagram.com/cosmogamingz?igshid=7o93qh2op04u");
 
   RequiredRegistrationsModel twitch = RequiredRegistrationsModel(
@@ -127,11 +127,8 @@ class _TournamentRegistrationDialogState
                     width: 15,
                   ),
                   Text(
-                    "subscribe to ${registrationsModel.platformName}",
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .headline5,
+                    registrationsModel.platformName,
+                    style: Theme.of(context).textTheme.headline5,
                   ),
                 ],
               ),
