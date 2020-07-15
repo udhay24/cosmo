@@ -9,7 +9,6 @@ import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/events_screen/model/event_detail.dart';
 
 part 'cosmo_events_event.dart';
-
 part 'cosmo_events_state.dart';
 
 class CosmoEventsBloc extends Bloc<CosmoEventsEvent, CosmoEventsState> {
@@ -44,12 +43,12 @@ class CosmoEventsBloc extends Bloc<CosmoEventsEvent, CosmoEventsState> {
   Stream<CosmoEventsState> _mapAvailableEventState(
       CosmoEventsEvent event) async* {
     Future<CosmoEventUIModel> mapToUIModel(CosmoGameEvent event) async {
+      var eventRegistration =
+          await _userRepository.isRegisteredWithEvent(event.eventID);
       return CosmoEventUIModel(
           event: event,
-          isRegistered:
-              (await _userRepository.isRegisteredWithEvent(event.eventID))
-                  .keys
-                  .toList()[0]);
+          isRegistered: eventRegistration.keys.toList()[0],
+          previousSelectedSlot: eventRegistration.values.toList()[0]);
     }
 
     try {

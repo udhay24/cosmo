@@ -28,6 +28,15 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
   Widget build(BuildContext context) {
     return BlocBuilder(
       bloc: widget.cosmoEventsBloc,
+      buildWhen: (previousState, currentState) {
+        if (currentState is SelectedEventDetailLoaded ||
+            currentState is SelectedEventDetailLoading ||
+            currentState is SelectedEventDetailFailure) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       builder: (_, state) {
         if (state is SelectedEventDetailLoading) {
           return Container(
@@ -76,6 +85,14 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
             },
             stream: state.eventDetail.availableSlots,
             initialData: <int>[],
+          );
+        } else if (state is SelectedEventDetailFailure) {
+          return Text(
+            "Something went wrong. Try again later",
+            style: Theme
+                .of(context)
+                .textTheme
+                .headline4,
           );
         } else {
           return Container();

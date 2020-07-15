@@ -158,7 +158,9 @@ class AvailableEventWidget extends StatelessWidget {
                     BlocProvider.of<CosmoEventsBloc>(context)
                         .add(EventSelected(eventID: event.event.eventID));
                   },
-                  child: event.isRegistered ? Text("Update") : Text("Register"),
+                  child: event.isRegistered
+                      ? Text("Selected slot - ${event.previousSelectedSlot}")
+                      : Text("Register"),
                   textColor: Colors.blueAccent,
                 ),
               ),

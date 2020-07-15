@@ -269,7 +269,6 @@ class _HomeScreenState extends State<HomeScreen> {
   static Future _showNotification(Map<String, dynamic> message) async {
     var pushTitle;
     var pushText;
-    var action;
 
     if (Platform.isAndroid) {
       var nodeData = message['data'];
@@ -279,9 +278,6 @@ class _HomeScreenState extends State<HomeScreen> {
       pushTitle = message['title'];
       pushText = message['body'];
     }
-    print("AppPushs params pushTitle : $pushTitle");
-    print("AppPushs params pushText : $pushText");
-    print("AppPushs params pushAction : $action");
 
     var platformChannelSpecificsAndroid = new AndroidNotificationDetails(
         'event_details',

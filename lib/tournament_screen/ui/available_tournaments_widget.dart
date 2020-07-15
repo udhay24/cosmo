@@ -74,9 +74,10 @@ class TournamentsScreen extends StatelessWidget {
           decoration: BoxDecoration(
               image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: AssetImage("assets/images/pubg_player.jpg"),
+                  image: AssetImage(
+                      "assets/images/pubg_tournament_background.jpg"),
                   colorFilter:
-                      ColorFilter.mode(Colors.grey, BlendMode.darken))),
+                      ColorFilter.mode(Colors.white, BlendMode.darken))),
           child: Stack(
             children: [
               Positioned(

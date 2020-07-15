@@ -17,6 +17,10 @@ class SelectedEventDetail {
 class CosmoEventUIModel {
   final CosmoGameEvent event;
   final bool isRegistered;
+  final int previousSelectedSlot;
 
-  CosmoEventUIModel({@required this.event, @required this.isRegistered});
+  CosmoEventUIModel(
+      {@required this.event,
+      @required this.isRegistered,
+      @required this.previousSelectedSlot});
 }
