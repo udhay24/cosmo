@@ -58,7 +58,7 @@ class _TournamentRegistrationDialogState
               return Container();
             }
           },
-          itemCount: 3,
+          itemCount: 2,
           shrinkWrap: true,
         ),
         FlatButton(
@@ -67,9 +67,7 @@ class _TournamentRegistrationDialogState
           child: Text(
             "Register",
           ),
-          onPressed: (youtube.isSubscribed &&
-                  instagram.isSubscribed &&
-                  twitch.isSubscribed)
+          onPressed: (youtube.isSubscribed && instagram.isSubscribed)
               ? () {
                   widget.tournamentsScreenBloc.add(TournamentRegistration(
                       tournamentId: widget
@@ -105,50 +103,49 @@ class _TournamentRegistrationDialogState
   Widget _buildRegistrationItemTile(
       RequiredRegistrationsModel registrationsModel) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
+        padding: const EdgeInsets.all(16.0),
+        child: GestureDetector(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              registrationsModel.isSubscribed
-                  ? Icon(
-                Icons.check,
-                color: AppColors.PRIMARY_ASCENT,
-              )
-                  : SizedBox(
-                  height: 12,
-                  width: 12,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: new AlwaysStoppedAnimation<Color>(
-                        AppColors.PRIMARY_ASCENT),
-                  )),
-              SizedBox(
-                width: 15,
+              Row(
+                children: [
+                  registrationsModel.isSubscribed
+                      ? Icon(
+                    Icons.check,
+                    color: Colors.green,
+                  )
+                      : SizedBox(
+                      height: 12,
+                      width: 12,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: new AlwaysStoppedAnimation<Color>(
+                            AppColors.PRIMARY_ASCENT),
+                      )),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text(
+                    "subscribe to ${registrationsModel.platformName}",
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .headline5,
+                  ),
+                ],
               ),
-              Text(
-                "subscribe to ${registrationsModel.platformName}",
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .headline5,
-              ),
+              Icon(Icons.keyboard_arrow_right),
             ],
           ),
-          GestureDetector(
-            child: Icon(Icons.keyboard_arrow_right),
-            onTap: () {
-              launchURL(url: registrationsModel.platformUrl);
-              Timer(Duration(seconds: 7), () {
-                setState(() {
-                  registrationsModel.isSubscribed = true;
-                });
+          onTap: () {
+            launchURL(url: registrationsModel.platformUrl);
+            Timer(Duration(seconds: 7), () {
+              setState(() {
+                registrationsModel.isSubscribed = true;
               });
-            },
-          )
-        ],
-      ),
-    );
+            });
+          },
+        ));
   }
 }
