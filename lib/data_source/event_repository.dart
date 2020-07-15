@@ -5,7 +5,7 @@ import 'package:pubg/data_source/database.dart';
 import 'package:pubg/data_source/model/available_event.dart';
 import 'package:pubg/data_source/model/event_notification.dart';
 import 'package:pubg/data_source/model/registration.dart';
-import 'package:pubg/home_screen/model/event_detail.dart';
+import 'package:pubg/events_screen/model/event_detail.dart';
 import 'package:pubg/util/available_slot.dart';
 import 'package:pubg/util/time_util.dart';
 import 'package:sqflite/sqflite.dart';

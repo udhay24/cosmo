@@ -15,10 +15,8 @@ class TeamDetailBloc extends Bloc<TeamDetailEvent, TeamDetailState> {
 
   TeamDetailBloc({@required UserRepository userRepository})
       : assert(userRepository != null),
-        this._userRepository = userRepository;
-
-  @override
-  TeamDetailState get initialState => TeamDetailEmpty();
+        this._userRepository = userRepository,
+        super(TeamDetailEmpty());
 
   @override
   Stream<TeamDetailState> mapEventToState(
@@ -26,7 +24,7 @@ class TeamDetailBloc extends Bloc<TeamDetailEvent, TeamDetailState> {
   ) async* {
     if (event is TeamDetailScreenInitialized) {
       yield* _mapScreenInitializedToState();
-    }  else if (event is TeamDetailSubmitPressed) {
+    } else if (event is TeamDetailSubmitPressed) {
       yield* _mapTeamSubmittedChangedToState(event);
     }
   }
@@ -37,7 +35,8 @@ class TeamDetailBloc extends Bloc<TeamDetailEvent, TeamDetailState> {
     try {
       List<DocumentReference> teamMembers = List();
       for (var member in event.team.teamMembers) {
-        teamMembers.add(await _userRepository.getUserRefFromUuid(member.userUuid));
+        teamMembers
+            .add(await _userRepository.getUserRefFromUuid(member.userUuid));
       }
       await _userRepository.updateTeamDetail(
         Team(
@@ -48,7 +47,11 @@ class TeamDetailBloc extends Bloc<TeamDetailEvent, TeamDetailState> {
             teamOwner: await _userRepository.getCurrentUserReference()),
       );
       await Future.forEach(event.removedUsers, (User user) async {
-        var updatedUser = User(userName: user.userName, phoneNumber: user.phoneNumber, userUuid: user.userUuid, joinedTeam: null);
+        var updatedUser = User(
+            userName: user.userName,
+            phoneNumber: user.phoneNumber,
+            userUuid: user.userUuid,
+            joinedTeam: null);
         await _userRepository.updateUserDetail(updatedUser);
       });
       yield TeamDetailChangeSuccess();
@@ -62,7 +65,7 @@ class TeamDetailBloc extends Bloc<TeamDetailEvent, TeamDetailState> {
       var team = await _userRepository.getCurrentUserTeam();
       List<User> members = List();
       for (var member in team.teamMembers) {
-        members.add( await _userRepository.getUserFromRef(member));
+        members.add(await _userRepository.getUserFromRef(member));
       }
       if (team != null) {
         yield PreFilled(

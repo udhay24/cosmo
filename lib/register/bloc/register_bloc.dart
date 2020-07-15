@@ -1,10 +1,11 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:pubg/data_source/login_repository.dart';
-import 'package:pubg/util/validators.dart';
 import 'package:pubg/register/bloc/register_event.dart';
 import 'package:pubg/register/bloc/register_state.dart';
+import 'package:pubg/util/validators.dart';
 import 'package:rxdart/rxdart.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
@@ -12,16 +13,14 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   RegisterBloc({@required LoginRepository loginRepository})
       : assert(loginRepository != null),
-        _userRepository = loginRepository;
-
-  @override
-  RegisterState get initialState => RegisterState.empty();
+        _userRepository = loginRepository,
+        super(RegisterState.empty());
 
   @override
   Stream<Transition<RegisterEvent, RegisterState>> transformEvents(
-      Stream<RegisterEvent> events,
-      TransitionFunction<RegisterEvent, RegisterState> transitionFn,
-      ) {
+    Stream<RegisterEvent> events,
+    TransitionFunction<RegisterEvent, RegisterState> transitionFn,
+  ) {
     final nonDebounceStream = events.where((event) {
       return (event is! EmailChanged && event is! PasswordChanged);
     });
@@ -35,9 +34,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   }
 
   @override
-  Stream<RegisterState> mapEventToState(
-      RegisterEvent event,
-      ) async* {
+  Stream<RegisterState> mapEventToState(RegisterEvent event,) async* {
     if (event is EmailChanged) {
       yield* _mapEmailChangedToState(event.email);
     } else if (event is PasswordChanged) {
@@ -59,10 +56,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     );
   }
 
-  Stream<RegisterState> _mapFormSubmittedToState(
-      String email,
-      String password,
-      ) async* {
+  Stream<RegisterState> _mapFormSubmittedToState(String email,
+      String password,) async* {
     yield RegisterState.loading();
     try {
       await _userRepository.signUpWithEmail(

@@ -138,9 +138,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     autocorrect: false,
                     autovalidate: true,
                     validator: (value) {
-                      return !Validators.isValidPassword(value)
-                          ? 'Invalid Password'
-                          : null;
+                      return _passwordValidator(value);
                     },
                   ),
                   SizedBox(
@@ -164,6 +162,13 @@ class _RegisterFormState extends State<RegisterForm> {
                       ),
                       prefixIcon: Icon(Icons.lock, color: Colors.white),
                       labelText: 'Re-enter Password',
+                      helperText:
+                          "The password should contain at least 6 characters and be a mix of alphabets and numbers",
+                      helperStyle: Theme.of(context)
+                          .textTheme
+                          .headline6
+                          .copyWith(color: Colors.white),
+                      helperMaxLines: 3,
                       fillColor: Colors.white,
                       labelStyle: GoogleFonts.abel(
                           color: Colors.white, fontWeight: FontWeight.bold),
@@ -195,6 +200,16 @@ class _RegisterFormState extends State<RegisterForm> {
         },
       ),
     );
+  }
+
+  String _passwordValidator(String password) {
+    if (password.length >= 6) {
+      return Validators.isValidPassword(password)
+          ? null
+          : "Password should contain both alphabets and numbers";
+    } else {
+      return "Password should contain at least 6 characters";
+    }
   }
 
   @override

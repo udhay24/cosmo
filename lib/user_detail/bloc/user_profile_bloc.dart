@@ -13,16 +13,14 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
 
   UserProfileBloc({@required UserRepository userRepository})
       : assert(userRepository != null),
-        _userRepository = userRepository;
-
-  @override
-  UserProfileState get initialState => InitialUserProfileState();
+        _userRepository = userRepository,
+        super(InitialUserProfileState());
 
   @override
   Stream<Transition<UserProfileEvent, UserProfileState>> transformEvents(
-      Stream<UserProfileEvent> events,
-      TransitionFunction<UserProfileEvent, UserProfileState> transitionFn,
-      ) {
+    Stream<UserProfileEvent> events,
+    TransitionFunction<UserProfileEvent, UserProfileState> transitionFn,
+  ) {
     final nonDebounceStream = events.where((event) {
       return (event is! NewTeamIdEntered);
     });
@@ -34,7 +32,6 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       transitionFn,
     );
   }
-
 
   @override
   Stream<UserProfileState> mapEventToState(
@@ -103,8 +100,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     }
   }
 
-  Stream<UserProfileState> _mapUpdateProfileEvent(
-      UpdateProfile event) async* {
+  Stream<UserProfileState> _mapUpdateProfileEvent(UpdateProfile event) async* {
     yield UserProfileUpdating();
     try {
       await _userRepository.removeCurrentUserFromTeam();
@@ -117,7 +113,8 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     }
   }
 
-  Stream<UserProfileState> _mapSaveProfileEvent(SaveProfilePressed event) async* {
+  Stream<UserProfileState> _mapSaveProfileEvent(
+      SaveProfilePressed event) async* {
     yield UserProfileStartUpdate();
   }
 

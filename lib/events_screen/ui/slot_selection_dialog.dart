@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pubg/home_screen/bloc/bloc.dart';
-import 'package:pubg/home_screen/model/event_detail.dart';
+import 'package:pubg/events_screen/bloc/cosmo_events_bloc.dart';
+import 'package:pubg/events_screen/model/event_detail.dart';
 
 class SlotSelectionDialog extends StatefulWidget {
   final int eventId;
-  final HomeScreenBloc homeScreenBloc;
+  final CosmoEventsBloc cosmoEventsBloc;
 
-  SlotSelectionDialog({@required this.eventId, @required this.homeScreenBloc});
+  SlotSelectionDialog({@required this.eventId, @required this.cosmoEventsBloc});
 
   @override
   _SlotSelectionDialogState createState() => _SlotSelectionDialogState();
@@ -20,14 +20,23 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
   @override
   void initState() {
     super.initState();
-    widget.homeScreenBloc
+    widget.cosmoEventsBloc
         .add(EventRegistrationDialogOpened(eventID: widget.eventId));
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder(
-      bloc: widget.homeScreenBloc,
+      bloc: widget.cosmoEventsBloc,
+      buildWhen: (previousState, currentState) {
+        if (currentState is SelectedEventDetailLoaded ||
+            currentState is SelectedEventDetailLoading ||
+            currentState is SelectedEventDetailFailure) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       builder: (_, state) {
         if (state is SelectedEventDetailLoading) {
           return Container(
@@ -37,9 +46,9 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
               height: 100,
               child: Center(
                   child: Text(
-                    "Something went wrong",
-                    style: Theme.of(context).textTheme.headline3,
-                  )));
+                "Something went wrong",
+                style: Theme.of(context).textTheme.headline3,
+              )));
         } else if (state is SelectedEventDetailLoaded) {
           return StreamBuilder(
             builder: (_, AsyncSnapshot<List<int>> data) {
@@ -76,6 +85,14 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
             },
             stream: state.eventDetail.availableSlots,
             initialData: <int>[],
+          );
+        } else if (state is SelectedEventDetailFailure) {
+          return Text(
+            "Something went wrong. Try again later",
+            style: Theme
+                .of(context)
+                .textTheme
+                .headline4,
           );
         } else {
           return Container();
@@ -146,7 +163,7 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
                 onPressed: () {
-                  widget.homeScreenBloc
+                  widget.cosmoEventsBloc
                     ..add(RegistrationCancelled(eventID: eventID));
                 }))
       ],
@@ -236,8 +253,8 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
                     selectedSlot = int.parse(newValue);
                   });
                 },
-                items: availableSlots
-                    .map<DropdownMenuItem<String>>((int value) {
+                items:
+                availableSlots.map<DropdownMenuItem<String>>((int value) {
                   return DropdownMenuItem<String>(
                     value: "$value",
                     child: Text("$value"),
@@ -267,7 +284,7 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
                 onPressed: () {
-                  widget.homeScreenBloc
+                  widget.cosmoEventsBloc
                     ..add(SlotSelected(
                         selectedSlot: selectedSlot, eventId: widget.eventId));
                 }))

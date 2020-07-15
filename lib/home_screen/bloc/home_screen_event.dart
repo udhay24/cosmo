@@ -5,39 +5,6 @@ abstract class HomeScreenEvent extends Equatable {
   const HomeScreenEvent();
 }
 
-class HomeScreenStarted extends HomeScreenEvent {
-  @override
-  List<Object> get props => [];
-}
-
-class EventSelected extends HomeScreenEvent {
-  final int eventID;
-
-  EventSelected({@required this.eventID});
-
-  @override
-  List<Object> get props => [eventID];
-}
-
-class SlotSelected extends HomeScreenEvent {
-  final int eventId;
-  final int selectedSlot;
-
-  SlotSelected({@required this.selectedSlot, @required this.eventId});
-
-  @override
-  List<Object> get props => [selectedSlot, eventId];
-}
-
-class RegistrationCancelled extends HomeScreenEvent {
-  final int eventID;
-
-  RegistrationCancelled({@required this.eventID});
-
-  @override
-  List<Object> get props => [eventID];
-}
-
 class UpdateFcmCode extends HomeScreenEvent {
   final String fcmCode;
 
@@ -60,22 +27,4 @@ class EventNotificationReceived extends HomeScreenEvent {
 
   @override
   List<Object> get props => [eventId, roomPassword, roomId];
-}
-
-class EventRegistrationDialogOpened extends HomeScreenEvent {
-  final int eventID;
-
-  EventRegistrationDialogOpened({@required this.eventID});
-
-  @override
-  List<Object> get props => [eventID];
-}
-
-class ShowRoomDetails extends HomeScreenEvent {
-  final int eventId;
-
-  ShowRoomDetails({@required this.eventId});
-
-  @override
-  List<Object> get props => [eventId];
 }
