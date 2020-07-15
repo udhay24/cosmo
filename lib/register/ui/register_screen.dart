@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pubg/register/ui/register_form.dart';
+import 'package:pubg/util/themes.dart';
 
 class RegisterScreen extends StatelessWidget {
 
@@ -11,10 +12,11 @@ class RegisterScreen extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         elevation: 0,
-          title: Text(
-            'Register',
-            style: TextStyle(color: Colors.white),
-          ),
+        iconTheme: IconThemeData(color: AppColors.COLOR_WHITE),
+        title: Text(
+          'Register',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.transparent,
       ),
       body: Container(
@@ -22,10 +24,10 @@ class RegisterScreen extends StatelessWidget {
         height: double.infinity,
         decoration: BoxDecoration(
             image: DecorationImage(
-          image: AssetImage(
+              image: AssetImage(
               "assets/images/pubg_background_registration_screen.jpg"),
           fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(Colors.red, BlendMode.darken),
+          colorFilter: ColorFilter.mode(Colors.grey.shade500, BlendMode.darken),
         )),
         child:RegisterForm(),
       ),

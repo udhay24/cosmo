@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text(
           "Cosmo Gamingz",
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.black, fontFamily: 'cosmo'),
         ),
         backgroundColor: Colors.white,
         actions: <Widget>[
