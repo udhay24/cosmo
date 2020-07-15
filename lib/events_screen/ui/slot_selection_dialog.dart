@@ -1,31 +1,42 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pubg/home_screen/bloc/bloc.dart';
-import 'package:pubg/home_screen/model/event_detail.dart';
+import 'package:pubg/events_screen/bloc/cosmo_events_bloc.dart';
+import 'package:pubg/events_screen/model/event_detail.dart';
 
 class SlotSelectionDialog extends StatefulWidget {
   final int eventId;
-  final HomeScreenBloc homeScreenBloc;
+  final CosmoEventsBloc cosmoEventsBloc;
 
-  SlotSelectionDialog({@required this.eventId, @required this.homeScreenBloc});
+  SlotSelectionDialog({@required this.eventId, @required this.cosmoEventsBloc});
 
   @override
   _SlotSelectionDialogState createState() => _SlotSelectionDialogState();
 }
 
 class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
+  int selectedSlot;
+
   @override
   void initState() {
     super.initState();
-    widget.homeScreenBloc
+    widget.cosmoEventsBloc
         .add(EventRegistrationDialogOpened(eventID: widget.eventId));
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder(
-      bloc: widget.homeScreenBloc,
+      bloc: widget.cosmoEventsBloc,
+      buildWhen: (previousState, currentState) {
+        if (currentState is SelectedEventDetailLoaded ||
+            currentState is SelectedEventDetailLoading ||
+            currentState is SelectedEventDetailFailure) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       builder: (_, state) {
         if (state is SelectedEventDetailLoading) {
           return Container(
@@ -58,11 +69,8 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
                     Builder(builder: (_) {
                       if ((data.data.length > 0) &&
                           (!state.eventDetail.isRegistered)) {
-                        return SlotRegistrationWidget(
-                          availableSlots: data.data,
-                          eventID: state.eventDetail.event.eventID,
-                          bloc: widget.homeScreenBloc,
-                        );
+                        _updateSelectedSlot(data.data);
+                        return _buildSlotDropDownOption(data.data);
                       } else if (state.eventDetail.isRegistered) {
                         return _buildCancelRegistrationEvent(
                             state.eventDetail.previousSelectedSlot,
@@ -78,11 +86,29 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
             stream: state.eventDetail.availableSlots,
             initialData: <int>[],
           );
+        } else if (state is SelectedEventDetailFailure) {
+          return Text(
+            "Something went wrong. Try again later",
+            style: Theme
+                .of(context)
+                .textTheme
+                .headline4,
+          );
         } else {
           return Container();
         }
       },
     );
+  }
+
+  _updateSelectedSlot(List<int> slots) {
+    if (selectedSlot != null) {
+      if (!slots.contains(selectedSlot)) {
+        selectedSlot = slots.first;
+      }
+    } else {
+      selectedSlot = slots.first;
+    }
   }
 
   Widget _buildEventHeading(SelectedEventDetail value) {
@@ -137,7 +163,7 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
                 onPressed: () {
-                  widget.homeScreenBloc
+                  widget.cosmoEventsBloc
                     ..add(RegistrationCancelled(eventID: eventID));
                 }))
       ],
@@ -185,33 +211,8 @@ class _SlotSelectionDialogState extends State<SlotSelectionDialog> {
       ],
     );
   }
-}
 
-class SlotRegistrationWidget extends StatefulWidget {
-  final List<int> availableSlots;
-  final int eventID;
-  final HomeScreenBloc bloc;
-
-  SlotRegistrationWidget(
-      {@required this.availableSlots,
-      @required this.eventID,
-      @required this.bloc});
-
-  @override
-  _SlotRegistrationWidgetState createState() => _SlotRegistrationWidgetState();
-}
-
-class _SlotRegistrationWidgetState extends State<SlotRegistrationWidget> {
-  int selectedSlot;
-
-  @override
-  initState() {
-    selectedSlot = widget.availableSlots.first;
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildSlotDropDownOption(List<int> availableSlots) {
     return Column(
       children: [
         Row(
@@ -252,8 +253,8 @@ class _SlotRegistrationWidgetState extends State<SlotRegistrationWidget> {
                     selectedSlot = int.parse(newValue);
                   });
                 },
-                items: widget.availableSlots
-                    .map<DropdownMenuItem<String>>((int value) {
+                items:
+                availableSlots.map<DropdownMenuItem<String>>((int value) {
                   return DropdownMenuItem<String>(
                     value: "$value",
                     child: Text("$value"),
@@ -283,9 +284,9 @@ class _SlotRegistrationWidgetState extends State<SlotRegistrationWidget> {
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
                 onPressed: () {
-                  widget.bloc
+                  widget.cosmoEventsBloc
                     ..add(SlotSelected(
-                        selectedSlot: selectedSlot, eventId: widget.eventID));
+                        selectedSlot: selectedSlot, eventId: widget.eventId));
                 }))
       ],
     );

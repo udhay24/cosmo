@@ -61,7 +61,7 @@ class AboutScreen extends StatelessWidget {
                     width: 24,
                     child: Image.asset('assets/icons/discord-64.png')),
                 onTap: () {
-                  launchURL(url: "https://discord.com/invite/ZfNZ2nW");
+                  launchURL(url: "https://discord.gg/X5pHe3Z");
                 },
               ),
               ListTile(
@@ -100,21 +100,21 @@ class AboutScreen extends StatelessWidget {
                 onTap: () {
                   launchURL(
                       url:
-                      "https://www.facebook.com/Team-Cosmos-111189120584649/");
+                          "https://www.facebook.com/Team-Cosmos-111189120584649/");
                 },
               ),
-              ListTile(
-                title: Text(
-                  "Check out our videos on TikTok",
-                ),
-                trailing: SizedBox(
-                    height: 24,
-                    width: 24,
-                    child: Image.asset('assets/icons/tiktok-48.png')),
-                onTap: () {
-                  launchURL(url: "https://vm.tiktok.com/JJjf3cM/");
-                },
-              ),
+//              ListTile(
+//                title: Text(
+//                  "Check out our videos on TikTok",
+//                ),
+//                trailing: SizedBox(
+//                    height: 24,
+//                    width: 24,
+//                    child: Image.asset('assets/icons/tiktok-48.png')),
+//                onTap: () {
+//                  launchURL(url: "https://vm.tiktok.com/JJjf3cM/");
+//                },
+//              ),
               ListTile(
                 title: Text(
                   "Check out our videos on YouTube",

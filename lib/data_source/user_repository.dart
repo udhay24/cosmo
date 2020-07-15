@@ -35,7 +35,8 @@ class UserRepository {
           (result.userUuid != null) &&
           (result.joinedTeam != null) &&
           (result.phoneNumber != null) &&
-          (result.userName != null)) {
+          (result.userName != null) &&
+          (result.pubgID != null)) {
         return true;
       } else {
         return false;
@@ -91,7 +92,8 @@ class UserRepository {
   removeTeamMembershipFromUser(String userID) async {
     try {
       var user = await getUserFromRef(await getUserRefFromUuid(userID));
-      var updatedUser = User(userName: user.userName,
+      var updatedUser = User(
+          userName: user.userName,
           phoneNumber: user.phoneNumber,
           userUuid: user.userUuid,
           joinedTeam: null);
@@ -100,7 +102,6 @@ class UserRepository {
       print("error removing user from team");
     }
   }
-
 
   ///create a new team and returns the reference
   Future<DocumentReference> createTeam(Team team) async {
@@ -151,7 +152,7 @@ class UserRepository {
 
   Future<Team> getTeamDetails(String teamDocumentID) async {
     var teamDetails =
-    await _fireStore.collection("teams").document(teamDocumentID).get();
+        await _fireStore.collection("teams").document(teamDocumentID).get();
     return Team.fromJson(teamDetails.data);
   }
 

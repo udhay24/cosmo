@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equatable/equatable.dart';
 
-class Team extends Equatable{
+class Team {
   String teamName;
   String teamCode;
   List<DocumentReference> teamMembers;

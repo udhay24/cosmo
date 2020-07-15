@@ -11,9 +11,6 @@ import './bloc.dart';
 
 class EventNotificationBloc
     extends Bloc<EventNotificationEvent, EventNotificationState> {
-  @override
-  EventNotificationState get initialState => InitialEventNotificationState();
-
   final EventRepository _eventRepository;
   final UserRepository _userRepository;
 
@@ -22,7 +19,8 @@ class EventNotificationBloc
       @required UserRepository userRepository})
       : assert(repository != null),
         _eventRepository = repository,
-        _userRepository = userRepository;
+        _userRepository = userRepository,
+        super(InitialEventNotificationState());
 
   @override
   Stream<EventNotificationState> mapEventToState(
@@ -40,8 +38,8 @@ class EventNotificationBloc
       var user = await _userRepository.getCurrentUserDetail();
       var eventDetails = await _eventRepository.getRoomDetails(user.joinedTeam);
 
-      var eventNotifications = await Future.wait(
-          eventDetails.map((e) => convertToNotification(e)));
+      var eventNotifications =
+      await Future.wait(eventDetails.map((e) => convertToNotification(e)));
 
       if (eventDetails != null) {
         yield EventNotificationLoadedState(

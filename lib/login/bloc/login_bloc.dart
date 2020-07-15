@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:pubg/data_source/login_repository.dart';
@@ -8,23 +9,19 @@ import '../../util/validators.dart';
 import 'login_event.dart';
 import 'login_state.dart';
 
-
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginRepository _userRepository;
 
   LoginBloc({
     @required LoginRepository loginRepository,
   })  : assert(loginRepository != null),
-        _userRepository = loginRepository;
-
-  @override
-  LoginState get initialState => LoginState.empty();
+        _userRepository = loginRepository,
+        super(LoginState.empty());
 
   @override
   Stream<Transition<LoginEvent, LoginState>> transformEvents(
       Stream<LoginEvent> events,
-      TransitionFunction<LoginEvent, LoginState> transitionFn,
-      ) {
+      TransitionFunction<LoginEvent, LoginState> transitionFn,) {
     final nonDebounceStream = events.where((event) {
       return (event is! EmailChanged && event is! PasswordChanged);
     });

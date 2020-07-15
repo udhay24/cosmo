@@ -14,7 +14,9 @@ class AppTheme {
       backgroundColor: LightColor.background,
       primaryColor: Colors.white,
       appBarTheme: AppBarTheme(
-          color: Colors.white, textTheme: Theme.of(context).textTheme),
+          elevation: 4,
+          color: Colors.white,
+          textTheme: Theme.of(context).textTheme),
       snackBarTheme: SnackBarThemeData(
           backgroundColor: Colors.black,
           contentTextStyle: snackBarStyle,
@@ -23,6 +25,12 @@ class AppTheme {
       accentColor: LightColor.black,
       primaryColorLight: LightColor.brighter,
       cardTheme: CardTheme(color: LightColor.background),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          elevation: 10,
+          selectedIconTheme: IconThemeData(color: AppColors.PRIMARY_ASCENT),
+          unselectedIconTheme: IconThemeData(color: AppColors.SECONDARY_ASCENT),
+          selectedLabelStyle: enabledTextStyle,
+          unselectedLabelStyle: disabledTextStyle),
       textTheme: TextTheme(
         headline1: h1Style,
         headline2: h2Style,
@@ -134,4 +142,18 @@ class AppTheme {
 
   static TextStyle snackBarStyle = GoogleFonts.sourceSansPro(
       fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white);
+
+  static TextStyle disabledTextStyle =
+  GoogleFonts.sourceSansPro(fontSize: 14, color: AppColors.SECONDARY_ASCENT);
+  static TextStyle enabledTextStyle =
+  GoogleFonts.sourceSansPro(fontSize: 14, color: AppColors.PRIMARY_ASCENT);
+}
+
+class AppColors {
+  static const Color COLOR_WHITE = Colors.white;
+  static const Color COLOR_BLACK = Colors.black;
+  static const Color PRIMARY_ASCENT = Color(0xFFfca311);
+  static const Color SECONDARY_ASCENT = Color(0xFFe5e5e5);
+  static const Color COLOR_LIGHT_BLACK = Color(0xFF14213d);
+
 }
