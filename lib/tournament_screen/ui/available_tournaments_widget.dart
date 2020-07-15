@@ -59,7 +59,10 @@ class TournamentsScreen extends StatelessWidget {
           );
         } else if (state is TournamentLoadFailure) {
           return Center(
-            child: Text("Error loading tournaments"),
+            child: Text(
+              "Error loading tournaments. Try again later",
+              style: Theme.of(context).textTheme.headline4,
+            ),
           );
         } else {
           return Container();
