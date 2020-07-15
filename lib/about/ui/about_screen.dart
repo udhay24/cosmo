@@ -61,7 +61,7 @@ class AboutScreen extends StatelessWidget {
                     width: 24,
                     child: Image.asset('assets/icons/discord-64.png')),
                 onTap: () {
-                  launchURL(url: "https://discord.gg/wGV5vfJ");
+                  launchURL(url: "https://discord.gg/X5pHe3Z");
                 },
               ),
               ListTile(

@@ -63,7 +63,6 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.white,
-        elevation: 0,
         actions: <Widget>[
           _buildProfileMenuAction(context),
           _buildOverFlowMenu(context),

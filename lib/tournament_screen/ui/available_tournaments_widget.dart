@@ -46,12 +46,16 @@ class TournamentsScreen extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         } else if (state is TournamentLoadSuccess) {
-          return ListView.builder(
-            itemBuilder: (context, position) {
-              return _buildTournamentCard(context, state.tournaments[position]);
-            },
-            itemCount: state.tournaments.length,
-            shrinkWrap: true,
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListView.builder(
+              itemBuilder: (context, position) {
+                return _buildTournamentCard(
+                    context, state.tournaments[position]);
+              },
+              itemCount: state.tournaments.length,
+              shrinkWrap: true,
+            ),
           );
         } else if (state is TournamentLoadFailure) {
           return Center(
@@ -130,13 +134,14 @@ class TournamentsScreen extends StatelessWidget {
                   onPressed: tournament.isRegistered
                       ? null
                       : () {
-                    BlocProvider.of<TournamentsScreenBloc>(context)
-                        .add(TournamentSelected(tournament: tournament));
-                  },
+                          BlocProvider.of<TournamentsScreenBloc>(context)
+                              .add(TournamentSelected(tournament: tournament));
+                        },
                   child:
-                  tournament.isRegistered ? Text("Joined") : Text("Join"),
+                      tournament.isRegistered ? Text("Joined") : Text("Join"),
                   textColor: Colors.blueAccent,
-                  disabledColor: Colors.grey[300],
+                  disabledTextColor: Colors.grey,
+                  disabledColor: Colors.white,
                 ),
               ),
             ],
