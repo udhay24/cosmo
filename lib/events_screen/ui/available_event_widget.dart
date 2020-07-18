@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pubg/bloc/navigation/bloc.dart';
 import 'package:pubg/data_source/model/available_event.dart';
 import 'package:pubg/events_screen/bloc/cosmo_events_bloc.dart';
@@ -27,18 +28,20 @@ class AvailableEventWidget extends StatelessWidget {
           return Column(
             children: <Widget>[
               Expanded(
-                child: ListView.builder(
-                    itemCount: state.availableEvents.length,
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    physics: BouncingScrollPhysics(),
-                    itemBuilder: (context, position) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: _getEventCard(
-                            context, state.availableEvents[position]),
-                      );
-                    }),
+                child: state.availableEvents.length == 0
+                    ? _buildNoEventWidget(context)
+                    : ListView.builder(
+                        itemCount: state.availableEvents.length,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        physics: BouncingScrollPhysics(),
+                        itemBuilder: (context, position) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: _getEventCard(
+                                context, state.availableEvents[position]),
+                          );
+                        }),
               ),
             ],
           );
@@ -169,6 +172,29 @@ class AvailableEventWidget extends StatelessWidget {
         ));
   }
 
+  Widget _buildNoEventWidget(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Lottie.asset("assets/lottie/no_events_animation.json",
+            repeat: true, width: 300, height: 300),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Text(
+            "Events are currently not available. We will be back soon",
+            style: Theme
+                .of(context)
+                .textTheme
+                .headline5,
+            textAlign: TextAlign.center,
+          ),
+        )
+      ],
+    );
+  }
+
   Future<void> _showRoomDetails(BuildContext context,
       RoomDetail roomDetail) async {
     return showDialog<void>(
@@ -224,5 +250,4 @@ class AvailableEventWidget extends StatelessWidget {
       },
     );
   }
-
 }
