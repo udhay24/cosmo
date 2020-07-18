@@ -5,7 +5,7 @@ description: pubg team registration app
 # pub.dev using `pub publish`. This is preferred for private packages.
 publish_to: 'none'
 
-version: 1.2.0+8
+version: 1.2.1+9
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
