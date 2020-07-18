@@ -154,7 +154,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
                           hintText: "Pubg ID",
                           border: UnderlineInputBorder(),
                         ),
-                        maxLength: 9,
+                        maxLength: 10,
                         autocorrect: false,
                         autovalidate: true,
                         validator: (value) {

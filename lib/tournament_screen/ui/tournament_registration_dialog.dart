@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:pubg/tournament_screen/bloc/tournaments_screen_bloc.dart';
@@ -33,6 +34,13 @@ class _TournamentRegistrationDialogState
       platformName: "Twitch",
       platformUrl: "https://www.twitch.tv/cosmo_gamingz");
 
+  RequiredRegistrationsModel whatsApp = RequiredRegistrationsModel(
+      platformName: "Share the Screenshots for confirmation",
+      platformUrl:
+          "https://wa.me/91${availableNumber[Random().nextInt(2)]}?text=Hey%21%20I%20have%20registered%20for%20the%20tournament%20and%20I%20am%20sharing%20my%20screenshots%20here%20as%20proof");
+
+  static const List<String> availableNumber = ["7904558824", "9843819081"];
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -46,6 +54,13 @@ class _TournamentRegistrationDialogState
           "Complete the following steps to register for the tournament",
           style: Theme.of(context).textTheme.headline6,
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 14.0),
+          child: Text(
+            "* Take screen shots of subscription for verification",
+            style: Theme.of(context).textTheme.headline6,
+          ),
+        ),
         ListView.builder(
           itemBuilder: (context, position) {
             if (position == 0) {
@@ -53,12 +68,12 @@ class _TournamentRegistrationDialogState
             } else if (position == 1) {
               return _buildRegistrationItemTile(instagram);
             } else if (position == 2) {
-              return _buildRegistrationItemTile(twitch);
+              return _buildRegistrationItemTile(whatsApp);
             } else {
               return Container();
             }
           },
-          itemCount: 2,
+          itemCount: 3,
           shrinkWrap: true,
         ),
         FlatButton(
@@ -67,13 +82,14 @@ class _TournamentRegistrationDialogState
           child: Text(
             "Register",
           ),
-          onPressed: (youtube.isSubscribed && instagram.isSubscribed)
+          onPressed: (youtube.isSubscribed && instagram.isSubscribed &&
+              whatsApp.isSubscribed)
               ? () {
-                  widget.tournamentsScreenBloc.add(TournamentRegistration(
-                      tournamentId: widget
-                          .tournamentUIModel.tournamentModel.tournamentID));
-                  Navigator.of(context).pop();
-                }
+            widget.tournamentsScreenBloc.add(TournamentRegistration(
+                tournamentId: widget
+                    .tournamentUIModel.tournamentModel.tournamentID));
+            Navigator.of(context).pop();
+          }
               : null,
         ),
       ],
@@ -128,7 +144,10 @@ class _TournamentRegistrationDialogState
                   ),
                   Text(
                     registrationsModel.platformName,
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .headline5,
                   ),
                 ],
               ),
