@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pubg/bloc/authentication_bloc/authentication_bloc.dart';
@@ -14,6 +15,10 @@ import 'bloc/bloc_delegate.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = SimpleBlocObserver();
+
+  Crashlytics.instance.enableInDevMode = true;
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+
   final LoginRepository loginRepository = LoginRepository();
 
   final GlobalKey<NavigatorState> _navigationKey = GlobalKey();
