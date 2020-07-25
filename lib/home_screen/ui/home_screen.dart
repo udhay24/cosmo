@@ -13,6 +13,7 @@ import 'package:pubg/data_source/user_repository.dart';
 import 'package:pubg/events_screen/bloc/cosmo_events_bloc.dart';
 import 'package:pubg/events_screen/ui/available_event_widget.dart';
 import 'package:pubg/home_screen/bloc/bloc.dart';
+import 'package:pubg/profile_screen/ui/profile_screen.dart';
 import 'package:pubg/tournament_screen/bloc/tournaments_screen_bloc.dart';
 import 'package:pubg/tournament_screen/ui/available_tournaments_widget.dart';
 import 'package:pubg/util/network_util.dart';
@@ -52,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ..add(LoadAvailableTournaments()),
       child: TournamentsScreen(),
     ),
+    ProfileScreen()
   ];
 
   @override
@@ -76,7 +78,10 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Text("Events")),
           BottomNavigationBarItem(
               icon: ImageIcon(AssetImage('assets/icons/tournament-48.png')),
-              title: Text("Tournaments"))
+              title: Text("Tournaments")),
+          BottomNavigationBarItem(
+              icon: ImageIcon(AssetImage('assets/icons/user-profile-50.png')),
+              title: Text("Profile"))
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.black,
